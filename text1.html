@@ -153,7 +153,7 @@
                         player1: { 
                             board: playerBoardArray, 
                             score: 0,
-                            ready: false,
+                            ready: true,
                             connected: true,
                             piece: currentPiece
                         },
@@ -164,7 +164,8 @@
                             connected: false,
                             piece: null
                         },
-                        gameActive: false
+                        gameActive: false,
+                        gameStarted: false
                     });
                     
                     updatePlayerList(true, false);
@@ -218,16 +219,12 @@
             if (!isPlayer1) return;
             
             roomRef.update({
-                'player1/ready': true,
-                'player2/ready': true,
-                'gameActive': true
+                'gameActive': true,
+                'gameStarted': true
             }).then(() => {
                 startBtn.style.display = 'none';
                 statusDiv.textContent = "游戏进行中...";
                 startGameLoop();
-                
-                // 通知玩家2游戏已开始
-                database.ref(`rooms/${roomId}/player2/gameStarted`).set(true);
             });
         }
 
@@ -261,7 +258,7 @@
 
             // 玩家2监听游戏开始信号
             if (!isPlayer1) {
-                database.ref(`rooms/${roomId}/player2/gameStarted`).on('value', (snap) => {
+                database.ref(`rooms/${roomId}/gameStarted`).on('value', (snap) => {
                     if (snap.val() === true) {
                         gameActive = true;
                         statusDiv.textContent = "游戏进行中...";
@@ -333,8 +330,7 @@
             if (isPlayer1) {
                 roomRef.update({
                     'gameActive': false,
-                    'player1/ready': false,
-                    'player2/ready': false
+                    'gameStarted': false
                 });
             }
         }
