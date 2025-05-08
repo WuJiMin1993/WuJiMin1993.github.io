@@ -172,6 +172,9 @@
             
             startBtn.style.display = 'none';
             statusDiv.textContent = "游戏进行中...";
+            
+            // 立即开始游戏循环
+            startGameLoop();
         }
 
         function setupRoomListeners(roomRef) {
@@ -190,42 +193,56 @@
         }
 
         function startGameLoop() {
+            if (gameInterval) clearInterval(gameInterval);
+            
             const path = isPlayer1 ? `rooms/${roomId}/player1` : `rooms/${roomId}/player2`;
             const boardRef = database.ref(`${path}/board`);
             
-            gameInterval = setInterval(() => {
-                if (!gameActive) return;
+            // 确保初始方块已放置
+            boardRef.once('value').then((snapshot) => {
+                const board = snapshot.val();
+                if (!board) return;
                 
-                boardRef.once('value').then((snapshot) => {
-                    const board = snapshot.val();
-                    if (!board) return;
-                    
-                    removePiece(board, currentPiece);
-                    currentPiece.y++;
-                    
-                    if (checkCollision(board, currentPiece)) {
-                        currentPiece.y--;
-                        placePiece(board, currentPiece);
-                        
-                        // 检查是否有完整的行可以消除
-                        // 这里省略了行消除逻辑
-                        
-                        // 生成新方块
-                        currentPiece = generatePiece();
-                        if (checkCollision(board, currentPiece)) {
-                            // 游戏结束
-                            clearInterval(gameInterval);
-                            gameActive = false;
-                            alert('游戏结束！');
-                            return;
-                        }
-                    }
-                    
+                if (!currentPiece) {
+                    currentPiece = generatePiece();
                     placePiece(board, currentPiece);
                     boardRef.set(board);
-                    updateLocalBoard(board);
-                });
-            }, 800); // 每800毫秒下落一格
+                }
+                
+                gameInterval = setInterval(() => {
+                    if (!gameActive) return;
+                    
+                    boardRef.once('value').then((snapshot) => {
+                        const board = snapshot.val();
+                        if (!board) return;
+                        
+                        removePiece(board, currentPiece);
+                        currentPiece.y++;
+                        
+                        if (checkCollision(board, currentPiece)) {
+                            currentPiece.y--;
+                            placePiece(board, currentPiece);
+                            
+                            // 检查是否有完整的行可以消除
+                            // 这里省略了行消除逻辑
+                            
+                            // 生成新方块
+                            currentPiece = generatePiece();
+                            if (checkCollision(board, currentPiece)) {
+                                // 游戏结束
+                                clearInterval(gameInterval);
+                                gameActive = false;
+                                alert('游戏结束！');
+                                return;
+                            }
+                        }
+                        
+                        placePiece(board, currentPiece);
+                        boardRef.set(board);
+                        updateLocalBoard(board);
+                    });
+                }, 800); // 每800毫秒下落一格
+            });
         }
 
         function handleMove(direction) {
