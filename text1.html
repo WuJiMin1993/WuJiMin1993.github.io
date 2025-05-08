@@ -81,6 +81,7 @@
         let currentPiece = null;
         let gameActive = false;
         let playerBoardArray = createBoard();
+        let roomRef = null;
 
         const joinBtn = document.getElementById('joinBtn');
         const startBtn = document.getElementById('startBtn');
@@ -130,7 +131,7 @@
             }
             
             statusDiv.textContent = "正在连接房间...";
-            const roomRef = database.ref(`rooms/${roomId}`);
+            roomRef = database.ref(`rooms/${roomId}`);
             
             roomRef.once('value').then((snapshot) => {
                 const room = snapshot.val();
@@ -153,13 +154,15 @@
                             board: playerBoardArray, 
                             score: 0,
                             ready: false,
-                            connected: true
+                            connected: true,
+                            piece: currentPiece
                         },
                         player2: { 
                             board: createBoard(), 
                             score: 0,
                             ready: false,
-                            connected: false
+                            connected: false,
+                            piece: null
                         },
                         gameActive: false
                     });
@@ -182,7 +185,8 @@
                                 board: playerBoardArray,
                                 score: 0,
                                 ready: true,
-                                connected: true
+                                connected: true,
+                                piece: currentPiece
                             },
                             'gameActive': false
                         });
@@ -194,7 +198,7 @@
                     }
                 }
                 
-                setupRoomListeners(roomRef);
+                setupRoomListeners();
                 gameDiv.style.display = 'flex';
             });
         }
@@ -205,7 +209,6 @@
                 <div><span class="player-status ${player2Connected ? 'player-ready' : 'player-waiting'}"></span>玩家2 ${player2Connected ? '已就位' : '等待中'}</div>
             `;
             
-            // 只有玩家1可以开始游戏，并且必须两个玩家都就位
             if (isPlayer1) {
                 startBtn.disabled = !(player1Connected && player2Connected);
             }
@@ -214,25 +217,21 @@
         function startGame() {
             if (!isPlayer1) return;
             
-            const roomRef = database.ref(`rooms/${roomId}`);
             roomRef.update({
                 'player1/ready': true,
                 'gameActive': true
             }).then(() => {
                 startBtn.style.display = 'none';
                 statusDiv.textContent = "游戏进行中...";
-                
-                // 立即开始游戏循环
                 startGameLoop();
             });
         }
 
-        function setupRoomListeners(roomRef) {
+        function setupRoomListeners() {
             roomRef.on('value', (snap) => {
                 const roomData = snap.val();
                 if (!roomData) return;
                 
-                // 更新玩家状态显示
                 const player1Connected = roomData.player1 && roomData.player1.connected;
                 const player2Connected = roomData.player2 && roomData.player2.connected;
                 updatePlayerList(player1Connected, player2Connected);
@@ -261,8 +260,8 @@
             
             const path = isPlayer1 ? `rooms/${roomId}/player1` : `rooms/${roomId}/player2`;
             const boardRef = database.ref(`${path}/board`);
+            const pieceRef = database.ref(`${path}/piece`);
             
-            // 确保初始方块已放置
             boardRef.once('value').then((snapshot) => {
                 const board = snapshot.val() || createBoard();
                 
@@ -274,6 +273,7 @@
                     }
                     placePiece(board, currentPiece);
                     boardRef.set(board);
+                    pieceRef.set(currentPiece);
                 }
                 
                 gameInterval = setInterval(() => {
@@ -289,10 +289,8 @@
                             currentPiece.y--;
                             placePiece(board, currentPiece);
                             
-                            // 检查是否有完整的行可以消除
                             checkLineClear(board);
                             
-                            // 生成新方块
                             currentPiece = generatePiece();
                             if (checkCollision(board, currentPiece)) {
                                 gameOver();
@@ -302,9 +300,10 @@
                         
                         placePiece(board, currentPiece);
                         boardRef.set(board);
+                        pieceRef.set(currentPiece);
                         updateLocalBoard(board);
                     });
-                }, 800); // 每800毫秒下落一格
+                }, 800);
             });
         }
 
@@ -316,7 +315,6 @@
         }
 
         function checkLineClear(board) {
-            // 简化的行消除逻辑
             for (let y = 19; y >= 0; y--) {
                 let lineFull = true;
                 for (let x = 0; x < 10; x++) {
@@ -326,20 +324,25 @@
                     }
                 }
                 if (lineFull) {
-                    // 消除该行
                     for (let x = 0; x < 10; x++) {
                         board[y * 10 + x] = null;
                     }
-                    // 上方方块下落
                     for (let y2 = y; y2 > 0; y2--) {
                         for (let x = 0; x < 10; x++) {
                             board[y2 * 10 + x] = board[(y2 - 1) * 10 + x];
                         }
                     }
-                    // 最顶行清空
                     for (let x = 0; x < 10; x++) {
                         board[x] = null;
                     }
+                    
+                    // 更新分数
+                    const path = isPlayer1 ? `rooms/${roomId}/player1/score` : `rooms/${roomId}/player2/score`;
+                    const scoreRef = database.ref(path);
+                    scoreRef.once('value').then((snap) => {
+                        const currentScore = snap.val() || 0;
+                        scoreRef.set(currentScore + 100);
+                    });
                 }
             }
         }
@@ -347,6 +350,7 @@
         function handleMove(direction) {
             const path = isPlayer1 ? `rooms/${roomId}/player1` : `rooms/${roomId}/player2`;
             const boardRef = database.ref(`${path}/board`);
+            const pieceRef = database.ref(`${path}/piece`);
             
             boardRef.once('value').then((snapshot) => {
                 const board = snapshot.val() || createBoard();
@@ -369,6 +373,7 @@
                 
                 placePiece(board, currentPiece);
                 boardRef.set(board);
+                pieceRef.set(currentPiece);
                 updateLocalBoard(board);
             });
         }
