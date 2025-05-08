@@ -26,6 +26,11 @@
             color: #2196F3;
             margin-left: 5px;
         }
+        .opponent-indicator {
+            font-weight: bold;
+            color: #FF5722;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -46,7 +51,7 @@
             <div>分数: <span id="playerScore">0</span></div>
         </div>
         <div>
-            <h3>对手</h3>
+            <h3>对手<span id="opponentNumber" class="opponent-indicator"></span></h3>
             <div class="board" id="opponentBoard"></div>
             <div>分数: <span id="opponentScore">0</span></div>
         </div>
@@ -88,6 +93,7 @@
         const statusDiv = document.getElementById('status');
         const playerListDiv = document.getElementById('playerList');
         const playerNumberSpan = document.getElementById('playerNumber');
+        const opponentNumberSpan = document.getElementById('opponentNumber');
 
         const SHAPES = [
             [[1,1,1,1]], [[1,0,0],[1,1,1]], [[0,0,1],[1,1,1]], 
@@ -132,6 +138,7 @@
                 if (!room) {
                     isPlayer1 = true;
                     playerNumberSpan.textContent = "(玩家1)";
+                    opponentNumberSpan.textContent = "(玩家2)";
                     statusDiv.textContent = "已创建房间，等待玩家2...";
                     startBtn.style.display = 'inline-block';
                     startBtn.disabled = true;
@@ -162,6 +169,7 @@
                     if (!room.player2 || !room.player2.connected) {
                         isPlayer1 = false;
                         playerNumberSpan.textContent = "(玩家2)";
+                        opponentNumberSpan.textContent = "(玩家1)";
                         statusDiv.textContent = "已加入房间，等待开始...";
                         
                         initGameBoard();
@@ -232,9 +240,9 @@
                 updateGameState(roomData);
                 
                 if (roomData.gameActive) {
-                    if (!gameActive) {
-                        gameActive = true;
-                        statusDiv.textContent = "游戏进行中...";
+                    gameActive = true;
+                    statusDiv.textContent = "游戏进行中...";
+                    if (!gameInterval) {
                         startGameLoop();
                     }
                 } else {
@@ -309,7 +317,7 @@
             // 简化的行消除逻辑（实际项目中需要更完整的实现）
             for (let y = 19; y >= 0; y--) {
                 let lineFull = true;
-                for (let x = 0; x < 10; x++) {
+                for (let x = 0; x; x++) {
                     if (!board[y * 10 + x]) {
                         lineFull = false;
                         break;
