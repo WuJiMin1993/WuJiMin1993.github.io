@@ -11,6 +11,16 @@
         button { padding: 10px 20px; font-size: 16px; }
         .status { color: green; margin: 10px; }
         #startBtn { background-color: #4CAF50; color: white; display: none; }
+        .player-status { 
+            display: inline-block; 
+            width: 15px; 
+            height: 15px; 
+            border-radius: 50%; 
+            margin-right: 5px;
+        }
+        .player-ready { background-color: #4CAF50; }
+        .player-waiting { background-color: #ccc; }
+        #playerList { margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -20,6 +30,7 @@
         <input type="text" id="roomId" placeholder="输入房间号">
         <button id="joinBtn">加入游戏</button>
         <div id="status" class="status"></div>
+        <div id="playerList"></div>
         <button id="startBtn">开始游戏</button>
     </div>
     
@@ -70,6 +81,7 @@
         const playerScore = document.getElementById('playerScore');
         const opponentScore = document.getElementById('opponentScore');
         const statusDiv = document.getElementById('status');
+        const playerListDiv = document.getElementById('playerList');
 
         const SHAPES = [
             [[1,1,1,1]], [[1,0,0],[1,1,1]], [[0,0,1],[1,1,1]], 
@@ -115,6 +127,7 @@
                     isPlayer1 = true;
                     statusDiv.textContent = "已创建房间，等待玩家2...";
                     startBtn.style.display = 'inline-block';
+                    startBtn.disabled = true;
                     
                     initGameBoard();
                     currentPiece = generatePiece();
@@ -125,17 +138,21 @@
                         player1: { 
                             board: playerBoardArray, 
                             score: 0,
-                            ready: false
+                            ready: false,
+                            connected: true
                         },
                         player2: { 
                             board: createBoard(), 
                             score: 0,
-                            ready: false
+                            ready: false,
+                            connected: false
                         },
                         gameActive: false
                     });
+                    
+                    updatePlayerList(true, false);
                 } else {
-                    if (!room.player2 || !room.player2.ready) {
+                    if (!room.player2 || !room.player2.connected) {
                         isPlayer1 = false;
                         statusDiv.textContent = "已加入房间，等待开始...";
                         
@@ -148,9 +165,12 @@
                             'player2': {
                                 board: playerBoardArray,
                                 score: 0,
-                                ready: true
+                                ready: true,
+                                connected: true
                             }
                         });
+                        
+                        updatePlayerList(true, true);
                     } else {
                         alert('房间已满');
                         return;
@@ -160,6 +180,18 @@
                 setupRoomListeners(roomRef);
                 gameDiv.style.display = 'flex';
             });
+        }
+
+        function updatePlayerList(player1Connected, player2Connected) {
+            playerListDiv.innerHTML = `
+                <div><span class="player-status ${player1Connected ? 'player-ready' : 'player-waiting'}"></span>玩家1 ${player1Connected ? '已就位' : '等待中'}</div>
+                <div><span class="player-status ${player2Connected ? 'player-ready' : 'player-waiting'}"></span>玩家2 ${player2Connected ? '已就位' : '等待中'}</div>
+            `;
+            
+            // 只有玩家1可以开始游戏，并且必须两个玩家都就位
+            if (isPlayer1) {
+                startBtn.disabled = !(player1Connected && player2Connected);
+            }
         }
 
         function startGame() {
@@ -182,6 +214,11 @@
             roomRef.on('value', (snap) => {
                 const roomData = snap.val();
                 if (!roomData) return;
+                
+                // 更新玩家状态显示
+                const player1Connected = roomData.player1 && roomData.player1.connected;
+                const player2Connected = roomData.player2 && roomData.player2.connected;
+                updatePlayerList(player1Connected, player2Connected);
                 
                 updateGameState(roomData);
                 
