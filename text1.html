@@ -9,6 +9,7 @@
         .cell { width: 30px; height: 30px; border: 1px solid #ccc; }
         .controls { margin: 20px; }
         button { padding: 10px 20px; font-size: 16px; }
+        .status { color: green; margin: 10px; }
     </style>
 </head>
 <body>
@@ -17,6 +18,7 @@
     <div class="controls">
         <input type="text" id="roomId" placeholder="输入房间号">
         <button id="joinBtn">加入游戏</button>
+        <div id="status" class="status"></div>
     </div>
     
     <div id="game" style="display:none;">
@@ -58,6 +60,7 @@
         let isPlayer1 = false;
         let gameInterval;
         let currentPiece = null;
+        let playerReady = false;
 
         // DOM元素
         const joinBtn = document.getElementById('joinBtn');
@@ -67,6 +70,7 @@
         const opponentBoard = document.getElementById('opponentBoard');
         const playerScore = document.getElementById('playerScore');
         const opponentScore = document.getElementById('opponentScore');
+        const statusDiv = document.getElementById('status');
 
         // 方块形状和颜色
         const SHAPES = [
@@ -93,7 +97,7 @@
 
         // 键盘控制
         document.addEventListener('keydown', (e) => {
-            if (!roomId || !currentPiece) return;
+            if (!roomId || !currentPiece || !playerReady) return;
             
             let direction = '';
             switch(e.key) {
@@ -111,6 +115,7 @@
 
         // 加入游戏房间
         function joinGame(roomId) {
+            statusDiv.textContent = "正在连接房间...";
             const roomRef = database.ref(`rooms/${roomId}`);
             
             roomRef.once('value').then((snapshot) => {
@@ -119,30 +124,47 @@
                 if (!room) {
                     // 房间不存在，创建新房间
                     isPlayer1 = true;
+                    statusDiv.textContent = "已创建房间，等待玩家2加入...";
                     initGame();
                     const newBoard = createBoard();
                     currentPiece = generatePiece();
                     placePiece(newBoard, currentPiece);
                     
                     roomRef.set({
-                        player1: { board: newBoard, score: 0 },
-                        player2: { board: createBoard(), score: 0 }
-                    });
-                } else if (!room.player2.board) {
-                    // 加入作为玩家2
-                    isPlayer1 = false;
-                    initGame();
-                    const newBoard = createBoard();
-                    currentPiece = generatePiece();
-                    placePiece(newBoard, currentPiece);
-                    
-                    roomRef.update({ 
-                        'player2/board': newBoard,
-                        'player2/score': 0
+                        player1: { 
+                            board: newBoard, 
+                            score: 0,
+                            ready: true 
+                        },
+                        player2: { 
+                            board: createBoard(), 
+                            score: 0,
+                            ready: false 
+                        }
                     });
                 } else {
-                    alert('房间已满');
-                    return;
+                    // 检查玩家2是否可以加入
+                    if (!room.player2 || !room.player2.ready) {
+                        // 加入作为玩家2
+                        isPlayer1 = false;
+                        statusDiv.textContent = "已加入房间，游戏即将开始...";
+                        initGame();
+                        const newBoard = createBoard();
+                        currentPiece = generatePiece();
+                        placePiece(newBoard, currentPiece);
+                        
+                        roomRef.update({ 
+                            'player2': { 
+                                board: newBoard,
+                                score: 0,
+                                ready: true
+                            }
+                        });
+                    } else {
+                        statusDiv.textContent = "";
+                        alert('房间已满');
+                        return;
+                    }
                 }
                 
                 // 监听游戏状态变化
@@ -150,14 +172,20 @@
                     const roomData = snap.val();
                     if (!roomData) return;
                     
-                    updateGame(roomData);
+                    // 检查双方是否都准备好了
+                    if (roomData.player1 && roomData.player1.ready && 
+                        roomData.player2 && roomData.player2.ready) {
+                        playerReady = true;
+                        statusDiv.textContent = "游戏进行中...";
+                        updateGame(roomData);
+                    }
                 });
                 
                 // 监听移动指令
                 const movePath = isPlayer1 ? `rooms/${roomId}/player1/move` : `rooms/${roomId}/player2/move`;
                 database.ref(movePath).on('value', (snap) => {
                     const move = snap.val();
-                    if (move && roomId && currentPiece) {
+                    if (move && roomId && currentPiece && playerReady) {
                         handleMove(move);
                         database.ref(movePath).set(null);
                     }
@@ -187,7 +215,7 @@
             
             // 开始游戏循环
             gameInterval = setInterval(() => {
-                if (!roomId || !currentPiece) return;
+                if (!roomId || !currentPiece || !playerReady) return;
                 
                 const path = isPlayer1 ? `rooms/${roomId}/player1/move` : `rooms/${roomId}/player2/move`;
                 database.ref(path).set('down');
@@ -220,6 +248,14 @@
                 // 检查碰撞
                 if (!checkCollision(board, newPiece)) {
                     currentPiece = newPiece;
+                } else if (direction === 'down') {
+                    // 如果下落时发生碰撞，生成新方块
+                    currentPiece = generatePiece();
+                    if (checkCollision(board, currentPiece)) {
+                        // 游戏结束
+                        alert('游戏结束！');
+                        clearInterval(gameInterval);
+                    }
                 }
                 
                 // 放置方块
