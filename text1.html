@@ -280,7 +280,7 @@
                 
                 if (!currentPiece) {
                     currentPiece = generatePiece();
-                    if (checkCollision(board, currentPiece) && currentPiece.y === 0) {
+                    if (checkCollision(board, currentPiece) && gameActive) {
                         gameOver();
                         return;
                     }
@@ -305,7 +305,7 @@
                             checkLineClear(board);
                             
                             currentPiece = generatePiece();
-                            if (checkCollision(board, currentPiece) && currentPiece.y === 0) {
+                            if (checkCollision(board, currentPiece) && gameActive) {
                                 gameOver();
                                 return;
                             }
@@ -473,4 +473,52 @@
         }
 
         function removePiece(board, piece) {
-            for (let y = 0; y
+            for (let y = 0; y < piece.shape.length; y++) {
+                for (let x = 0; x < piece.shape[y].length; x++) {
+                    if (piece.shape[y][x]) {
+                        const pos = (piece.y + y) * 10 + (piece.x + x);
+                        if (pos >= 0 && pos < 200) {
+                            board[pos] = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        function checkCollision(board, piece) {
+            for (let y = 0; y < piece.shape.length; y++) {
+                for (let x = 0; x < piece.shape[y].length; x++) {
+                    if (piece.shape[y][x]) {
+                        const newX = piece.x + x;
+                        const newY = piece.y + y;
+                        
+                        if (newX < 0 || newX >= 10 || newY >= 20) {
+                            return true;
+                        }
+                        
+                        if (newY >= 0) {
+                            const pos = newY * 10 + newX;
+                            if (pos < 200 && board[pos]) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function rotatePiece(shape) {
+            const rotated = [];
+            for (let x = 0; x < shape[0].length; x++) {
+                const row = [];
+                for (let y = shape.length - 1; y >= 0; y--) {
+                    row.push(shape[y][x]);
+                }
+                rotated.push(row);
+            }
+            return rotated;
+        }
+    </script>
+</body>
+</html>
