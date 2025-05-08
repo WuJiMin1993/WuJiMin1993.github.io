@@ -41,6 +41,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyDHRYTBU74r31MPYVAAnRMwKM76c_-BduQ",
             authDomain: "tetrisonline-ca400.firebaseapp.com",
+            databaseURL: "https://tetrisonline-ca400-default-rtdb.firebaseio.com",
             projectId: "tetrisonline-ca400",
             storageBucket: "tetrisonline-ca400.firebasestorage.app",
             messagingSenderId: "58207939196",
@@ -56,6 +57,7 @@
         let roomId = '';
         let isPlayer1 = false;
         let gameInterval;
+        let currentPiece = null;
 
         // DOM元素
         const joinBtn = document.getElementById('joinBtn');
@@ -65,6 +67,18 @@
         const opponentBoard = document.getElementById('opponentBoard');
         const playerScore = document.getElementById('playerScore');
         const opponentScore = document.getElementById('opponentScore');
+
+        // 方块形状和颜色
+        const SHAPES = [
+            [[1,1,1,1]],                               // I
+            [[1,0,0],[1,1,1]],                         // J
+            [[0,0,1],[1,1,1]],                         // L
+            [[1,1],[1,1]],                             // O
+            [[0,1,1],[1,1,0]],                         // S
+            [[0,1,0],[1,1,1]],                         // T
+            [[1,1,0],[0,1,1]]                          // Z
+        ];
+        const COLORS = ['cyan', 'blue', 'orange', 'yellow', 'green', 'purple', 'red'];
 
         // 加入游戏
         joinBtn.addEventListener('click', () => {
@@ -79,7 +93,7 @@
 
         // 键盘控制
         document.addEventListener('keydown', (e) => {
-            if (!roomId) return;
+            if (!roomId || !currentPiece) return;
             
             let direction = '';
             switch(e.key) {
@@ -106,15 +120,26 @@
                     // 房间不存在，创建新房间
                     isPlayer1 = true;
                     initGame();
+                    const newBoard = createBoard();
+                    currentPiece = generatePiece();
+                    placePiece(newBoard, currentPiece);
+                    
                     roomRef.set({
-                        player1: { board: createBoard(), score: 0 },
+                        player1: { board: newBoard, score: 0 },
                         player2: { board: createBoard(), score: 0 }
                     });
                 } else if (!room.player2.board) {
                     // 加入作为玩家2
                     isPlayer1 = false;
                     initGame();
-                    roomRef.update({ 'player2/board': createBoard() });
+                    const newBoard = createBoard();
+                    currentPiece = generatePiece();
+                    placePiece(newBoard, currentPiece);
+                    
+                    roomRef.update({ 
+                        'player2/board': newBoard,
+                        'player2/score': 0
+                    });
                 } else {
                     alert('房间已满');
                     return;
@@ -126,6 +151,16 @@
                     if (!roomData) return;
                     
                     updateGame(roomData);
+                });
+                
+                // 监听移动指令
+                const movePath = isPlayer1 ? `rooms/${roomId}/player1/move` : `rooms/${roomId}/player2/move`;
+                database.ref(movePath).on('value', (snap) => {
+                    const move = snap.val();
+                    if (move && roomId && currentPiece) {
+                        handleMove(move);
+                        database.ref(movePath).set(null);
+                    }
                 });
                 
                 gameDiv.style.display = 'flex';
@@ -152,9 +187,47 @@
             
             // 开始游戏循环
             gameInterval = setInterval(() => {
+                if (!roomId || !currentPiece) return;
+                
                 const path = isPlayer1 ? `rooms/${roomId}/player1/move` : `rooms/${roomId}/player2/move`;
                 database.ref(path).set('down');
             }, 1000);
+        }
+
+        // 处理移动
+        function handleMove(direction) {
+            const path = isPlayer1 ? `rooms/${roomId}/player1` : `rooms/${roomId}/player2`;
+            const boardRef = database.ref(`${path}/board`);
+            
+            boardRef.once('value').then((snapshot) => {
+                const board = snapshot.val();
+                if (!board) return;
+                
+                // 移除当前方块
+                removePiece(board, currentPiece);
+                
+                // 尝试移动
+                const newPiece = {...currentPiece};
+                switch(direction) {
+                    case 'left': newPiece.x--; break;
+                    case 'right': newPiece.x++; break;
+                    case 'down': newPiece.y++; break;
+                    case 'rotate': 
+                        newPiece.shape = rotatePiece(newPiece.shape);
+                        break;
+                }
+                
+                // 检查碰撞
+                if (!checkCollision(board, newPiece)) {
+                    currentPiece = newPiece;
+                }
+                
+                // 放置方块
+                placePiece(board, currentPiece);
+                
+                // 更新数据库
+                boardRef.set(board);
+            });
         }
 
         // 更新游戏状态
@@ -170,14 +243,14 @@
             if (playerData.board) {
                 playerData.board.forEach((color, index) => {
                     const cell = document.getElementById(`p${isPlayer1 ? '1' : '2'}-${index}`);
-                    cell.style.backgroundColor = color || 'transparent';
+                    if (cell) cell.style.backgroundColor = color || 'transparent';
                 });
             }
             
             if (opponentData.board) {
                 opponentData.board.forEach((color, index) => {
                     const cell = document.getElementById(`p${isPlayer1 ? '2' : '1'}-${index}`);
-                    cell.style.backgroundColor = color || 'transparent';
+                    if (cell) cell.style.backgroundColor = color || 'transparent';
                 });
             }
         }
@@ -185,6 +258,82 @@
         // 创建空游戏板
         function createBoard() {
             return Array(200).fill(null);
+        }
+
+        // 生成随机方块
+        function generatePiece() {
+            const shapeIndex = Math.floor(Math.random() * SHAPES.length);
+            return {
+                shape: SHAPES[shapeIndex],
+                color: COLORS[shapeIndex],
+                x: Math.floor(10 / 2) - Math.floor(SHAPES[shapeIndex][0].length / 2),
+                y: 0
+            };
+        }
+
+        // 放置方块
+        function placePiece(board, piece) {
+            for (let y = 0; y < piece.shape.length; y++) {
+                for (let x = 0; x < piece.shape[y].length; x++) {
+                    if (piece.shape[y][x]) {
+                        const pos = (piece.y + y) * 10 + (piece.x + x);
+                        if (pos >= 0 && pos < 200) {
+                            board[pos] = piece.color;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 移除方块
+        function removePiece(board, piece) {
+            for (let y = 0; y < piece.shape.length; y++) {
+                for (let x = 0; x < piece.shape[y].length; x++) {
+                    if (piece.shape[y][x]) {
+                        const pos = (piece.y + y) * 10 + (piece.x + x);
+                        if (pos >= 0 && pos < 200) {
+                            board[pos] = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 检查碰撞
+        function checkCollision(board, piece) {
+            for (let y = 0; y < piece.shape.length; y++) {
+                for (let x = 0; x < piece.shape[y].length; x++) {
+                    if (piece.shape[y][x]) {
+                        const newX = piece.x + x;
+                        const newY = piece.y + y;
+                        
+                        if (newX < 0 || newX >= 10 || newY >= 20) {
+                            return true;
+                        }
+                        
+                        if (newY >= 0) {
+                            const pos = newY * 10 + newX;
+                            if (pos < 200 && board[pos]) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        // 旋转方块
+        function rotatePiece(shape) {
+            const rotated = [];
+            for (let x = 0; x < shape[0].length; x++) {
+                const row = [];
+                for (let y = shape.length - 1; y >= 0; y--) {
+                    row.push(shape[y][x]);
+                }
+                rotated.push(row);
+            }
+            return rotated;
         }
     </script>
 </body>
