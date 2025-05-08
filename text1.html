@@ -59,6 +59,7 @@
         let gameInterval;
         let currentPiece = null;
         let gameActive = false;
+        let playerBoardArray = createBoard();
 
         const joinBtn = document.getElementById('joinBtn');
         const startBtn = document.getElementById('startBtn');
@@ -91,6 +92,7 @@
             }
             
             if (direction) {
+                handleMove(direction);
                 const path = isPlayer1 ? `rooms/${roomId}/player1/move` : `rooms/${roomId}/player2/move`;
                 database.ref(path).set(direction);
             }
@@ -116,10 +118,11 @@
                     
                     initGameBoard();
                     currentPiece = generatePiece();
+                    placePiece(playerBoardArray, currentPiece);
                     
                     roomRef.set({
                         player1: { 
-                            board: createBoard(), 
+                            board: playerBoardArray, 
                             score: 0,
                             ready: false
                         },
@@ -131,16 +134,18 @@
                         gameActive: false
                     });
                 } else {
-                    if (!room.player2.ready) {
+                    if (!room.player2 || !room.player2.ready) {
                         isPlayer1 = false;
                         statusDiv.textContent = "已加入房间，等待开始...";
                         
                         initGameBoard();
                         currentPiece = generatePiece();
+                        playerBoardArray = createBoard();
+                        placePiece(playerBoardArray, currentPiece);
                         
                         roomRef.update({
                             'player2': {
-                                board: createBoard(),
+                                board: playerBoardArray,
                                 score: 0,
                                 ready: true
                             }
@@ -179,36 +184,92 @@
                 if (roomData.gameActive && !gameActive) {
                     gameActive = true;
                     statusDiv.textContent = "游戏进行中...";
-                    startGameLogic();
-                }
-            });
-            
-            const movePath = isPlayer1 ? `rooms/${roomId}/player1/move` : `rooms/${roomId}/player2/move`;
-            database.ref(movePath).on('value', (snap) => {
-                const move = snap.val();
-                if (move && gameActive && currentPiece) {
-                    handleMove(move);
-                    database.ref(movePath).set(null);
+                    startGameLoop();
                 }
             });
         }
 
-        function startGameLogic() {
+        function startGameLoop() {
+            const path = isPlayer1 ? `rooms/${roomId}/player1` : `rooms/${roomId}/player2`;
+            const boardRef = database.ref(`${path}/board`);
+            
+            gameInterval = setInterval(() => {
+                if (!gameActive) return;
+                
+                boardRef.once('value').then((snapshot) => {
+                    const board = snapshot.val();
+                    if (!board) return;
+                    
+                    removePiece(board, currentPiece);
+                    currentPiece.y++;
+                    
+                    if (checkCollision(board, currentPiece)) {
+                        currentPiece.y--;
+                        placePiece(board, currentPiece);
+                        
+                        // 检查是否有完整的行可以消除
+                        // 这里省略了行消除逻辑
+                        
+                        // 生成新方块
+                        currentPiece = generatePiece();
+                        if (checkCollision(board, currentPiece)) {
+                            // 游戏结束
+                            clearInterval(gameInterval);
+                            gameActive = false;
+                            alert('游戏结束！');
+                            return;
+                        }
+                    }
+                    
+                    placePiece(board, currentPiece);
+                    boardRef.set(board);
+                    updateLocalBoard(board);
+                });
+            }, 800); // 每800毫秒下落一格
+        }
+
+        function handleMove(direction) {
             const path = isPlayer1 ? `rooms/${roomId}/player1` : `rooms/${roomId}/player2`;
             const boardRef = database.ref(`${path}/board`);
             
             boardRef.once('value').then((snapshot) => {
                 const board = snapshot.val();
+                if (!board) return;
+                
+                removePiece(board, currentPiece);
+                
+                const newPiece = {...currentPiece};
+                switch(direction) {
+                    case 'left': newPiece.x--; break;
+                    case 'right': newPiece.x++; break;
+                    case 'down': newPiece.y++; break;
+                    case 'rotate': 
+                        newPiece.shape = rotatePiece(newPiece.shape);
+                        break;
+                }
+                
+                if (!checkCollision(board, newPiece)) {
+                    currentPiece = newPiece;
+                }
+                
                 placePiece(board, currentPiece);
                 boardRef.set(board);
-                
-                gameInterval = setInterval(() => {
-                    if (gameActive) {
-                        const movePath = isPlayer1 ? `rooms/${roomId}/player1/move` : `rooms/${roomId}/player2/move`;
-                        database.ref(movePath).set('down');
-                    }
-                }, 1000);
+                updateLocalBoard(board);
             });
+        }
+
+        function updateLocalBoard(board) {
+            playerBoardArray = [...board];
+            renderBoard();
+        }
+
+        function renderBoard() {
+            if (playerBoardArray) {
+                playerBoardArray.forEach((color, index) => {
+                    const cell = document.getElementById(`p${isPlayer1 ? '1' : '2'}-${index}`);
+                    if (cell) cell.style.backgroundColor = color || 'transparent';
+                });
+            }
         }
 
         function updateGameState(roomData) {
@@ -217,13 +278,6 @@
             
             playerScore.textContent = playerData.score || 0;
             opponentScore.textContent = opponentData.score || 0;
-            
-            if (playerData.board) {
-                playerData.board.forEach((color, index) => {
-                    const cell = document.getElementById(`p${isPlayer1 ? '1' : '2'}-${index}`);
-                    if (cell) cell.style.backgroundColor = color || 'transparent';
-                });
-            }
             
             if (opponentData.board) {
                 opponentData.board.forEach((color, index) => {
@@ -323,42 +377,6 @@
                 rotated.push(row);
             }
             return rotated;
-        }
-
-        function handleMove(direction) {
-            const path = isPlayer1 ? `rooms/${roomId}/player1` : `rooms/${roomId}/player2`;
-            const boardRef = database.ref(`${path}/board`);
-            
-            boardRef.once('value').then((snapshot) => {
-                const board = snapshot.val();
-                if (!board) return;
-                
-                removePiece(board, currentPiece);
-                
-                const newPiece = {...currentPiece};
-                switch(direction) {
-                    case 'left': newPiece.x--; break;
-                    case 'right': newPiece.x++; break;
-                    case 'down': newPiece.y++; break;
-                    case 'rotate': 
-                        newPiece.shape = rotatePiece(newPiece.shape);
-                        break;
-                }
-                
-                if (!checkCollision(board, newPiece)) {
-                    currentPiece = newPiece;
-                } else if (direction === 'down') {
-                    currentPiece = generatePiece();
-                    if (checkCollision(board, currentPiece)) {
-                        alert('游戏结束！');
-                        clearInterval(gameInterval);
-                        gameActive = false;
-                    }
-                }
-                
-                placePiece(board, currentPiece);
-                boardRef.set(board);
-            });
         }
     </script>
 </body>
