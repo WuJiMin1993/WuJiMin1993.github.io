@@ -21,6 +21,11 @@
         .player-ready { background-color: #4CAF50; }
         .player-waiting { background-color: #ccc; }
         #playerList { margin: 10px 0; }
+        .player-indicator {
+            font-weight: bold;
+            color: #2196F3;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -36,7 +41,7 @@
     
     <div id="game" style="display:none;">
         <div>
-            <h3>你</h3>
+            <h3>你<span id="playerNumber" class="player-indicator"></span></h3>
             <div class="board" id="playerBoard"></div>
             <div>分数: <span id="playerScore">0</span></div>
         </div>
@@ -82,6 +87,7 @@
         const opponentScore = document.getElementById('opponentScore');
         const statusDiv = document.getElementById('status');
         const playerListDiv = document.getElementById('playerList');
+        const playerNumberSpan = document.getElementById('playerNumber');
 
         const SHAPES = [
             [[1,1,1,1]], [[1,0,0],[1,1,1]], [[0,0,1],[1,1,1]], 
@@ -125,6 +131,7 @@
                 
                 if (!room) {
                     isPlayer1 = true;
+                    playerNumberSpan.textContent = "(玩家1)";
                     statusDiv.textContent = "已创建房间，等待玩家2...";
                     startBtn.style.display = 'inline-block';
                     startBtn.disabled = true;
@@ -154,6 +161,7 @@
                 } else {
                     if (!room.player2 || !room.player2.connected) {
                         isPlayer1 = false;
+                        playerNumberSpan.textContent = "(玩家2)";
                         statusDiv.textContent = "已加入房间，等待开始...";
                         
                         initGameBoard();
@@ -167,7 +175,8 @@
                                 score: 0,
                                 ready: true,
                                 connected: true
-                            }
+                            },
+                            'gameActive': false
                         });
                         
                         updatePlayerList(true, true);
@@ -222,10 +231,18 @@
                 
                 updateGameState(roomData);
                 
-                if (roomData.gameActive && !gameActive) {
-                    gameActive = true;
-                    statusDiv.textContent = "游戏进行中...";
-                    startGameLoop();
+                if (roomData.gameActive) {
+                    if (!gameActive) {
+                        gameActive = true;
+                        statusDiv.textContent = "游戏进行中...";
+                        startGameLoop();
+                    }
+                } else {
+                    if (isPlayer1) {
+                        statusDiv.textContent = "已创建房间，等待玩家2...";
+                    } else {
+                        statusDiv.textContent = "已加入房间，等待开始...";
+                    }
                 }
             });
         }
