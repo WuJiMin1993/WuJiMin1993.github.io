@@ -10,7 +10,7 @@
         .controls { margin: 20px; }
         button { padding: 10px 20px; font-size: 16px; }
         .status { color: green; margin: 10px; }
-        #startBtn { background-color: #4CAF50; color: white; display: none; }
+        #startBtn { background-color: #4CAF50; color: white; }
         .player-status { 
             display: inline-block; 
             width: 15px; 
@@ -41,7 +41,6 @@
         <button id="joinBtn">加入游戏</button>
         <div id="status" class="status"></div>
         <div id="playerList"></div>
-        <button id="startBtn">开始游戏</button>
     </div>
     
     <div id="game" style="display:none;">
@@ -61,6 +60,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     
     <script>
+        // Firebase 配置
         const firebaseConfig = {
             apiKey: "AIzaSyDHRYTBU74r31MPYVAAnRMwKM76c_-BduQ",
             authDomain: "tetrisonline-ca400.firebaseapp.com",
@@ -72,9 +72,11 @@
             measurementId: "G-GG7GNEQ718"
         };
 
+        // 初始化 Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // 游戏变量
         let roomId = '';
         let isPlayer1 = false;
         let gameInterval;
@@ -83,8 +85,8 @@
         let playerBoardArray = createBoard();
         let roomRef = null;
 
+        // DOM 元素
         const joinBtn = document.getElementById('joinBtn');
-        const startBtn = document.getElementById('startBtn');
         const roomIdInput = document.getElementById('roomId');
         const gameDiv = document.getElementById('game');
         const playerBoard = document.getElementById('playerBoard');
@@ -96,15 +98,17 @@
         const playerNumberSpan = document.getElementById('playerNumber');
         const opponentNumberSpan = document.getElementById('opponentNumber');
 
+        // 俄罗斯方块形状和颜色
         const SHAPES = [
             [[1,1,1,1]], [[1,0,0],[1,1,1]], [[0,0,1],[1,1,1]], 
             [[1,1],[1,1]], [[0,1,1],[1,1,0]], [[0,1,0],[1,1,1]], [[1,1,0],[0,1,1]]
         ];
         const COLORS = ['cyan', 'blue', 'orange', 'yellow', 'green', 'purple', 'red'];
 
+        // 事件监听器
         joinBtn.addEventListener('click', joinGame);
-        startBtn.addEventListener('click', startGame);
 
+        // 键盘控制
         document.addEventListener('keydown', (e) => {
             if (!gameActive || !currentPiece) return;
             
@@ -123,6 +127,7 @@
             }
         });
 
+        // 加入游戏
         function joinGame() {
             roomId = roomIdInput.value.trim();
             if (!roomId) {
@@ -137,12 +142,11 @@
                 const room = snapshot.val();
                 
                 if (!room) {
+                    // 创建新房间
                     isPlayer1 = true;
                     playerNumberSpan.textContent = "(玩家1)";
                     opponentNumberSpan.textContent = "(玩家2)";
                     statusDiv.textContent = "已创建房间，等待玩家2...";
-                    startBtn.style.display = 'inline-block';
-                    startBtn.disabled = true;
                     
                     initGameBoard();
                     currentPiece = generatePiece();
@@ -171,10 +175,11 @@
                     updatePlayerList(true, false);
                 } else {
                     if (!room.player2 || !room.player2.connected) {
+                        // 作为玩家2加入
                         isPlayer1 = false;
                         playerNumberSpan.textContent = "(玩家2)";
                         opponentNumberSpan.textContent = "(玩家1)";
-                        statusDiv.textContent = "已加入房间，等待开始...";
+                        statusDiv.textContent = "已加入房间，准备开始...";
                         
                         initGameBoard();
                         currentPiece = generatePiece();
@@ -188,9 +193,16 @@
                                 ready: true,
                                 connected: true,
                                 piece: currentPiece
-                            },
-                            'gameActive': false
+                            }
                         });
+                        
+                        // 玩家2加入后，自动开始游戏
+                        setTimeout(() => {
+                            roomRef.update({
+                                'gameActive': true,
+                                'gameStarted': true
+                            });
+                        }, 1000);
                         
                         updatePlayerList(true, true);
                     } else {
@@ -204,32 +216,16 @@
             });
         }
 
+        // 更新玩家列表显示
         function updatePlayerList(player1Connected, player2Connected) {
             playerListDiv.innerHTML = `
                 <div><span class="player-status ${player1Connected ? 'player-ready' : 'player-waiting'}"></span>玩家1 ${player1Connected ? '已就位' : '等待中'}</div>
                 <div><span class="player-status ${player2Connected ? 'player-ready' : 'player-waiting'}"></span>玩家2 ${player2Connected ? '已就位' : '等待中'}</div>
             `;
-            
-            if (isPlayer1) {
-                startBtn.disabled = !(player1Connected && player2Connected);
-            }
         }
 
-        function startGame() {
-            if (!isPlayer1) return;
-            
-            roomRef.update({
-                'gameActive': true,
-                'gameStarted': true
-            }).then(() => {
-                startBtn.style.display = 'none';
-                statusDiv.textContent = "游戏进行中...";
-                startGameLoop();
-            });
-        }
-
+        // 房间状态监听
         function setupRoomListeners() {
-            // 监听游戏开始状态
             roomRef.on('value', (snap) => {
                 const roomData = snap.val();
                 if (!roomData) return;
@@ -240,34 +236,31 @@
                 
                 updateGameState(roomData);
                 
-                if (roomData.gameActive) {
+                if (roomData.gameActive && roomData.gameStarted) {
                     gameActive = true;
                     statusDiv.textContent = "游戏进行中...";
                     if (!gameInterval) {
                         startGameLoop();
                     }
                 } else {
-                    if (isPlayer1) {
+                    if (player1Connected && player2Connected && !roomData.gameStarted) {
+                        if (isPlayer1) {
+                            // 作为玩家1，当玩家2加入后，自动开始游戏
+                            roomRef.update({
+                                'gameActive': true,
+                                'gameStarted': true
+                            });
+                        }
+                    } else if (isPlayer1) {
                         statusDiv.textContent = "已创建房间，等待玩家2...";
-                        startBtn.style.display = 'inline-block';
                     } else {
                         statusDiv.textContent = "已加入房间，等待开始...";
                     }
                 }
             });
-
-            // 玩家2监听游戏开始信号
-            if (!isPlayer1) {
-                database.ref(`rooms/${roomId}/gameStarted`).on('value', (snap) => {
-                    if (snap.val() === true) {
-                        gameActive = true;
-                        statusDiv.textContent = "游戏进行中...";
-                        startGameLoop();
-                    }
-                });
-            }
         }
 
+        // 游戏循环
         function startGameLoop() {
             if (gameInterval) clearInterval(gameInterval);
             
@@ -320,6 +313,7 @@
             });
         }
 
+        // 游戏结束
         function gameOver() {
             clearInterval(gameInterval);
             gameInterval = null;
@@ -327,14 +321,13 @@
             alert('游戏结束！');
             
             // 重置游戏状态
-            if (isPlayer1) {
-                roomRef.update({
-                    'gameActive': false,
-                    'gameStarted': false
-                });
-            }
+            roomRef.update({
+                'gameActive': false,
+                'gameStarted': false
+            });
         }
 
+        // 检查行消除
         function checkLineClear(board) {
             for (let y = 19; y >= 0; y--) {
                 let lineFull = true;
@@ -368,6 +361,7 @@
             }
         }
 
+        // 处理方块移动
         function handleMove(direction) {
             const path = isPlayer1 ? `rooms/${roomId}/player1` : `rooms/${roomId}/player2`;
             const boardRef = database.ref(`${path}/board`);
@@ -399,11 +393,13 @@
             });
         }
 
+        // 更新本地板块
         function updateLocalBoard(board) {
             playerBoardArray = [...board];
             renderBoard();
         }
 
+        // 渲染游戏板
         function renderBoard() {
             if (playerBoardArray) {
                 playerBoardArray.forEach((color, index) => {
@@ -413,6 +409,7 @@
             }
         }
 
+        // 更新游戏状态
         function updateGameState(roomData) {
             const playerData = isPlayer1 ? roomData.player1 : roomData.player2;
             const opponentData = isPlayer1 ? roomData.player2 : roomData.player1;
@@ -428,6 +425,7 @@
             }
         }
 
+        // 初始化游戏板
         function initGameBoard() {
             playerBoard.innerHTML = '';
             opponentBoard.innerHTML = '';
@@ -445,10 +443,12 @@
             }
         }
 
+        // 创建空白游戏板
         function createBoard() {
             return Array(200).fill(null);
         }
 
+        // 生成新方块
         function generatePiece() {
             const shapeIndex = Math.floor(Math.random() * SHAPES.length);
             return {
@@ -459,6 +459,7 @@
             };
         }
 
+        // 放置方块到板上
         function placePiece(board, piece) {
             for (let y = 0; y < piece.shape.length; y++) {
                 for (let x = 0; x < piece.shape[y].length; x++) {
@@ -472,6 +473,7 @@
             }
         }
 
+        // 从板上移除方块
         function removePiece(board, piece) {
             for (let y = 0; y < piece.shape.length; y++) {
                 for (let x = 0; x < piece.shape[y].length; x++) {
@@ -485,6 +487,7 @@
             }
         }
 
+        // 检查碰撞
         function checkCollision(board, piece) {
             for (let y = 0; y < piece.shape.length; y++) {
                 for (let x = 0; x < piece.shape[y].length; x++) {
@@ -508,6 +511,7 @@
             return false;
         }
 
+        // 旋转方块
         function rotatePiece(shape) {
             const rotated = [];
             for (let x = 0; x < shape[0].length; x++) {
