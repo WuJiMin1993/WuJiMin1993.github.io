@@ -118,6 +118,7 @@
                     
                     initGameBoard();
                     currentPiece = generatePiece();
+                    playerBoardArray = createBoard();
                     placePiece(playerBoardArray, currentPiece);
                     
                     roomRef.set({
@@ -200,11 +201,14 @@
             
             // 确保初始方块已放置
             boardRef.once('value').then((snapshot) => {
-                const board = snapshot.val();
-                if (!board) return;
+                const board = snapshot.val() || createBoard();
                 
                 if (!currentPiece) {
                     currentPiece = generatePiece();
+                    if (checkCollision(board, currentPiece)) {
+                        gameOver();
+                        return;
+                    }
                     placePiece(board, currentPiece);
                     boardRef.set(board);
                 }
@@ -213,8 +217,7 @@
                     if (!gameActive) return;
                     
                     boardRef.once('value').then((snapshot) => {
-                        const board = snapshot.val();
-                        if (!board) return;
+                        const board = snapshot.val() || createBoard();
                         
                         removePiece(board, currentPiece);
                         currentPiece.y++;
@@ -224,15 +227,12 @@
                             placePiece(board, currentPiece);
                             
                             // 检查是否有完整的行可以消除
-                            // 这里省略了行消除逻辑
+                            checkLineClear(board);
                             
                             // 生成新方块
                             currentPiece = generatePiece();
                             if (checkCollision(board, currentPiece)) {
-                                // 游戏结束
-                                clearInterval(gameInterval);
-                                gameActive = false;
-                                alert('游戏结束！');
+                                gameOver();
                                 return;
                             }
                         }
@@ -245,13 +245,47 @@
             });
         }
 
+        function gameOver() {
+            clearInterval(gameInterval);
+            gameActive = false;
+            alert('游戏结束！');
+        }
+
+        function checkLineClear(board) {
+            // 简化的行消除逻辑（实际项目中需要更完整的实现）
+            for (let y = 19; y >= 0; y--) {
+                let lineFull = true;
+                for (let x = 0; x < 10; x++) {
+                    if (!board[y * 10 + x]) {
+                        lineFull = false;
+                        break;
+                    }
+                }
+                if (lineFull) {
+                    // 消除该行
+                    for (let x = 0; x < 10; x++) {
+                        board[y * 10 + x] = null;
+                    }
+                    // 上方方块下落
+                    for (let y2 = y; y2 > 0; y2--) {
+                        for (let x = 0; x < 10; x++) {
+                            board[y2 * 10 + x] = board[(y2 - 1) * 10 + x];
+                        }
+                    }
+                    // 最顶行清空
+                    for (let x = 0; x < 10; x++) {
+                        board[x] = null;
+                    }
+                }
+            }
+        }
+
         function handleMove(direction) {
             const path = isPlayer1 ? `rooms/${roomId}/player1` : `rooms/${roomId}/player2`;
             const boardRef = database.ref(`${path}/board`);
             
             boardRef.once('value').then((snapshot) => {
-                const board = snapshot.val();
-                if (!board) return;
+                const board = snapshot.val() || createBoard();
                 
                 removePiece(board, currentPiece);
                 
