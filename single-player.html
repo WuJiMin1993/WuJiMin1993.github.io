@@ -285,7 +285,6 @@
         let isPaused = false;
         let isStarted = false;
         let dropInterval = 1000;
-        let dropStart;
         let animationId;
         let lastDropTime = 0;
         
@@ -622,7 +621,7 @@
             scoreDisplay.textContent = `得分: ${score}`;
             
             for (let i = SPEED_LEVELS.length - 1; i >= 0; i--) {
-                if (score >= SPEED_LEVELS[i.score) {
+                if (score >= SPEED_LEVELS[i].score) {
                     dropInterval = SPEED_LEVELS[i].interval;
                     break;
                 }
