@@ -54,41 +54,52 @@
         
         #single-player-game {
             position: relative;
-            width: 350px;
+            width: 600px;
             background-color: #333;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .game-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 20px;
         }
         
         #game-board {
             border: 2px solid #444;
             background-color: #111;
-            margin: 0 auto;
             display: block;
         }
         
+        .game-info {
+            width: 200px;
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
         #score-display {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             color: white;
             font-size: 20px;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px 15px;
             border-radius: 5px;
             font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
         }
         
         #instructions {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 15px;
             border-radius: 5px;
-            width: 150px;
             font-size: 14px;
             line-height: 1.6;
         }
@@ -98,6 +109,7 @@
             color: #4CAF50;
             border-bottom: 1px solid #4CAF50;
             padding-bottom: 5px;
+            text-align: center;
         }
         
         #back-btn {
@@ -205,14 +217,11 @@
         }
         
         #game-title {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
             color: #4CAF50;
             font-size: 24px;
             font-weight: bold;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -227,17 +236,24 @@
     <!-- 单人游戏界面 -->
     <div id="single-player-game">
         <div id="game-title">俄罗斯方块</div>
-        <canvas id="game-board" width="300" height="600"></canvas>
-        <div id="score-display">得分: 0</div>
         <button id="back-btn">←</button>
-        <div id="instructions">
-            <h3>操作说明:</h3>
-            <p>↑: 旋转方块</p>
-            <p>↓: 加速下落</p>
-            <p>←: 左移</p>
-            <p>→: 右移</p>
-            <p>空格: 直接下落</p>
+        
+        <div class="game-container">
+            <canvas id="game-board" width="300" height="600"></canvas>
+            
+            <div class="game-info">
+                <div id="score-display">得分: 0</div>
+                <div id="instructions">
+                    <h3>操作说明:</h3>
+                    <p>↑: 旋转方块</p>
+                    <p>↓: 加速下落</p>
+                    <p>←: 左移</p>
+                    <p>→: 右移</p>
+                    <p>空格: 直接下落</p>
+                </div>
+            </div>
         </div>
+        
         <button id="start-game-btn">开始游戏</button>
     </div>
 
@@ -463,7 +479,7 @@
                 nextPiece = generatePiece();
                 
                 // 检查游戏是否结束
-                if (collision(0, 0, currentPiece.shape)) {
+                if (collision(0, 0, currentPiece.shape) && currentPiece.y <= 0) {
                     gameOver = true;
                 }
                 
