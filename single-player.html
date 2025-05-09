@@ -21,6 +21,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding-top: 20px;
         }
         
         /* 游戏主容器 */
@@ -29,15 +30,14 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: flex-start;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 30px;
             width: 100%;
             max-width: 900px;
         }
         
         /* 游戏区域 */
         #tetris-board {
-            border: 2px solid #00ffff;
+            border: 3px solid #00ffff;
             background-color: rgba(0, 0, 0, 0.7);
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
         }
@@ -45,42 +45,52 @@
         /* 信息面板 */
         .info-panel {
             background-color: rgba(0, 0, 0, 0.7);
-            border: 1px solid #00ffff;
-            border-radius: 5px;
-            padding: 15px;
-            width: 200px;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+            padding: 20px;
+            width: 220px;
             box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
         }
         
         /* 下一个方块预览 */
+        #next-piece-container {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
         #next-piece {
-            border: 1px solid #00ffff;
+            border: 2px solid #00ffff;
             background-color: rgba(0, 0, 0, 0.5);
-            margin-bottom: 20px;
+            margin-top: 10px;
         }
         
         /* 分数显示 */
         #score-display {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
             color: #00ffff;
+            text-align: center;
         }
         
         /* 游戏控制按钮 */
         .control-button {
-            padding: 10px 15px;
-            margin: 5px;
+            padding: 12px 20px;
+            margin: 8px 0;
+            width: 100%;
             background: linear-gradient(145deg, #0066ff, #00ccff);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: bold;
         }
         
         .control-button:hover {
             background: linear-gradient(145deg, #00ccff, #0066ff);
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         
         /* 返回按钮 */
@@ -89,32 +99,47 @@
             top: 20px;
             left: 20px;
             background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #00ffff;
+            border: 2px solid #00ffff;
             color: #00ffff;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
         
         #back-button:hover {
             background: rgba(0, 255, 255, 0.2);
             transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
         
         /* 游戏说明 */
         #instructions {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 30px;
+            padding: 20px;
             background-color: rgba(0, 0, 0, 0.7);
-            border: 1px solid #00ffff;
-            border-radius: 5px;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
             max-width: 900px;
             width: 90%;
+            line-height: 1.6;
+        }
+        
+        #instructions h3 {
+            color: #00ffff;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        #instructions p {
+            margin-bottom: 10px;
         }
         
         /* 游戏结束弹窗 */
@@ -133,23 +158,25 @@
         
         .modal-content {
             background-color: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00ffff;
-            border-radius: 10px;
-            padding: 30px;
+            border: 3px solid #00ffff;
+            border-radius: 12px;
+            padding: 40px;
             text-align: center;
-            max-width: 400px;
+            max-width: 450px;
             width: 90%;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
         }
         
         .modal-title {
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: #ff5555;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(255, 85, 85, 0.7);
         }
         
         .final-score {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
+            font-size: 2rem;
+            margin-bottom: 35px;
             color: #00ffff;
         }
         
@@ -169,11 +196,23 @@
         .cell.J { background-color: #0000ff; }
         .cell.L { background-color: #ffaa00; }
         .cell.grey { background-color: #555555; }
+        
+        /* 标题样式 */
+        .game-title {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <!-- 返回按钮 -->
     <div id="back-button" title="返回主界面">←</div>
+    
+    <!-- 游戏标题 -->
+    <h1 class="game-title">俄罗斯方块</h1>
     
     <!-- 游戏主容器 -->
     <div id="game-container" data-interface-id="1001">
@@ -184,10 +223,12 @@
         
         <!-- 信息面板 -->
         <div class="info-panel">
-            <h2>下一个方块</h2>
-            <canvas id="next-piece" width="100" height="100"></canvas>
-            
             <div id="score-display">得分: 0</div>
+            
+            <div id="next-piece-container">
+                <h3>下一个方块</h3>
+                <canvas id="next-piece" width="120" height="120"></canvas>
+            </div>
             
             <button id="start-button" class="control-button">开始游戏</button>
             <button id="pause-button" class="control-button" disabled>暂停</button>
@@ -201,6 +242,7 @@
         <p>↑ 键: 旋转方块</p>
         <p>↓ 键: 加速下落</p>
         <p>空格键: 直接落到底部</p>
+        <p>P 键: 暂停/继续游戏</p>
     </div>
     
     <!-- 游戏结束弹窗 -->
@@ -217,7 +259,7 @@
         const COLS = 10; // 游戏区域列数
         const ROWS = 20; // 游戏区域行数
         const BLOCK_SIZE = 30; // 每个方块的大小(像素)
-        const NEXT_BLOCK_SIZE = 20; // 下一个方块预览的大小
+        const NEXT_BLOCK_SIZE = 24; // 下一个方块预览的大小
         
         // 方块形状定义
         const SHAPES = [
@@ -285,9 +327,19 @@
         let score = 0; // 当前分数
         let gameOver = false; // 游戏是否结束
         let isPaused = false; // 游戏是否暂停
+        let isStarted = false; // 游戏是否已开始
         let dropInterval = 1000; // 方块下落间隔(毫秒)
         let dropStart; // 下落开始时间
         let animationId; // 动画ID
+        
+        // 速度等级和对应的下落间隔
+        const SPEED_LEVELS = [
+            { score: 0, interval: 1000 },    // 初始速度
+            { score: 1000, interval: 700 },  // 1000分后加速
+            { score: 3000, interval: 500 },  // 3000分后加速
+            { score: 6000, interval: 300 },  // 6000分后加速
+            { score: 10000, interval: 200 }  // 10000分后加速
+        ];
         
         // DOM元素
         const scoreDisplay = document.getElementById('score-display');
@@ -315,9 +367,8 @@
             // 初始化游戏板
             createBoard();
             
-            // 生成第一个方块和下一个方块
+            // 生成下一个方块（但不生成当前方块，直到游戏开始）
             nextPiece = generatePiece();
-            generateNewPiece();
             
             // 设置事件监听器
             setEventListeners();
@@ -369,6 +420,28 @@
             // 清空画布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
+            // 绘制网格线（仅在游戏未开始时显示）
+            if (!isStarted) {
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.2)';
+                ctx.lineWidth = 0.5;
+                
+                // 绘制垂直线
+                for (let c = 0; c <= COLS; c++) {
+                    ctx.beginPath();
+                    ctx.moveTo(c * BLOCK_SIZE, 0);
+                    ctx.lineTo(c * BLOCK_SIZE, ROWS * BLOCK_SIZE);
+                    ctx.stroke();
+                }
+                
+                // 绘制水平线
+                for (let r = 0; r <= ROWS; r++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, r * BLOCK_SIZE);
+                    ctx.lineTo(COLS * BLOCK_SIZE, r * BLOCK_SIZE);
+                    ctx.stroke();
+                }
+            }
+            
             // 绘制已固定的方块
             for (let r = 0; r < ROWS; r++) {
                 for (let c = 0; c < COLS; c++) {
@@ -378,8 +451,8 @@
                 }
             }
             
-            // 绘制当前移动的方块
-            if (currentPiece) {
+            // 绘制当前移动的方块（如果游戏已开始）
+            if (isStarted && currentPiece) {
                 for (let r = 0; r < currentPiece.shape.length; r++) {
                     for (let c = 0; c < currentPiece.shape[r].length; c++) {
                         if (currentPiece.shape[r][c]) {
@@ -405,11 +478,29 @@
             );
             
             ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 1;
             ctx.strokeRect(
                 x * BLOCK_SIZE,
                 y * BLOCK_SIZE,
                 BLOCK_SIZE,
                 BLOCK_SIZE
+            );
+            
+            // 添加高光效果
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.fillRect(
+                x * BLOCK_SIZE + 2,
+                y * BLOCK_SIZE + 2,
+                BLOCK_SIZE - 4,
+                2
+            );
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.fillRect(
+                x * BLOCK_SIZE + 2,
+                y * BLOCK_SIZE + 4,
+                BLOCK_SIZE - 4,
+                BLOCK_SIZE - 6
             );
         }
         
@@ -450,6 +541,8 @@
         
         // 检测碰撞
         function collision(offsetX, offsetY, piece = currentPiece) {
+            if (!piece) return false;
+            
             for (let r = 0; r < piece.shape.length; r++) {
                 for (let c = 0; c < piece.shape[r].length; c++) {
                     // 如果方块单元为空则跳过
@@ -474,7 +567,7 @@
         
         // 旋转方块
         function rotate() {
-            if (isPaused || gameOver) return;
+            if (!isStarted || isPaused || gameOver) return;
             
             // 创建旋转后的形状
             const rotated = [];
@@ -507,7 +600,7 @@
         
         // 移动方块
         function move(offsetX, offsetY) {
-            if (isPaused || gameOver) return;
+            if (!isStarted || isPaused || gameOver) return false;
             
             if (!collision(offsetX, offsetY)) {
                 currentPiece.x += offsetX;
@@ -515,12 +608,21 @@
                 draw();
                 return true;
             }
+            
+            // 如果是向下移动且不能移动，则固定方块
+            if (offsetY === 1) {
+                lockPiece();
+                generateNewPiece();
+                draw();
+                drawNextPiece();
+            }
+            
             return false;
         }
         
         // 快速下落
         function hardDrop() {
-            if (isPaused || gameOver) return;
+            if (!isStarted || isPaused || gameOver) return;
             
             while (move(0, 1)) {
                 // 继续下落直到不能移动
@@ -585,18 +687,17 @@
             scoreDisplay.textContent = `得分: ${score}`;
             
             // 根据分数调整下落速度
-            if (score >= 1000 && score < 3000) {
-                dropInterval = 700;
-            } else if (score >= 3000 && score < 6000) {
-                dropInterval = 500;
-            } else if (score >= 6000) {
-                dropInterval = 300;
+            for (let i = SPEED_LEVELS.length - 1; i >= 0; i--) {
+                if (score >= SPEED_LEVELS[i].score) {
+                    dropInterval = SPEED_LEVELS[i].interval;
+                    break;
+                }
             }
         }
         
         // 游戏主循环
         function gameLoop(timestamp) {
-            if (gameOver || isPaused) {
+            if (!isStarted || gameOver || isPaused) {
                 return;
             }
             
@@ -627,6 +728,12 @@
                 resetGame();
             }
             
+            // 如果是第一次开始游戏，生成当前方块
+            if (!isStarted) {
+                generateNewPiece();
+                isStarted = true;
+            }
+            
             gameOver = false;
             isPaused = false;
             
@@ -638,10 +745,16 @@
             // 开始游戏循环
             dropStart = performance.now();
             animationId = requestAnimationFrame(gameLoop);
+            
+            // 绘制游戏状态
+            draw();
+            drawNextPiece();
         }
         
         // 暂停/继续游戏
         function togglePause() {
+            if (!isStarted || gameOver) return;
+            
             isPaused = !isPaused;
             
             if (isPaused) {
@@ -663,6 +776,7 @@
             score = 0;
             gameOver = false;
             isPaused = false;
+            isStarted = false;
             dropInterval = 1000;
             
             // 更新显示
@@ -671,9 +785,8 @@
             // 重置游戏板
             createBoard();
             
-            // 生成新方块
+            // 生成新方块（仅下一个方块）
             nextPiece = generatePiece();
-            generateNewPiece();
             
             // 绘制初始状态
             draw();
@@ -682,6 +795,7 @@
             // 更新按钮状态
             startButton.textContent = '开始游戏';
             pauseButton.disabled = true;
+            pauseButton.textContent = '暂停';
         }
         
         // 显示游戏结束
@@ -704,7 +818,7 @@
         function setEventListeners() {
             // 键盘控制
             document.addEventListener('keydown', function(e) {
-                if (gameOver || isPaused) return;
+                if (!isStarted || gameOver) return;
                 
                 switch (e.keyCode) {
                     case 37: // 左箭头
@@ -736,7 +850,9 @@
             
             // 返回按钮
             backButton.addEventListener('click', function() {
-                window.location.href = 'index.html';
+                if (confirm('确定要返回主界面吗？当前游戏进度将丢失。')) {
+                    window.location.href = 'index.html';
+                }
             });
             
             // 重新开始按钮
