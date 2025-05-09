@@ -7,8 +7,8 @@
     <style>
         /* 基础样式设置 */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #222; /* 深色背景 */
+            font-family: 'Arial', sans-serif;
+            background-color: #222; /* 深灰色背景 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,22 +17,34 @@
             overflow: hidden;
             color: white;
         }
-        
-        /* 主菜单和游戏界面初始隐藏 */
-        #main-menu, #single-player-game {
-            text-align: center;
+
+        /* 界面容器样式 - 用于切换不同界面 */
+        .screen {
             display: none;
-        }
-        
-        /* 活动界面显示样式 */
-        .active {
-            display: flex !important;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
-        
-        /* 菜单按钮样式 */
+
+        /* 活动界面显示 */
+        .active {
+            display: flex !important;
+        }
+
+        /* 主菜单界面(界面ID:1000) */
+        #screen-1000 {
+            text-align: center;
+        }
+
+        /* 游戏标题样式 */
+        .game-title {
+            color: #4CAF50; /* 绿色文字 */
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 菜单按钮基础样式 */
         .menu-btn {
             background-color: #4CAF50; /* 绿色按钮 */
             border: none;
@@ -41,7 +53,7 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 18px;
             margin: 10px;
             cursor: pointer;
             border-radius: 5px;
@@ -49,83 +61,42 @@
             width: 200px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        
+
         /* 菜单按钮悬停效果 */
         .menu-btn:hover {
             background-color: #45a049;
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
-        
-        /* 单人游戏界面样式 */
-        #single-player-game {
+
+        /* 单人游戏界面(界面ID:1001) */
+        #screen-1001 {
             position: relative;
             width: 600px;
             background-color: #333;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 游戏标题栏 */
+        .game-header {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        /* 游戏容器布局 */
-        .game-container {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 20px;
-        }
-        
-        /* 游戏画布样式 */
-        #game-board {
-            border: 2px solid #444;
-            background-color: #111;
-            display: block;
-        }
-        
-        /* 游戏信息区域样式 */
-        .game-info {
-            width: 200px;
-            margin-left: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* 得分显示样式 */
-        #score-display {
-            color: white;
-            font-size: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-weight: bold;
+            justify-content: center;
             margin-bottom: 20px;
-            text-align: center;
         }
-        
-        /* 操作说明样式 */
-        #instructions {
-            color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 5px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        
-        /* 操作说明标题样式 */
-        #instructions h3 {
-            margin-top: 0;
+
+        /* 游戏标题文字 */
+        .game-header h2 {
             color: #4CAF50;
-            border-bottom: 1px solid #4CAF50;
-            padding-bottom: 5px;
-            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin: 0;
         }
-        
+
         /* 返回按钮样式 */
-        #back-btn {
+        .back-btn {
             position: absolute;
             top: 20px;
             left: 20px;
@@ -144,15 +115,68 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             transition: all 0.3s;
         }
-        
+
         /* 返回按钮悬停效果 */
-        #back-btn:hover {
+        .back-btn:hover {
             background-color: #d32f2f;
             transform: scale(1.1);
         }
-        
-        /* 开始游戏按钮样式 */
-        #start-game-btn {
+
+        /* 游戏主区域容器 */
+        .game-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        /* 游戏画布样式 */
+        .game-board {
+            border: 2px solid #444;
+            background-color: #111; /* 黑色网格背景 */
+            display: block;
+        }
+
+        /* 游戏信息区域 */
+        .game-info {
+            width: 200px;
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 得分显示区域 */
+        .score-display {
+            color: white;
+            font-size: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* 操作说明区域 */
+        .instructions {
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* 操作说明标题 */
+        .instructions h3 {
+            margin-top: 0;
+            color: #4CAF50;
+            border-bottom: 1px solid #4CAF50;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        /* 开始游戏按钮 */
+        .start-btn {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -165,21 +189,21 @@
             text-decoration: none;
             display: inline-block;
             font-size: 18px;
-            cursor: button;
+            cursor: pointer;
             border-radius: 5px;
             transition: all 0.3s;
             z-index: 10;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             font-weight: bold;
         }
-        
+
         /* 开始游戏按钮悬停效果 */
-        #start-game-btn:hover {
+        .start-btn:hover {
             background-color: #0b7dda;
             transform: translate(-50%, -50%) scale(1.05);
         }
-        
-        /* 游戏结束界面样式 */
+
+        /* 游戏结束界面 */
         .game-over {
             position: absolute;
             top: 0;
@@ -195,21 +219,21 @@
             z-index: 20;
             border-radius: 10px;
         }
-        
-        /* 游戏结束标题样式 */
+
+        /* 游戏结束标题 */
         .game-over h2 {
             font-size: 36px;
             margin-bottom: 20px;
             color: #f44336;
         }
-        
-        /* 游戏结束文本样式 */
+
+        /* 游戏结束得分显示 */
         .game-over p {
             font-size: 24px;
             margin-bottom: 30px;
         }
-        
-        /* 重新开始按钮样式 */
+
+        /* 重新开始按钮 */
         .restart-btn {
             background-color: #4CAF50;
             border: none;
@@ -224,55 +248,44 @@
             transition: all 0.3s;
             font-weight: bold;
         }
-        
+
         /* 重新开始按钮悬停效果 */
         .restart-btn:hover {
             background-color: #45a049;
             transform: scale(1.05);
         }
-        
-        /* 主标题样式 */
-        h1 {
-            color: #4CAF50;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* 游戏标题样式 */
-        #game-title {
-            color: #4CAF50;
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 <body>
-    <!-- 主菜单界面 -->
-    <div id="main-menu" class="active">
-        <h1>经典俄罗斯方块</h1>
+    <!-- 初始界面(界面ID:1000) -->
+    <div id="screen-1000" class="screen active">
+        <h1 class="game-title">经典俄罗斯方块</h1>
         <button id="single-player-btn" class="menu-btn">单人游戏</button>
         <button id="two-player-btn" class="menu-btn">双人游戏</button>
     </div>
-    
-    <!-- 单人游戏界面 -->
-    <div id="single-player-game">
-        <div id="game-title">俄罗斯方块</div>
-        <button id="back-btn">←</button>
+
+    <!-- 单人游戏界面(界面ID:1001) -->
+    <div id="screen-1001" class="screen">
+        <!-- 返回按钮 -->
+        <button id="back-btn" class="back-btn">←</button>
+        
+        <!-- 游戏标题 -->
+        <div class="game-header">
+            <h2>俄罗斯方块</h2>
+        </div>
         
         <!-- 游戏主区域 -->
         <div class="game-container">
             <!-- 游戏画布 -->
-            <canvas id="game-board" width="300" height="600"></canvas>
+            <canvas id="game-board" class="game-board" width="300" height="600"></canvas>
             
             <!-- 游戏信息区域 -->
             <div class="game-info">
                 <!-- 得分显示 -->
-                <div id="score-display">得分: 0</div>
+                <div id="score-display" class="score-display">得分: 0</div>
                 
                 <!-- 操作说明 -->
-                <div id="instructions">
+                <div id="instructions" class="instructions">
                     <h3>操作说明:</h3>
                     <p>↑: 旋转方块</p>
                     <p>↓: 加速下落</p>
@@ -284,7 +297,7 @@
         </div>
         
         <!-- 开始游戏按钮 -->
-        <button id="start-game-btn">开始游戏</button>
+        <button id="start-game-btn" class="start-btn">开始游戏</button>
     </div>
 
     <script>
@@ -353,9 +366,6 @@
             
             // 开始游戏循环
             gameLoop();
-            
-            // 默认显示主菜单
-            showScreen('main-menu');
         }
         
         // 创建游戏板
@@ -485,7 +495,7 @@
             
             gameOverDiv.querySelector('.restart-btn').addEventListener('click', restartGame);
             
-            document.getElementById('single-player-game').appendChild(gameOverDiv);
+            document.getElementById('screen-1001').appendChild(gameOverDiv);
         }
         
         // 重新开始游戏
@@ -669,7 +679,7 @@
         
         // 开始单人游戏
         function startSinglePlayer() {
-            showScreen('single-player-game');
+            showScreen('screen-1001');
             resetGame();
         }
         
@@ -687,15 +697,15 @@
         
         // 返回主菜单
         function backToMenu() {
-            showScreen('main-menu');
+            showScreen('screen-1000');
             resetGame();
         }
         
         // 显示指定屏幕
         function showScreen(screenId) {
             // 隐藏所有屏幕
-            document.querySelectorAll('body > div').forEach(div => {
-                div.classList.remove('active');
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
             });
             
             // 显示指定屏幕
