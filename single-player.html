@@ -180,23 +180,6 @@
             color: #00ffff;
         }
         
-        /* 方块颜色 */
-        .cell {
-            width: 25px;
-            height: 25px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
-        /* 不同方块的背景色 */
-        .cell.I { background-color: #00ffff; }
-        .cell.O { background-color: #ffff00; }
-        .cell.T { background-color: #aa00ff; }
-        .cell.S { background-color: #00ff00; }
-        .cell.Z { background-color: #ff0000; }
-        .cell.J { background-color: #0000ff; }
-        .cell.L { background-color: #ffaa00; }
-        .cell.grey { background-color: #555555; }
-        
         /* 标题样式 */
         .game-title {
             color: #00ffff;
@@ -410,22 +393,23 @@
             
             // 检查游戏是否结束 - 只有当方块生成时已经与已有方块重叠且部分在顶部之外才结束游戏
             if (collision(0, 0)) {
-                let pieceAboveBoard = false;
-                for (let r = 0; r < currentPiece.shape.length; r++) {
-                    for (let c = 0; c < currentPiece.shape[r].length; c++) {
-                        if (currentPiece.shape[r][c] && currentPiece.y + r < 0) {
-                            pieceAboveBoard = true;
-                            break;
-                        }
-                    }
-                    if (pieceAboveBoard) break;
-                }
-                
-                if (pieceAboveBoard) {
+                // 检查是否有方块超过游戏区域顶部
+                if (isGameOver()) {
                     gameOver = true;
                     showGameOver();
                 }
             }
+        }
+        
+        // 检查游戏是否结束
+        function isGameOver() {
+            // 检查游戏板上方是否有方块
+            for (let c = 0; c < COLS; c++) {
+                if (board[0][c] !== 0) {
+                    return true;
+                }
+            }
+            return false;
         }
         
         // 绘制游戏板
@@ -524,7 +508,7 @@
             
             if (nextPiece) {
                 // 计算居中位置
-                const offsetX = (nextCanvas.width - nextPiece.shape[0].length * NEXT_BOCK_SIZE) / 2;
+                const offsetX = (nextCanvas.width - nextPiece.shape[0].length * NEXT_BLOCK_SIZE) / 2;
                 const offsetY = (nextCanvas.height - nextPiece.shape.length * NEXT_BLOCK_SIZE) / 2;
                 
                 // 绘制下一个方块
@@ -542,7 +526,7 @@
                             nextCtx.strokeStyle = '#000000';
                             nextCtx.strokeRect(
                                 offsetX + c * NEXT_BLOCK_SIZE,
-                                offsetY + r * NEXT_BLOCK_SIZE,
+                                offsetY + r * NEXT_BOCK_SIZE,
                                 NEXT_BLOCK_SIZE,
                                 NEXT_BLOCK_SIZE
                             );
