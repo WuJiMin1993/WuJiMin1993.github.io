@@ -563,12 +563,21 @@
             return false;
         }
         
-        // 快速下落
+        // 快速下落 (已修复BUG)
         function hardDrop() {
             if (!isStarted || isPaused || gameOver) return;
             
+            // 先执行下落直到不能移动
             while (move(0, 1)) {}
             
+            // 检查游戏是否结束
+            if (isGameOver()) {
+                gameOver = true;
+                showGameOver();
+                return;
+            }
+            
+            // 固定方块并生成新方块
             lockPiece();
             generateNewPiece();
             draw();
