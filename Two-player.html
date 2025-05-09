@@ -14,69 +14,60 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            justify-content: center;
+            height: 100vh;
         }
         
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding: 1rem 2rem;
-            box-sizing: border-box;
-            background-color: #1E1E1E;
-        }
-        
-        .back-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .game-title {
-            font-size: 2rem;
-            color: #FFD700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-        }
-        
-        .lobby-container {
+        .container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             gap: 2rem;
-            margin-top: 3rem;
             width: 100%;
             max-width: 600px;
         }
         
-        .room-actions {
-            display: flex;
-            gap: 2rem;
+        .title {
+            font-size: 3rem;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
             margin-bottom: 2rem;
         }
         
-        .action-btn {
+        .buttons {
+            display: flex;
+            gap: 2rem;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn {
             padding: 1rem 2rem;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: white;
+            font-size: 1.5rem;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
+            width: 200px;
+            text-align: center;
         }
         
-        .action-btn:hover {
+        .btn-primary {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+        }
+        
+        .btn-primary:hover {
             background: linear-gradient(135deg, #5d7de8, #9668d6);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
         
-        .room-form {
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+        
+        .join-form {
             display: none;
             flex-direction: column;
             gap: 1rem;
@@ -88,14 +79,8 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
         
-        .room-form.active {
+        .join-form.active {
             display: flex;
-        }
-        
-        .form-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            text-align: center;
         }
         
         .form-input {
@@ -122,196 +107,44 @@
             background: linear-gradient(135deg, #3E8E41, #1B5E20);
         }
         
-        .room-info {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        .room-id {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #FFD700;
-        }
-        
-        .player-status {
-            font-size: 1.2rem;
-            margin-top: 1rem;
-        }
-        
-        .game-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 1200px;
-            margin-top: 2rem;
-        }
-        
-        .game-boards {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            gap: 2rem;
-        }
-        
-        .player-board {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-        }
-        
-        .player-label {
-            font-size: 1.5rem;
-            color: #FFD700;
-        }
-        
-        .game-board {
-            border: 4px solid #444;
-            border-radius: 8px;
-            background-color: #1E1E1E;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-        
-        .player-score {
-            font-size: 1.2rem;
-        }
-        
-        .start-game-btn {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #4CAF50, #2E7D32);
-            color: white;
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 2rem;
-            display: none;
-        }
-        
-        .start-game-btn:hover {
-            background: linear-gradient(135deg, #3E8E41, #1B5E20);
-        }
-        
-        .game-over-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            display: none;
-        }
-        
-        .game-over-content {
-            background-color: #1E1E1E;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 500px;
-            width: 80%;
-        }
-        
-        .game-over-title {
-            font-size: 2rem;
-            color: #FF5252;
-            margin-bottom: 1rem;
-        }
-        
-        .winner-message {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .back-to-lobby-btn {
-            padding: 0.8rem 1.5rem;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
             color: white;
-            border: none;
-            border-radius: 8px;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .back-to-lobby-btn:hover {
-            background: linear-gradient(135deg, #5d7de8, #9668d6);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <button class="back-btn" onclick="goBack()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            返回主界面
-        </button>
-        <div class="game-title">双人俄罗斯方块</div>
-        <div style="width: 24px;"></div> <!-- 占位用于平衡布局 -->
-    </div>
+    <button class="back-btn" onclick="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        返回主界面
+    </button>
     
-    <div class="lobby-container" id="lobby-container">
-        <div class="room-actions">
-            <button class="action-btn" id="create-room-btn">创建房间</button>
-            <button class="action-btn" id="join-room-btn">加入房间</button>
+    <div class="container">
+        <div class="title">双人俄罗斯方块</div>
+        
+        <div class="buttons">
+            <button class="btn btn-primary" id="create-room-btn">创建房间</button>
+            <button class="btn btn-primary" id="join-room-btn">加入房间</button>
         </div>
         
-        <div class="room-form" id="create-room-form">
-            <div class="form-title">创建新房间</div>
-            <button class="form-btn" id="create-room-confirm">创建房间</button>
-        </div>
-        
-        <div class="room-form" id="join-room-form">
-            <div class="form-title">加入房间</div>
+        <div class="join-form" id="join-form">
             <input type="text" class="form-input" id="room-id-input" placeholder="请输入6位房间号" maxlength="6">
-            <button class="form-btn" id="join-room-confirm">加入房间</button>
-        </div>
-        
-        <div class="room-info" id="room-info">
-            <div>房间号:</div>
-            <div class="room-id" id="room-id-display">000000</div>
-            <div class="player-status" id="player-status">等待玩家2加入...</div>
+            <button class="form-btn" id="join-confirm-btn">加入</button>
         </div>
     </div>
-    
-    <div class="game-container" id="game-container">
-        <div class="game-boards">
-            <div class="player-board">
-                <div class="player-label">玩家1</div>
-                <canvas id="player1-board" class="game-board" width="300" height="600"></canvas>
-                <div class="player-score">得分: <span id="player1-score">0</span></div>
-            </div>
-            
-            <div class="player-board">
-                <div class="player-label">玩家2</div>
-                <canvas id="player2-board" class="game-board" width="300" height="600"></canvas>
-                <div class="player-score">得分: <span id="player2-score">0</span></div>
-            </div>
-        </div>
-        
-        <button class="start-game-btn" id="start-game-btn">开始游戏</button>
-    </div>
-    
-    <div id="game-over-modal" class="game-over-modal">
-        <div class="game-over-content">
-            <div class="game-over-title">游戏结束</div>
-            <div id="winner-message" class="winner-message"></div>
-            <button id="back-to-lobby-btn" class="back-to-lobby-btn">返回大厅</button>
-        </div>
-    </div>
-    
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
@@ -330,667 +163,66 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         
-        // 游戏常量
-        const COLS = 10;
-        const ROWS = 20;
-        const BLOCK_SIZE = 30;
-        const COLORS = [
-            null,
-            '#FF0D72', // I
-            '#0DC2FF', // J
-            '#0DFF72', // L
-            '#F538FF', // O
-            '#FF8E0D', // S
-            '#FFE138', // T
-            '#3877FF'  // Z
-        ];
+        // DOM元素
+        const createRoomBtn = document.getElementById('create-room-btn');
+        const joinRoomBtn = document.getElementById('join-room-btn');
+        const joinForm = document.getElementById('join-form');
+        const roomIdInput = document.getElementById('room-id-input');
+        const joinConfirmBtn = document.getElementById('join-confirm-btn');
         
-        // 方块形状定义
-        const SHAPES = [
-            null,
-            [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], // I
-            [[2, 0, 0], [2, 2, 2], [0, 0, 0]],                         // J
-            [[0, 0, 3], [3, 3, 3], [0, 0, 0]],                         // L
-            [[0, 4, 4], [0, 4, 4], [0, 0, 0]],                         // O
-            [[0, 5, 5], [5, 5, 0], [0, 0, 0]],                         // S
-            [[0, 6, 0], [6, 6, 6], [0, 0, 0]],                         // T
-            [[7, 7, 0], [0, 7, 7], [0, 0, 0]]                          // Z
-        ];
-        
-        // 游戏变量
-        let player1Canvas = document.getElementById('player1-board');
-        let player1Ctx = player1Canvas.getContext('2d');
-        let player2Canvas = document.getElementById('player2-board');
-        let player2Ctx = player2Canvas.getContext('2d');
-        let gameOver = false;
-        let gameStarted = false;
-        let isPlayer1 = false;
-        let isHost = false;
-        let roomId = '';
-        let player1Board = createMatrix(COLS, ROWS);
-        let player2Board = createMatrix(COLS, ROWS);
-        let player1 = {
-            pos: {x: 0, y: 0},
-            matrix: null,
-            score: 0,
-            color: null
-        };
-        let player2 = {
-            pos: {x: 0, y: 0},
-            matrix: null,
-            score: 0,
-            color: null
-        };
-        let currentPlayer = null;
-        let dropCounter = 0;
-        let dropInterval = 1000;
-        let lastTime = 0;
-        let roomRef = null;
-        
-        // 初始化游戏
-        function init() {
-            // 设置画布大小
-            player1Ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
-            player2Ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
-            
-            // 事件监听
-            document.getElementById('create-room-btn').addEventListener('click', showCreateRoomForm);
-            document.getElementById('join-room-btn').addEventListener('click', showJoinRoomForm);
-            document.getElementById('create-room-confirm').addEventListener('click', createRoom);
-            document.getElementById('join-room-confirm').addEventListener('click', joinRoom);
-            document.getElementById('start-game-btn').addEventListener('click', startGame);
-            document.getElementById('back-to-lobby-btn').addEventListener('click', backToLobby);
-            document.addEventListener('keydown', handleKeyPress);
-            
-            // 开始游戏循环
-            requestAnimationFrame(update);
-        }
-        
-        // 创建游戏板矩阵
-        function createMatrix(w, h) {
-            const matrix = [];
-            while (h--) {
-                matrix.push(new Array(w).fill(0));
-            }
-            return matrix;
-        }
-        
-        // 创建方块
-        function createPiece(type) {
-            return {
-                matrix: SHAPES[type],
-                color: COLORS[type]
-            };
-        }
-        
-        // 绘制游戏板
-        function draw() {
-            // 绘制玩家1的游戏板
-            drawBoard(player1Ctx, player1Board);
-            if (player1.matrix && isPlayer1) {
-                drawMatrix(player1Ctx, player1.matrix, player1.pos, player1.color);
-            }
-            
-            // 绘制玩家2的游戏板
-            drawBoard(player2Ctx, player2Board);
-            if (player2.matrix && !isPlayer1) {
-                drawMatrix(player2Ctx, player2.matrix, player2.pos, player2.color);
-            }
-        }
-        
-        // 绘制游戏板背景和已落下的方块
-        function drawBoard(ctx, board) {
-            // 清空画布
-            ctx.fillStyle = '#1E1E1E';
-            ctx.fillRect(0, 0, player1Canvas.width, player1Canvas.height);
-            
-            // 绘制已落下的方块
-            board.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) {
-                        ctx.fillStyle = COLORS[value];
-                        ctx.fillRect(x, y, 1, 1);
-                        
-                        // 添加方块边框效果
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-                        ctx.lineWidth = 0.05;
-                        ctx.strokeRect(x, y, 1, 1);
-                    }
-                });
-            });
-        }
-        
-        // 绘制矩阵
-        function drawMatrix(ctx, matrix, offset, color) {
-            matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) {
-                        ctx.fillStyle = color;
-                        ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
-                        
-                        // 添加方块边框效果
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-                        ctx.lineWidth = 0.05;
-                        ctx.strokeRect(x + offset.x, y + offset.y, 1, 1);
-                    }
-                });
-            });
-        }
-        
-        // 显示创建房间表单
-        function showCreateRoomForm() {
-            document.getElementById('create-room-form').classList.add('active');
-            document.getElementById('join-room-form').classList.remove('active');
-        }
+        // 事件监听
+        createRoomBtn.addEventListener('click', createRoom);
+        joinRoomBtn.addEventListener('click', showJoinForm);
+        joinConfirmBtn.addEventListener('click', joinRoom);
         
         // 显示加入房间表单
-        function showJoinRoomForm() {
-            document.getElementById('join-room-form').classList.add('active');
-            document.getElementById('create-room-form').classList.remove('active');
+        function showJoinForm() {
+            joinForm.classList.add('active');
         }
         
         // 创建房间
         function createRoom() {
-            isPlayer1 = true;
-            isHost = true;
-            
             // 生成6位随机房间号
-            roomId = Math.floor(100000 + Math.random() * 900000).toString();
+            const roomId = Math.floor(100000 + Math.random() * 900000).toString();
             
-            // 显示房间信息
-            document.getElementById('room-id-display').textContent = roomId;
-            document.getElementById('player-status').textContent = '玩家1已加入，等待玩家2...';
-            document.getElementById('room-info').style.display = 'flex';
-            document.getElementById('create-room-form').classList.remove('active');
-            document.getElementById('join-room-form').classList.remove('active');
+            // 设置玩家为玩家1
+            localStorage.setItem('playerRole', 'player1');
+            localStorage.setItem('roomId', roomId);
             
-            // 初始化Firebase房间
-            roomRef = database.ref('rooms/' + roomId);
-            
-            // 设置房间初始数据
-            roomRef.set({
-                player1: {
-                    board: player1Board,
-                    score: 0,
-                    piece: null,
-                    pos: null,
-                    gameOver: false
-                },
-                player2: {
-                    board: player2Board,
-                    score: 0,
-                    piece: null,
-                    pos: null,
-                    gameOver: false
-                },
-                gameStarted: false
-            });
-            
-            // 监听房间变化
-            roomRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (!data) return;
-                
-                // 更新玩家2的游戏板
-                if (!isPlayer1) {
-                    player1Board = data.player1.board;
-                    player1.score = data.player1.score;
-                    
-                    if (data.player1.piece && data.player1.pos) {
-                        player1.matrix = data.player1.piece.matrix;
-                        player1.color = data.player1.piece.color;
-                        player1.pos = data.player1.pos;
-                    }
-                }
-                
-                // 更新玩家1的游戏板
-                if (isPlayer1) {
-                    player2Board = data.player2.board;
-                    player2.score = data.player2.score;
-                    
-                    if (data.player2.piece && data.player2.pos) {
-                        player2.matrix = data.player2.piece.matrix;
-                        player2.color = data.player2.piece.color;
-                        player2.pos = data.player2.pos;
-                    }
-                }
-                
-                // 更新游戏状态
-                gameStarted = data.gameStarted;
-                
-                // 更新玩家状态显示
-                if (isPlayer1) {
-                    if (data.player2.board[0].some(cell => cell !== 0)) {
-                        document.getElementById('player-status').textContent = '玩家2已加入';
-                        document.getElementById('start-game-btn').style.display = 'block';
-                    }
-                } else {
-                    document.getElementById('player-status').textContent = '已加入房间，等待主机开始游戏...';
-                }
-                
-                // 检查游戏是否结束
-                if (data.player1.gameOver && data.player2.gameOver) {
-                    gameOver = true;
-                    showGameOver(data.player1.score, data.player2.score);
-                }
-            });
-            
-            // 切换到游戏界面
-            document.getElementById('lobby-container').style.display = 'none';
-            document.getElementById('game-container').style.display = 'flex';
-            
-            // 设置当前玩家
-            currentPlayer = player1;
-            
-            // 生成初始方块
-            resetPiece();
+            // 跳转到游戏界面
+            window.location.href = "two-player-game.html";
         }
         
         // 加入房间
         function joinRoom() {
-            isPlayer1 = false;
-            isHost = false;
-            
-            roomId = document.getElementById('room-id-input').value.trim();
+            const roomId = roomIdInput.value.trim();
             
             if (roomId.length !== 6 || !/^\d+$/.test(roomId)) {
                 alert('请输入有效的6位房间号');
                 return;
             }
             
-            // 显示房间信息
-            document.getElementById('room-id-display').textContent = roomId;
-            document.getElementById('player-status').textContent = '已加入房间，等待主机开始游戏...';
-            document.getElementById('room-info').style.display = 'flex';
-            document.getElementById('join-room-form').classList.remove('active');
-            
-            // 连接到Firebase房间
-            roomRef = database.ref('rooms/' + roomId);
-            
             // 检查房间是否存在
+            const roomRef = database.ref('rooms/' + roomId);
             roomRef.once('value').then((snapshot) => {
                 if (!snapshot.exists()) {
-                    alert('房间不存在');
-                    document.getElementById('room-info').style.display = 'none';
+                    alert('房间不存在，请检查房间号');
                     return;
                 }
                 
-                // 监听房间变化
-                roomRef.on('value', (snapshot) => {
-                    const data = snapshot.val();
-                    if (!data) return;
-                    
-                    // 更新玩家1的游戏板
-                    player1Board = data.player1.board;
-                    player1.score = data.player1.score;
-                    
-                    if (data.player1.piece && data.player1.pos) {
-                        player1.matrix = data.player1.piece.matrix;
-                        player1.color = data.player1.piece.color;
-                        player1.pos = data.player1.pos;
-                    }
-                    
-                    // 更新游戏状态
-                    gameStarted = data.gameStarted;
-                    
-                    // 检查游戏是否结束
-                    if (data.player1.gameOver && data.player2.gameOver) {
-                        gameOver = true;
-                        showGameOver(data.player1.score, data.player2.score);
-                    }
-                });
+                // 设置玩家为玩家2
+                localStorage.setItem('playerRole', 'player2');
+                localStorage.setItem('roomId', roomId);
                 
-                // 切换到游戏界面
-                document.getElementById('lobby-container').style.display = 'none';
-                document.getElementById('game-container').style.display = 'flex';
-                
-                // 设置当前玩家
-                currentPlayer = player2;
-                
-                // 生成初始方块
-                resetPiece();
+                // 跳转到游戏界面
+                window.location.href = "two-player-game.html";
             });
-        }
-        
-        // 开始游戏
-        function startGame() {
-            if (!isHost) return;
-            
-            roomRef.update({
-                gameStarted: true
-            });
-            
-            document.getElementById('start-game-btn').style.display = 'none';
-        }
-        
-        // 碰撞检测
-        function collide(player, board) {
-            const [m, o] = [player.matrix, player.pos];
-            for (let y = 0; y < m.length; ++y) {
-                for (let x = 0; x < m[y].length; ++x) {
-                    if (m[y][x] !== 0 &&
-                        (board[y + o.y] === undefined ||
-                         board[y + o.y][x + o.x] === undefined ||
-                         board[y + o.y][x + o.x] !== 0)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        
-        // 旋转方块
-        function rotate() {
-            if (!gameStarted || gameOver) return;
-            
-            const matrix = currentPlayer.matrix;
-            const N = matrix.length;
-            
-            // 转置矩阵
-            for (let y = 0; y < N; ++y) {
-                for (let x = 0; x < y; ++x) {
-                    [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
-                }
-            }
-            
-            // 反转每一行
-            for (let y = 0; y < N; ++y) {
-                matrix[y].reverse();
-            }
-            
-            // 如果旋转后发生碰撞，则回退旋转
-            if (collide(currentPlayer, isPlayer1 ? player1Board : player2Board)) {
-                // 反转回来
-                for (let y = 0; y < N; ++y) {
-                    matrix[y].reverse();
-                }
-                
-                // 转置回来
-                for (let y = 0; y < N; ++y) {
-                    for (let x = 0; x < y; ++x) {
-                        [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
-                    }
-                }
-            }
-            
-            // 更新到数据库
-            updatePlayerState();
-        }
-        
-        // 方块下落
-        function playerDrop() {
-            if (!gameStarted || gameOver) return;
-            
-            currentPlayer.pos.y++;
-            if (collide(currentPlayer, isPlayer1 ? player1Board : player2Board)) {
-                currentPlayer.pos.y--;
-                merge();
-                resetPiece();
-                clearLines();
-                updateScore();
-            }
-            dropCounter = 0;
-            
-            // 更新到数据库
-            updatePlayerState();
-        }
-        
-        // 方块快速下落
-        function playerHardDrop() {
-            if (!gameStarted || gameOver) return;
-            
-            while (!collide(currentPlayer, isPlayer1 ? player1Board : player2Board)) {
-                currentPlayer.pos.y++;
-            }
-            currentPlayer.pos.y--;
-            merge();
-            resetPiece();
-            clearLines();
-            updateScore();
-            dropCounter = 0;
-            
-            // 更新到数据库
-            updatePlayerState();
-        }
-        
-        // 方块移动
-        function playerMove(dir) {
-            if (!gameStarted || gameOver) return;
-            
-            currentPlayer.pos.x += dir;
-            if (collide(currentPlayer, isPlayer1 ? player1Board : player2Board)) {
-                currentPlayer.pos.x -= dir;
-            }
-            
-            // 更新到数据库
-            updatePlayerState();
-        }
-        
-        // 合并方块到游戏板
-        function merge() {
-            const board = isPlayer1 ? player1Board : player2Board;
-            currentPlayer.matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) {
-                        board[y + currentPlayer.pos.y][x + currentPlayer.pos.x] = value;
-                    }
-                });
-            });
-        }
-        
-        // 重置方块
-        function resetPiece() {
-            if (!roomRef) return;
-            
-            // 生成新方块
-            const type = Math.floor(Math.random() * 7) + 1;
-            currentPlayer.matrix = SHAPES[type];
-            currentPlayer.color = COLORS[type];
-            currentPlayer.pos.y = 0;
-            currentPlayer.pos.x = Math.floor(COLS / 2) - Math.floor(currentPlayer.matrix[0].length / 2);
-            
-            // 检查游戏是否结束
-            if (collide(currentPlayer, isPlayer1 ? player1Board : player2Board)) {
-                gameOver = true;
-                
-                // 更新游戏结束状态到数据库
-                if (isPlayer1) {
-                    roomRef.update({
-                        'player1.gameOver': true
-                    });
-                } else {
-                    roomRef.update({
-                        'player2.gameOver': true
-                    });
-                }
-            }
-            
-            // 更新到数据库
-            updatePlayerState();
-        }
-        
-        // 清除已填满的行
-        function clearLines() {
-            const board = isPlayer1 ? player1Board : player2Board;
-            let linesCleared = 0;
-            
-            outer: for (let y = board.length - 1; y >= 0; --y) {
-                for (let x = 0; x < board[y].length; ++x) {
-                    if (board[y][x] === 0) {
-                        continue outer;
-                    }
-                }
-                
-                // 移除已填满的行并在顶部添加新的空行
-                const row = board.splice(y, 1)[0].fill(0);
-                board.unshift(row);
-                ++y; // 检查同一行(现在是新行)
-                linesCleared++;
-            }
-            
-            // 更新分数
-            if (linesCleared > 0) {
-                if (isPlayer1) {
-                    player1.score += calculateScore(linesCleared);
-                } else {
-                    player2.score += calculateScore(linesCleared);
-                }
-                updateScore();
-            }
-        }
-        
-        // 计算得分
-        function calculateScore(lines) {
-            switch (lines) {
-                case 1: return 100;
-                case 2: return 300;
-                case 3: return 500;
-                case 4: return 800;
-                default: return 0;
-            }
-        }
-        
-        // 更新分数显示
-        function updateScore() {
-            document.getElementById('player1-score').textContent = player1.score;
-            document.getElementById('player2-score').textContent = player2.score;
-            
-            // 更新到数据库
-            if (isPlayer1) {
-                roomRef.update({
-                    'player1.score': player1.score,
-                    'player1.board': player1Board
-                });
-            } else {
-                roomRef.update({
-                    'player2.score': player2.score,
-                    'player2.board': player2Board
-                });
-            }
-        }
-        
-        // 更新玩家状态到数据库
-        function updatePlayerState() {
-            if (!roomRef) return;
-            
-            if (isPlayer1) {
-                roomRef.update({
-                    'player1.piece': {
-                        matrix: player1.matrix,
-                        color: player1.color
-                    },
-                    'player1.pos': player1.pos
-                });
-            } else {
-                roomRef.update({
-                    'player2.piece': {
-                        matrix: player2.matrix,
-                        color: player2.color
-                    },
-                    'player2.pos': player2.pos
-                });
-            }
-        }
-        
-        // 处理按键
-        function handleKeyPress(e) {
-            if (!gameStarted || gameOver) return;
-            
-            switch (e.keyCode) {
-                case 37: // 左箭头
-                    playerMove(-1);
-                    break;
-                case 39: // 右箭头
-                    playerMove(1);
-                    break;
-                case 40: // 下箭头
-                    playerDrop();
-                    break;
-                case 38: // 上箭头
-                    rotate();
-                    break;
-                case 32: // 空格
-                    playerHardDrop();
-                    break;
-            }
-        }
-        
-        // 游戏循环
-        function update(time = 0) {
-            const deltaTime = time - lastTime;
-            lastTime = time;
-            
-            dropCounter += deltaTime;
-            if (dropCounter > dropInterval) {
-                if (gameStarted && !gameOver) {
-                    playerDrop();
-                }
-            }
-            
-            draw();
-            requestAnimationFrame(update);
-        }
-        
-        // 显示游戏结束
-        function showGameOver(player1Score, player2Score) {
-            let winnerMessage = '';
-            
-            if (player1Score > player2Score) {
-                winnerMessage = '玩家1获胜!';
-            } else if (player2Score > player1Score) {
-                winnerMessage = '玩家2获胜!';
-            } else {
-                winnerMessage = '平局!';
-            }
-            
-            document.getElementById('winner-message').textContent = `${winnerMessage} 玩家1: ${player1Score}分 - 玩家2: ${player2Score}分`;
-            document.getElementById('game-over-modal').style.display = 'flex';
-        }
-        
-        // 返回大厅
-        function backToLobby() {
-            // 清理房间
-            if (roomRef) {
-                roomRef.off();
-                if (isHost) {
-                    roomRef.remove();
-                }
-                roomRef = null;
-            }
-            
-            // 重置游戏状态
-            gameOver = false;
-            gameStarted = false;
-            player1Board = createMatrix(COLS, ROWS);
-            player2Board = createMatrix(COLS, ROWS);
-            player1.score = 0;
-            player2.score = 0;
-            document.getElementById('player1-score').textContent = '0';
-            document.getElementById('player2-score').textContent = '0';
-            
-            // 显示大厅
-            document.getElementById('game-over-modal').style.display = 'none';
-            document.getElementById('game-container').style.display = 'none';
-            document.getElementById('lobby-container').style.display = 'flex';
-            document.getElementById('room-info').style.display = 'none';
-            document.getElementById('start-game-btn').style.display = 'none';
         }
         
         // 返回主界面
         function goBack() {
-            // 清理房间
-            if (roomRef) {
-                roomRef.off();
-                if (isHost) {
-                    roomRef.remove();
-                }
-            }
-            
             window.location.href = "index.html";
         }
-        
-        // 初始化游戏
-        window.addEventListener('load', init);
     </script>
 </body>
 </html>
