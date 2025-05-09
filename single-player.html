@@ -466,7 +466,7 @@
             nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
             
             if (nextPiece) {
-                const offsetX = (nextCanvas.width - nextPiece.shape[0].length * NEXT_BOCK_SIZE) / 2;
+                const offsetX = (nextCanvas.width - nextPiece.shape[0].length * NEXT_BLOCK_SIZE) / 2;
                 const offsetY = (nextCanvas.height - nextPiece.shape.length * NEXT_BLOCK_SIZE) / 2;
                 
                 for (let r = 0; r < nextPiece.shape.length; r++) {
@@ -622,7 +622,7 @@
             scoreDisplay.textContent = `得分: ${score}`;
             
             for (let i = SPEED_LEVELS.length - 1; i >= 0; i--) {
-                if (score >= SPEED_LEVELS[i].score) {
+                if (score >= SPEED_LEVELS[i.score) {
                     dropInterval = SPEED_LEVELS[i].interval;
                     break;
                 }
