@@ -5,131 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>俄罗斯方块 - 主界面</title>
     <style>
-        /* 全局样式重置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        /* 主界面样式 */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
+            margin: 0;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
         }
         
-        /* 主容器样式 */
         #main-container {
             text-align: center;
-            padding: 2rem;
-            border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-            max-width: 500px;
-            width: 90%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px 60px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
         }
         
-        /* 标题样式 */
         h1 {
-            margin-bottom: 2rem;
-            font-size: 2.5rem;
-            color: #00ffff;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
         
-        /* 按钮容器 */
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        
-        /* 游戏按钮样式 */
-        .game-button {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            background: linear-gradient(145deg, #0066ff, #00ccff);
+        .game-btn {
+            display: block;
+            width: 220px;
+            padding: 15px;
+            margin: 20px auto;
+            font-size: 1.2em;
             color: white;
+            background: linear-gradient(45deg, #4e54c8, #8f94fb);
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        .game-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(145deg, #00ccff, #0066ff);
+        .game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #8f94fb, #4e54c8);
         }
         
-        .game-button:active {
-            transform: translateY(0);
+        .game-btn:active {
+            transform: translateY(1px);
         }
         
-        /* 双人游戏按钮（禁用状态） */
-        .disabled {
-            background: linear-gradient(145deg, #666666, #999999);
+        .game-btn:disabled {
+            background: #666;
             cursor: not-allowed;
-        }
-        
-        .disabled:hover {
-            transform: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(145deg, #666666, #999999);
-        }
-        
-        /* 游戏说明 */
-        .game-info {
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: #aaaaaa;
-            line-height: 1.5;
         }
     </style>
 </head>
 <body>
-    <!-- 主容器 -->
-    <div id="main-container" data-interface-id="1000">
+    <!-- 主界面容器 -->
+    <div id="main-container" data-screen-id="1000">
         <h1>俄罗斯方块</h1>
-        
-        <div class="button-container">
-            <!-- 单人游戏按钮 -->
-            <button class="game-button" id="single-player-btn">单人游戏</button>
-            
-            <!-- 双人游戏按钮（暂时禁用） -->
-            <button class="game-button disabled" id="multiplayer-btn" disabled>双人游戏（开发中）</button>
-        </div>
-        
-        <!-- 游戏说明 -->
-        <div class="game-info">
-            <p>使用方向键控制方块移动，上键旋转，空格键快速下落</p>
-        </div>
+        <!-- 单人游戏按钮 -->
+        <button class="game-btn" id="single-player-btn">单人游戏</button>
+        <!-- 双人游戏按钮（暂时禁用） -->
+        <button class="game-btn" id="multi-player-btn" disabled>双人游戏</button>
     </div>
 
     <script>
-        // 页面加载完成后执行
+        // 主框架脚本
         document.addEventListener('DOMContentLoaded', function() {
-            // 获取单人游戏按钮
+            // 获取按钮元素
             const singlePlayerBtn = document.getElementById('single-player-btn');
+            const multiPlayerBtn = document.getElementById('multi-player-btn');
             
-            // 为单人游戏按钮添加点击事件
+            // 单人游戏按钮点击事件
             singlePlayerBtn.addEventListener('click', function() {
                 // 跳转到单人游戏界面
-                window.location.href = 'single-player.html';
+                window.location.href = 'Single-player.html';
             });
             
-            // 获取双人游戏按钮
-            const multiplayerBtn = document.getElementById('multiplayer-btn');
-            
-            // 为双人游戏按钮添加点击事件（暂时不做任何操作）
-            multiplayerBtn.addEventListener('click', function() {
-                alert('双人游戏功能正在开发中，敬请期待！');
+            // 双人游戏按钮点击事件（暂时不做处理）
+            multiPlayerBtn.addEventListener('click', function() {
+                alert('双人游戏功能暂未开放');
             });
         });
     </script>
