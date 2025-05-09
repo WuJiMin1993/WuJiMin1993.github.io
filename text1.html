@@ -3,728 +3,1552 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>经典俄罗斯方块</title>
+    <title>俄罗斯方块</title>
     <style>
-        /* 基础样式设置 */
-        body {
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: 'Arial', sans-serif;
-            background-color: #222; /* 深灰色背景 */
+        }
+        
+        body {
+            background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            color: white;
+            min-height: 100vh;
+            color: #333;
         }
-
-        /* 界面容器样式 - 用于切换不同界面 */
-        .screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        
+        /* 主容器样式 */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
         }
-
-        /* 活动界面显示 */
-        .active {
-            display: flex !important;
-        }
-
-        /* 主菜单界面(界面ID:1000) */
+        
+        /* 初始界面样式 */
         #screen-1000 {
             text-align: center;
         }
-
-        /* 游戏标题样式 */
-        .game-title {
-            color: #4CAF50; /* 绿色文字 */
-            font-size: 36px;
-            margin-bottom: 40px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        
+        .title {
+            font-size: 3rem;
+            margin-bottom: 50px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
-
-        /* 菜单按钮基础样式 */
-        .menu-btn {
-            background-color: #4CAF50; /* 绿色按钮 */
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
+        
+        .btn {
             display: inline-block;
-            font-size: 18px;
+            padding: 15px 30px;
             margin: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s;
-            width: 200px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        /* 菜单按钮悬停效果 */
-        .menu-btn:hover {
-            background-color: #45a049;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        /* 单人游戏界面(界面ID:1001) */
-        #screen-1001 {
-            position: relative;
-            width: 600px;
-            background-color: #333;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-
-        /* 游戏标题栏 */
-        .game-header {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        /* 游戏标题文字 */
-        .game-header h2 {
-            color: #4CAF50;
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            margin: 0;
-        }
-
-        /* 返回按钮样式 */
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: #f44336; /* 红色按钮 */
-            border: none;
+            font-size: 1.2rem;
             color: white;
-            padding: 10px;
-            border-radius: 50%;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 20px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             transition: all 0.3s;
+            text-decoration: none;
+            min-width: 200px;
         }
-
-        /* 返回按钮悬停效果 */
-        .back-btn:hover {
-            background-color: #d32f2f;
-            transform: scale(1.1);
+        
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-
-        /* 游戏主区域容器 */
-        .game-container {
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 单人游戏界面样式 */
+        #screen-1001 {
+            display: none;
+        }
+        
+        .single-game-container {
             display: flex;
             justify-content: space-between;
-            width: 100%;
+            flex-wrap: wrap;
         }
-
-        /* 游戏画布样式 */
+        
         .game-board {
-            border: 2px solid #444;
-            background-color: #111; /* 黑色网格背景 */
-            display: block;
+            border: 2px solid #2c3e50;
+            background-color: #ecf0f1;
+            position: relative;
         }
-
-        /* 游戏信息区域 */
+        
+        .main-board {
+            width: 300px;
+            height: 600px;
+        }
+        
+        .next-piece-board {
+            width: 120px;
+            height: 120px;
+            margin-top: 20px;
+        }
+        
         .game-info {
-            width: 200px;
-            margin-left: 20px;
-            display: flex;
-            flex-direction: column;
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-
-        /* 得分显示区域 */
+        
         .score-display {
-            color: white;
-            font-size: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-weight: bold;
+            font-size: 1.5rem;
             margin-bottom: 20px;
-            text-align: center;
         }
-
-        /* 操作说明区域 */
+        
         .instructions {
-            color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 5px;
-            font-size: 14px;
+            margin-bottom: 20px;
             line-height: 1.6;
         }
-
-        /* 操作说明标题 */
-        .instructions h3 {
-            margin-top: 0;
-            color: #4CAF50;
-            border-bottom: 1px solid #4CAF50;
-            padding-bottom: 5px;
-            text-align: center;
-        }
-
-        /* 开始游戏按钮 */
-        .start-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #2196F3; /* 蓝色按钮 */
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
+        
+        .back-btn {
             display: inline-block;
-            font-size: 18px;
-            cursor: pointer;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
             border-radius: 5px;
-            transition: all 0.3s;
-            z-index: 10;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
         }
-
-        /* 开始游戏按钮悬停效果 */
-        .start-btn:hover {
-            background-color: #0b7dda;
-            transform: translate(-50%, -50%) scale(1.05);
+        
+        .start-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
         }
-
-        /* 游戏结束界面 */
+        
         .game-over {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            display: flex;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: white;
-            z-index: 20;
-            border-radius: 10px;
+            z-index: 10;
         }
-
-        /* 游戏结束标题 */
+        
         .game-over h2 {
-            font-size: 36px;
+            font-size: 2rem;
             margin-bottom: 20px;
-            color: #f44336;
         }
-
-        /* 游戏结束得分显示 */
-        .game-over p {
-            font-size: 24px;
-            margin-bottom: 30px;
+        
+        /* 双人游戏界面样式 */
+        #screen-1002, #screen-1003, #screen-1004 {
+            display: none;
         }
-
-        /* 重新开始按钮 */
-        .restart-btn {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 12px 24px;
+        
+        .room-options {
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s;
-            font-weight: bold;
         }
-
-        /* 重新开始按钮悬停效果 */
-        .restart-btn:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
+        
+        .room-form {
+            margin-top: 30px;
+        }
+        
+        .room-input {
+            padding: 10px;
+            font-size: 1rem;
+            width: 200px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .multiplayer-game-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .player-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .player-board {
+            width: 250px;
+            height: 500px;
+        }
+        
+        .opponent-board {
+            width: 150px;
+            height: 300px;
+        }
+        
+        .player-info {
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .room-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-message {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: #e74c3c;
+        }
+        
+        /* 方块颜色 */
+        .cell {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 不同方块的背景色 */
+        .I { background-color: #00f0f0; }
+        .J { background-color: #0000f0; }
+        .L { background-color: #f0a000; }
+        .O { background-color: #f0f000; }
+        .S { background-color: #00f000; }
+        .T { background-color: #a000f0; }
+        .Z { background-color: #f00000; }
+        
+        /* 游戏网格线 */
+        .grid-line {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
 <body>
-    <!-- 初始界面(界面ID:1000) -->
-    <div id="screen-1000" class="screen active">
-        <h1 class="game-title">经典俄罗斯方块</h1>
-        <button id="single-player-btn" class="menu-btn">单人游戏</button>
-        <button id="two-player-btn" class="menu-btn">双人游戏</button>
-    </div>
-
-    <!-- 单人游戏界面(界面ID:1001) -->
-    <div id="screen-1001" class="screen">
-        <!-- 返回按钮 -->
-        <button id="back-btn" class="back-btn">←</button>
-        
-        <!-- 游戏标题 -->
-        <div class="game-header">
-            <h2>俄罗斯方块</h2>
+    <div class="container">
+        <!-- 初始界面 (ID: 1000) -->
+        <div id="screen-1000">
+            <h1 class="title">俄罗斯方块</h1>
+            <button id="single-player-btn" class="btn">单人游戏</button>
+            <button id="multiplayer-btn" class="btn">双人游戏</button>
         </div>
         
-        <!-- 游戏主区域 -->
-        <div class="game-container">
-            <!-- 游戏画布 -->
-            <canvas id="game-board" class="game-board" width="300" height="600"></canvas>
-            
-            <!-- 游戏信息区域 -->
-            <div class="game-info">
-                <!-- 得分显示 -->
-                <div id="score-display" class="score-display">得分: 0</div>
+        <!-- 单人游戏界面 (ID: 1001) -->
+        <div id="screen-1001">
+            <div class="single-game-container">
+                <div>
+                    <div id="main-board" class="game-board main-board"></div>
+                    <div id="next-piece-board" class="game-board next-piece-board"></div>
+                </div>
                 
-                <!-- 操作说明 -->
-                <div id="instructions" class="instructions">
-                    <h3>操作说明:</h3>
-                    <p>↑: 旋转方块</p>
-                    <p>↓: 加速下落</p>
-                    <p>←: 左移</p>
-                    <p>→: 右移</p>
-                    <p>空格: 直接下落</p>
+                <div class="game-info">
+                    <h2>单人游戏</h2>
+                    <div class="score-display">得分: <span id="score">0</span></div>
+                    <div class="instructions">
+                        <h3>游戏说明:</h3>
+                        <p>← → : 左右移动</p>
+                        <p>↑ : 旋转方块</p>
+                        <p>↓ : 加速下落</p>
+                        <p>空格 : 直接落到底部</p>
+                    </div>
+                    <button id="start-single-game" class="start-btn">开始游戏</button>
+                    <button id="back-to-main" class="back-btn">返回主界面</button>
+                </div>
+                
+                <div id="game-over" class="game-over">
+                    <h2>游戏结束!</h2>
+                    <p>最终得分: <span id="final-score">0</span></p>
+                    <button id="restart-game" class="start-btn">重新开始</button>
                 </div>
             </div>
         </div>
         
-        <!-- 开始游戏按钮 -->
-        <button id="start-game-btn" class="start-btn">开始游戏</button>
+        <!-- 双人游戏选择界面 (ID: 1002) -->
+        <div id="screen-1002">
+            <h1 class="title">双人游戏</h1>
+            <div class="room-options">
+                <button id="create-room-btn" class="btn">创建房间</button>
+                <button id="join-room-btn" class="btn">加入房间</button>
+                <button id="back-to-main-2" class="btn" style="background-color: #e74c3c;">返回</button>
+            </div>
+        </div>
+        
+        <!-- 创建房间界面 (ID: 1003) -->
+        <div id="screen-1003">
+            <h1 class="title">创建房间</h1>
+            <div class="room-info">
+                <p>你的房间号: <span id="room-id-display">正在生成...</span></p>
+                <p class="status-message" id="player1-status">等待玩家2加入...</p>
+            </div>
+            <button id="back-to-multiplayer" class="btn" style="background-color: #e74c3c;">返回</button>
+        </div>
+        
+        <!-- 加入房间界面 (ID: 1004) -->
+        <div id="screen-1004">
+            <h1 class="title">加入房间</h1>
+            <div class="room-form">
+                <input type="text" id="room-id-input" class="room-input" placeholder="输入6位房间号" maxlength="6">
+                <button id="join-room-confirm" class="btn">加入</button>
+                <p class="status-message" id="join-status"></p>
+            </div>
+            <button id="back-to-multiplayer-2" class="btn" style="background-color: #e74c3c;">返回</button>
+        </div>
+        
+        <!-- 双人游戏界面 (ID: 1005) -->
+        <div id="screen-1005">
+            <div class="room-info">
+                <p>房间号: <span id="current-room-id"></span></p>
+                <p id="multiplayer-status">玩家1已加入, 等待玩家2...</p>
+                <button id="start-multiplayer-game" class="btn" style="display: none;">开始游戏</button>
+            </div>
+            
+            <div class="multiplayer-game-container">
+                <div class="player-container">
+                    <div id="player1-board" class="game-board player-board"></div>
+                    <div class="player-info">玩家1 得分: <span id="player1-score">0</span></div>
+                </div>
+                
+                <div class="player-container">
+                    <div id="player2-board" class="game-board opponent-board"></div>
+                    <div class="player-info">玩家2 得分: <span id="player2-score">0</span></div>
+                </div>
+            </div>
+            
+            <div id="multiplayer-game-over" class="game-over" style="display: none;">
+                <h2>游戏结束!</h2>
+                <p>你的得分: <span id="player-final-score">0</span></p>
+                <p id="game-result"></p>
+                <button id="back-to-main-after-game" class="btn">返回主界面</button>
+            </div>
+            
+            <button id="back-to-main-3" class="btn" style="background-color: #e74c3c; margin-top: 20px;">返回主界面</button>
+        </div>
     </div>
 
+    <!-- 引入Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
     <script>
-        // 游戏常量定义
-        const COLS = 10; // 游戏板列数
-        const ROWS = 20; // 游戏板行数
-        const BLOCK_SIZE = 30; // 每个方块的大小(像素)
-        
-        // 方块颜色定义
-        const COLORS = [
-            '#00FFFF', // I - 青色
-            '#0000FF', // J - 蓝色
-            '#FF7F00', // L - 橙色
-            '#FFFF00', // O - 黄色
-            '#00FF00', // S - 绿色
-            '#800080', // T - 紫色
-            '#FF0000'  // Z - 红色
-        ];
-        
-        // 方块形状定义
-        const SHAPES = [
-            [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], // I
-            [[1, 0, 0], [1, 1, 1], [0, 0, 0]],                        // J
-            [[0, 0, 1], [1, 1, 1], [0, 0, 0]],                        // L
-            [[1, 1], [1, 1]],                                         // O
-            [[0, 1, 1], [1, 1, 0], [0, 0, 0]],                        // S
-            [[0, 1, 0], [1, 1, 1], [0, 0, 0]],                        // T
-            [[1, 1, 0], [0, 1, 1], [0, 0, 0]]                         // Z
-        ];
-        
-        // 游戏状态变量
-        let canvas, ctx; // 画布和绘图上下文
-        let board = []; // 游戏板数组
-        let currentPiece, nextPiece; // 当前方块和下一个方块
-        let score = 0; // 游戏得分
-        let gameOver = false; // 游戏结束标志
-        let gameStarted = false; // 游戏开始标志
-        let dropStart; // 方块下落开始时间
-        let lastTime = 0; // 上一帧时间
-        let gameSpeed = 1000; // 初始下落速度(毫秒)
-        let animationId; // 用于存储动画帧ID
-        
+        // 游戏配置
+        const config = {
+            // 主游戏板尺寸 (宽x高)
+            boardWidth: 10,
+            boardHeight: 20,
+            // 单元格大小 (像素)
+            cellSize: 30,
+            // 方块形状定义
+            shapes: {
+                I: [
+                    [0, 0, 0, 0],
+                    [1, 1, 1, 1],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0]
+                ],
+                J: [
+                    [1, 0, 0],
+                    [1, 1, 1],
+                    [0, 0, 0]
+                ],
+                L: [
+                    [0, 0, 1],
+                    [1, 1, 1],
+                    [0, 0, 0]
+                ],
+                O: [
+                    [1, 1],
+                    [1, 1]
+                ],
+                S: [
+                    [0, 1, 1],
+                    [1, 1, 0],
+                    [0, 0, 0]
+                ],
+                T: [
+                    [0, 1, 0],
+                    [1, 1, 1],
+                    [0, 0, 0]
+                ],
+                Z: [
+                    [1, 1, 0],
+                    [0, 1, 1],
+                    [0, 0, 0]
+                ]
+            },
+            // 方块颜色
+            colors: {
+                I: '#00f0f0',
+                J: '#0000f0',
+                L: '#f0a000',
+                O: '#f0f000',
+                S: '#00f000',
+                T: '#a000f0',
+                Z: '#f00000'
+            }
+        };
+
+        // 游戏状态
+        let gameState = {
+            // 单人游戏状态
+            single: {
+                board: [],          // 游戏板矩阵
+                currentPiece: null, // 当前方块
+                nextPiece: null,    // 下一个方块
+                score: 0,           // 当前得分
+                isPlaying: false,   // 游戏是否进行中
+                gameInterval: null, // 游戏循环间隔
+                speed: 1000,        // 下落速度 (毫秒)
+                isGameOver: false  // 游戏是否结束
+            },
+            // 双人游戏状态
+            multiplayer: {
+                roomId: null,       // 房间ID
+                isHost: false,      // 是否是房主
+                playerId: null,     // 玩家ID (1或2)
+                playerBoard: [],    // 玩家游戏板
+                opponentBoard: [], // 对手游戏板
+                currentPiece: null, // 当前方块
+                nextPiece: null,   // 下一个方块
+                score: 0,           // 玩家得分
+                opponentScore: 0,   // 对手得分
+                isPlaying: false,  // 游戏是否进行中
+                gameInterval: null, // 游戏循环间隔
+                speed: 1000,        // 下落速度
+                isGameOver: false,  // 游戏是否结束
+                opponentGameOver: false // 对手游戏是否结束
+            }
+        };
+
+        // DOM元素引用
+        const elements = {
+            // 屏幕容器
+            screens: {
+                main: document.getElementById('screen-1000'),
+                single: document.getElementById('screen-1001'),
+                multiplayer: document.getElementById('screen-1002'),
+                createRoom: document.getElementById('screen-1003'),
+                joinRoom: document.getElementById('screen-1004'),
+                multiplayerGame: document.getElementById('screen-1005')
+            },
+            // 按钮
+            buttons: {
+                singlePlayer: document.getElementById('single-player-btn'),
+                multiplayer: document.getElementById('multiplayer-btn'),
+                backToMain: document.getElementById('back-to-main'),
+                backToMain2: document.getElementById('back-to-main-2'),
+                backToMain3: document.getElementById('back-to-main-3'),
+                backToMultiplayer: document.getElementById('back-to-multiplayer'),
+                backToMultiplayer2: document.getElementById('back-to-multiplayer-2'),
+                startSingleGame: document.getElementById('start-single-game'),
+                restartGame: document.getElementById('restart-game'),
+                createRoom: document.getElementById('create-room-btn'),
+                joinRoom: document.getElementById('join-room-btn'),
+                joinRoomConfirm: document.getElementById('join-room-confirm'),
+                startMultiplayerGame: document.getElementById('start-multiplayer-game'),
+                backToMainAfterGame: document.getElementById('back-to-main-after-game')
+            },
+            // 游戏元素
+            game: {
+                mainBoard: document.getElementById('main-board'),
+                nextPieceBoard: document.getElementById('next-piece-board'),
+                score: document.getElementById('score'),
+                finalScore: document.getElementById('final-score'),
+                gameOver: document.getElementById('game-over'),
+                player1Board: document.getElementById('player1-board'),
+                player2Board: document.getElementById('player2-board'),
+                player1Score: document.getElementById('player1-score'),
+                player2Score: document.getElementById('player2-score'),
+                playerFinalScore: document.getElementById('player-final-score'),
+                gameResult: document.getElementById('game-result'),
+                multiplayerGameOver: document.getElementById('multiplayer-game-over')
+            },
+            // 多人游戏元素
+            multiplayer: {
+                roomIdDisplay: document.getElementById('room-id-display'),
+                player1Status: document.getElementById('player1-status'),
+                roomIdInput: document.getElementById('room-id-input'),
+                joinStatus: document.getElementById('join-status'),
+                currentRoomId: document.getElementById('current-room-id'),
+                multiplayerStatus: document.getElementById('multiplayer-status')
+            }
+        };
+
+        // Firebase配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHRYTBU74r31MPYVAAnRMwKM76c_-BduQ",
+            authDomain: "tetrisonline-ca400.firebaseapp.com",
+            projectId: "tetrisonline-ca400",
+            storageBucket: "tetrisonline-ca400.appspot.com",
+            messagingSenderId: "58207939196",
+            appId: "1:58207939196:web:b34f403204096084ee37f9",
+            measurementId: "G-GG7GNEQ718"
+        };
+
+        // 初始化Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 当前房间引用
+        let roomRef = null;
+        // 玩家引用
+        let playerRef = null;
+        // 对手引用
+        let opponentRef = null;
+
         // 初始化游戏
         function init() {
-            // 设置按钮事件监听
-            document.getElementById('single-player-btn').addEventListener('click', startSinglePlayer);
-            document.getElementById('two-player-btn').addEventListener('click', showTwoPlayer);
-            document.getElementById('back-btn').addEventListener('click', backToMenu);
-            document.getElementById('start-game-btn').addEventListener('click', startGame);
-            
-            // 初始化游戏画布
-            canvas = document.getElementById('game-board');
-            ctx = canvas.getContext('2d');
-            canvas.style.width = canvas.width + 'px';
-            canvas.style.height = canvas.height + 'px';
-            
-            // 设置键盘控制
-            document.addEventListener('keydown', control);
-            
             // 初始化游戏板
-            createBoard();
+            initBoard();
             
-            // 生成第一个方块
-            currentPiece = generatePiece();
-            nextPiece = generatePiece();
+            // 设置事件监听器
+            setupEventListeners();
             
-            // 开始游戏循环
-            gameLoop();
+            // 显示主界面
+            showScreen('main');
         }
-        
-        // 创建游戏板
-        function createBoard() {
-            board = [];
-            for (let r = 0; r < ROWS; r++) {
-                board[r] = [];
-                for (let c = 0; c < COLS; c++) {
-                    board[r][c] = 0; // 0表示空位置
-                }
-            }
-        }
-        
-        // 生成随机方块
-        function generatePiece() {
-            const randomIndex = Math.floor(Math.random() * SHAPES.length);
-            const shape = SHAPES[randomIndex];
-            const color = COLORS[randomIndex];
+
+        // 初始化游戏板
+        function initBoard() {
+            // 清空主游戏板
+            elements.game.mainBoard.innerHTML = '';
+            elements.game.mainBoard.style.width = `${config.boardWidth * config.cellSize}px`;
+            elements.game.mainBoard.style.height = `${config.boardHeight * config.cellSize}px`;
             
-            // 计算初始位置(居中)
-            const startCol = Math.floor((COLS - shape[0].length) / 2);
+            // 清空下一个方块板
+            elements.game.nextPieceBoard.innerHTML = '';
+            elements.game.nextPieceBoard.style.width = `${4 * config.cellSize}px`;
+            elements.game.nextPieceBoard.style.height = `${4 * config.cellSize}px`;
             
-            return {
-                shape: shape,
-                color: color,
-                x: startCol,
-                y: -1 // 从顶部开始
-            };
-        }
-        
-        // 绘制游戏板
-        function drawBoard() {
-            // 绘制背景网格
-            ctx.fillStyle = '#111';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // 清空玩家1和玩家2的游戏板
+            elements.game.player1Board.innerHTML = '';
+            elements.game.player1Board.style.width = `${config.boardWidth * config.cellSize}px`;
+            elements.game.player1Board.style.height = `${config.boardHeight * config.cellSize}px`;
+            
+            elements.game.player2Board.innerHTML = '';
+            elements.game.player2Board.style.width = `${config.boardWidth * config.cellSize}px`;
+            elements.game.player2Board.style.height = `${config.boardHeight * config.cellSize}px`;
             
             // 绘制网格线
-            ctx.strokeStyle = '#333';
-            ctx.lineWidth = 0.5;
-            for (let r = 0; r < ROWS; r++) {
-                for (let c = 0; c < COLS; c++) {
-                    ctx.strokeRect(c * BLOCK_SIZE, r * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-                }
+            drawGridLines(elements.game.mainBoard, config.boardWidth, config.boardHeight);
+            drawGridLines(elements.game.nextPieceBoard, 4, 4);
+            drawGridLines(elements.game.player1Board, config.boardWidth, config.boardHeight);
+            drawGridLines(elements.game.player2Board, config.boardWidth, config.boardHeight);
+        }
+
+        // 绘制网格线
+        function drawGridLines(boardElement, width, height) {
+            // 垂直网格线
+            for (let i = 0; i <= width; i++) {
+                const line = document.createElement('div');
+                line.className = 'grid-line';
+                line.style.left = `${i * config.cellSize}px`;
+                line.style.width = '1px';
+                line.style.height = `${height * config.cellSize}px`;
+                boardElement.appendChild(line);
             }
             
-            // 绘制已固定的方块
-            for (let r = 0; r < ROWS; r++) {
-                for (let c = 0; c < COLS; c++) {
-                    if (board[r][c]) {
-                        drawBlock(c, r, board[r][c]);
-                    }
-                }
+            // 水平网格线
+            for (let i = 0; i <= height; i++) {
+                const line = document.createElement('div');
+                line.className = 'grid-line';
+                line.style.top = `${i * config.cellSize}px`;
+                line.style.height = '1px';
+                line.style.width = `${width * config.cellSize}px`;
+                boardElement.appendChild(line);
             }
         }
-        
-        // 绘制当前方块
-        function drawPiece(piece) {
-            for (let r = 0; r < piece.shape.length; r++) {
-                for (let c = 0; c < piece.shape[r].length; c++) {
-                    if (piece.shape[r][c]) {
-                        drawBlock(piece.x + c, piece.y + r, piece.color);
-                    }
-                }
-            }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 主界面按钮
+            elements.buttons.singlePlayer.addEventListener('click', () => showScreen('single'));
+            elements.buttons.multiplayer.addEventListener('click', () => showScreen('multiplayer'));
+            
+            // 单人游戏按钮
+            elements.buttons.backToMain.addEventListener('click', () => showScreen('main'));
+            elements.buttons.startSingleGame.addEventListener('click', startSingleGame);
+            elements.buttons.restartGame.addEventListener('click', restartSingleGame);
+            
+            // 双人游戏选择按钮
+            elements.buttons.backToMain2.addEventListener('click', () => showScreen('main'));
+            elements.buttons.createRoom.addEventListener('click', () => showScreen('createRoom'));
+            elements.buttons.joinRoom.addEventListener('click', () => showScreen('joinRoom'));
+            
+            // 创建房间按钮
+            elements.buttons.backToMultiplayer.addEventListener('click', () => showScreen('multiplayer'));
+            
+            // 加入房间按钮
+            elements.buttons.backToMultiplayer2.addEventListener('click', () => showScreen('multiplayer'));
+            elements.buttons.joinRoomConfirm.addEventListener('click', joinRoom);
+            
+            // 双人游戏按钮
+            elements.buttons.backToMain3.addEventListener('click', () => {
+                leaveRoom();
+                showScreen('main');
+            });
+            elements.buttons.startMultiplayerGame.addEventListener('click', startMultiplayerGame);
+            elements.buttons.backToMainAfterGame.addEventListener('click', () => {
+                leaveRoom();
+                showScreen('main');
+            });
+            
+            // 键盘控制
+            document.addEventListener('keydown', handleKeyPress);
         }
-        
-        // 绘制单个方块
-        function drawBlock(x, y, color) {
-            ctx.fillStyle = color;
-            ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-            
-            // 添加方块内阴影效果
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x * BLOCK_SIZE + 2, y * BLOCK_SIZE + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
-            
-            // 添加方块边框
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-        }
-        
-        // 游戏主循环
-        function gameLoop(time = 0) {
-            const deltaTime = time - lastTime;
-            lastTime = time;
-            
-            // 清除画布
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 绘制游戏板
-            drawBoard();
-            
-            // 绘制当前方块
-            drawPiece(currentPiece);
-            
-            // 检查是否需要下落
-            if (gameStarted && !gameOver && time - dropStart > gameSpeed) {
-                drop();
-                dropStart = time;
+
+        // 显示指定屏幕
+        function showScreen(screenName) {
+            // 隐藏所有屏幕
+            for (const screen in elements.screens) {
+                elements.screens[screen].style.display = 'none';
             }
             
-            // 更新分数显示
-            document.getElementById('score-display').textContent = `得分: ${score}`;
+            // 显示请求的屏幕
+            elements.screens[screenName].style.display = 'block';
             
-            // 显示/隐藏开始按钮
-            document.getElementById('start-game-btn').style.display = gameStarted ? 'none' : 'block';
-            
-            // 如果游戏未结束，继续循环
-            if (!gameOver) {
-                animationId = requestAnimationFrame(gameLoop);
-            } else {
-                // 游戏结束处理
-                showGameOver();
+            // 特定屏幕的初始化
+            if (screenName === 'single') {
+                initSingleGame();
+            } else if (screenName === 'createRoom') {
+                createRoom();
+            } else if (screenName === 'multiplayerGame') {
+                // 已经在joinRoom或createRoom中处理
             }
         }
-        
-        // 显示游戏结束界面
-        function showGameOver() {
-            const gameOverDiv = document.createElement('div');
-            gameOverDiv.className = 'game-over';
-            gameOverDiv.innerHTML = `
-                <h2>游戏结束!</h2>
-                <p>最终得分: ${score}</p>
-                <button class="restart-btn">重新开始</button>
-            `;
-            
-            gameOverDiv.querySelector('.restart-btn').addEventListener('click', restartGame);
-            
-            document.getElementById('screen-1001').appendChild(gameOverDiv);
-        }
-        
-        // 重新开始游戏
-        function restartGame() {
-            // 移除游戏结束界面
-            const gameOverDiv = document.querySelector('.game-over');
-            if (gameOverDiv) {
-                gameOverDiv.remove();
-            }
-            
+
+        // 初始化单人游戏
+        function initSingleGame() {
             // 重置游戏状态
-            resetGame();
+            gameState.single = {
+                board: createEmptyBoard(),
+                currentPiece: null,
+                nextPiece: null,
+                score: 0,
+                isPlaying: false,
+                gameInterval: null,
+                speed: 1000,
+                isGameOver: false
+            };
             
-            // 重新开始游戏
-            startGame();
+            // 更新UI
+            elements.game.score.textContent = '0';
+            elements.game.gameOver.style.display = 'none';
             
-            // 重新启动游戏循环
-            cancelAnimationFrame(animationId);
-            gameLoop();
+            // 生成下一个方块
+            generateNextPiece('single');
+            
+            // 绘制初始状态
+            drawBoard('single');
+            drawNextPiece('single');
         }
-        
-        // 方块下落
-        function drop() {
-            if (!collision(0, 1, currentPiece.shape)) {
-                currentPiece.y++;
-            } else {
-                // 固定方块到游戏板
-                lockPiece();
-                
-                // 检查是否有完整的行
-                checkRows();
-                
-                // 生成新方块
-                currentPiece = nextPiece;
-                nextPiece = generatePiece();
-                
-                // 检查游戏是否结束
-                if (collision(0, 0, currentPiece.shape) && currentPiece.y <= 0) {
-                    gameOver = true;
+
+        // 创建空游戏板
+        function createEmptyBoard() {
+            const board = [];
+            for (let row = 0; row < config.boardHeight; row++) {
+                board[row] = [];
+                for (let col = 0; col < config.boardWidth; col++) {
+                    board[row][col] = 0;
                 }
-                
-                // 随着分数增加加快下落速度
-                gameSpeed = Math.max(100, 1000 - Math.floor(score / 10) * 50);
+            }
+            return board;
+        }
+
+        // 生成下一个方块
+        function generateNextPiece(gameMode) {
+            const shapes = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'];
+            const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            if (gameMode === 'single') {
+                if (!gameState.single.nextPiece) {
+                    gameState.single.nextPiece = {
+                        shape: randomShape,
+                        matrix: config.shapes[randomShape],
+                        row: 0,
+                        col: Math.floor(config.boardWidth / 2) - Math.floor(config.shapes[randomShape][0].length / 2)
+                    };
+                } else {
+                    gameState.single.currentPiece = {
+                        shape: gameState.single.nextPiece.shape,
+                        matrix: gameState.single.nextPiece.matrix,
+                        row: 0,
+                        col: Math.floor(config.boardWidth / 2) - Math.floor(gameState.single.nextPiece.matrix[0].length / 2)
+                    };
+                    
+                    gameState.single.nextPiece = {
+                        shape: randomShape,
+                        matrix: config.shapes[randomShape],
+                        row: 0,
+                        col: Math.floor(config.boardWidth / 2) - Math.floor(config.shapes[randomShape][0].length / 2)
+                    };
+                }
+            } else if (gameMode === 'multiplayer') {
+                if (!gameState.multiplayer.nextPiece) {
+                    gameState.multiplayer.nextPiece = {
+                        shape: randomShape,
+                        matrix: config.shapes[randomShape],
+                        row: 0,
+                        col: Math.floor(config.boardWidth / 2) - Math.floor(config.shapes[randomShape][0].length / 2)
+                    };
+                } else {
+                    gameState.multiplayer.currentPiece = {
+                        shape: gameState.multiplayer.nextPiece.shape,
+                        matrix: gameState.multiplayer.nextPiece.matrix,
+                        row: 0,
+                        col: Math.floor(config.boardWidth / 2) - Math.floor(gameState.multiplayer.nextPiece.matrix[0].length / 2)
+                    };
+                    
+                    gameState.multiplayer.nextPiece = {
+                        shape: randomShape,
+                        matrix: config.shapes[randomShape],
+                        row: 0,
+                        col: Math.floor(config.boardWidth / 2) - Math.floor(config.shapes[randomShape][0].length / 2)
+                    };
+                }
             }
         }
-        
-        // 固定方块到游戏板
-        function lockPiece() {
-            for (let r = 0; r < currentPiece.shape.length; r++) {
-                for (let c = 0; c < currentPiece.shape[r].length; c++) {
-                    if (currentPiece.shape[r][c]) {
-                        board[currentPiece.y + r][currentPiece.x + c] = currentPiece.color;
+
+        // 绘制游戏板
+        function drawBoard(gameMode) {
+            let board, boardElement, currentPiece;
+            
+            if (gameMode === 'single') {
+                board = gameState.single.board;
+                boardElement = elements.game.mainBoard;
+                currentPiece = gameState.single.currentPiece;
+            } else if (gameMode === 'multiplayer') {
+                board = gameState.multiplayer.playerBoard;
+                boardElement = gameState.multiplayer.playerId === 1 ? 
+                    elements.game.player1Board : elements.game.player2Board;
+                currentPiece = gameState.multiplayer.currentPiece;
+            }
+            
+            // 清除现有方块
+            const cells = boardElement.querySelectorAll('.cell');
+            cells.forEach(cell => cell.remove());
+            
+            // 绘制固定的方块
+            for (let row = 0; row < board.length; row++) {
+                for (let col = 0; col < board[row].length; col++) {
+                    if (board[row][col]) {
+                        const cell = document.createElement('div');
+                        cell.className = `cell ${board[row][col]}`;
+                        cell.style.left = `${col * config.cellSize}px`;
+                        cell.style.top = `${row * config.cellSize}px`;
+                        boardElement.appendChild(cell);
                     }
                 }
             }
-        }
-        
-        // 检查是否有完整的行
-        function checkRows() {
-            let rowsCleared = 0;
             
-            for (let r = ROWS - 1; r >= 0; r--) {
-                let isRowFull = true;
-                
-                for (let c = 0; c < COLS; c++) {
-                    if (board[r][c] === 0) {
-                        isRowFull = false;
-                        break;
-                    }
-                }
-                
-                if (isRowFull) {
-                    // 移除该行
-                    for (let y = r; y > 0; y--) {
-                        for (let c = 0; c < COLS; c++) {
-                            board[y][c] = board[y - 1][c];
+            // 绘制当前移动的方块
+            if (currentPiece) {
+                for (let row = 0; row < currentPiece.matrix.length; row++) {
+                    for (let col = 0; col < currentPiece.matrix[row].length; col++) {
+                        if (currentPiece.matrix[row][col]) {
+                            const cell = document.createElement('div');
+                            cell.className = `cell ${currentPiece.shape}`;
+                            cell.style.left = `${(currentPiece.col + col) * config.cellSize}px`;
+                            cell.style.top = `${(currentPiece.row + row) * config.cellSize}px`;
+                            boardElement.appendChild(cell);
                         }
                     }
-                    
-                    // 清空第一行
-                    for (let c = 0; c < COLS; c++) {
-                        board[0][c] = 0;
+                }
+            }
+        }
+
+        // 绘制下一个方块
+        function drawNextPiece(gameMode) {
+            let nextPiece, boardElement;
+            
+            if (gameMode === 'single') {
+                nextPiece = gameState.single.nextPiece;
+                boardElement = elements.game.nextPieceBoard;
+            } else if (gameMode === 'multiplayer') {
+                nextPiece = gameState.multiplayer.nextPiece;
+                boardElement = gameState.multiplayer.playerId === 1 ? 
+                    elements.game.player1Board : elements.game.player2Board;
+                // 注意: 多人游戏中下一个方块的显示可能需要调整
+            }
+            
+            if (!nextPiece) return;
+            
+            // 清除现有方块
+            const cells = boardElement.querySelectorAll('.cell');
+            cells.forEach(cell => cell.remove());
+            
+            // 绘制下一个方块
+            for (let row = 0; row < nextPiece.matrix.length; row++) {
+                for (let col = 0; col < nextPiece.matrix[row].length; col++) {
+                    if (nextPiece.matrix[row][col]) {
+                        const cell = document.createElement('div');
+                        cell.className = `cell ${nextPiece.shape}`;
+                        cell.style.left = `${col * config.cellSize}px`;
+                        cell.style.top = `${row * config.cellSize}px`;
+                        boardElement.appendChild(cell);
                     }
+                }
+            }
+        }
+
+        // 开始单人游戏
+        function startSingleGame() {
+            if (gameState.single.isPlaying) return;
+            
+            // 重置游戏板
+            gameState.single.board = createEmptyBoard();
+            gameState.single.score = 0;
+            gameState.single.isGameOver = false;
+            elements.game.score.textContent = '0';
+            
+            // 生成第一个方块
+            if (!gameState.single.currentPiece) {
+                generateNextPiece('single');
+                gameState.single.currentPiece = {
+                    shape: gameState.single.nextPiece.shape,
+                    matrix: gameState.single.nextPiece.matrix,
+                    row: 0,
+                    col: Math.floor(config.boardWidth / 2) - Math.floor(gameState.single.nextPiece.matrix[0].length / 2)
+                };
+                generateNextPiece('single');
+            }
+            
+            // 开始游戏循环
+            gameState.single.isPlaying = true;
+            gameState.single.gameInterval = setInterval(() => {
+                movePieceDown('single');
+            }, gameState.single.speed);
+            
+            // 更新UI
+            elements.buttons.startSingleGame.textContent = '游戏中...';
+            elements.buttons.startSingleGame.disabled = true;
+        }
+
+        // 移动方块向下
+        function movePieceDown(gameMode) {
+            if (gameMode === 'single') {
+                if (!gameState.single.isPlaying || gameState.single.isGameOver) return;
+                
+                // 检查是否可以向下移动
+                if (canMove(gameState.single.board, gameState.single.currentPiece, 1, 0)) {
+                    gameState.single.currentPiece.row++;
+                    drawBoard('single');
+                } else {
+                    // 如果不能移动，将方块固定到游戏板上
+                    lockPiece('single');
                     
-                    rowsCleared++;
-                    r++; // 重新检查当前行
+                    // 检查是否有完整的行
+                    checkLines('single');
+                    
+                    // 生成新方块
+                    generateNextPiece('single');
+                    drawNextPiece('single');
+                    
+                    // 检查游戏是否结束
+                    if (isGameOver('single')) {
+                        endSingleGame();
+                        return;
+                    }
+                }
+            } else if (gameMode === 'multiplayer') {
+                if (!gameState.multiplayer.isPlaying || gameState.multiplayer.isGameOver) return;
+                
+                // 检查是否可以向下移动
+                if (canMove(gameState.multiplayer.playerBoard, gameState.multiplayer.currentPiece, 1, 0)) {
+                    gameState.multiplayer.currentPiece.row++;
+                    drawBoard('multiplayer');
+                    
+                    // 更新对手的视图
+                    updateOpponentView();
+                } else {
+                    // 如果不能移动，将方块固定到游戏板上
+                    lockPiece('multiplayer');
+                    
+                    // 检查是否有完整的行
+                    checkLines('multiplayer');
+                    
+                    // 生成新方块
+                    generateNextPiece('multiplayer');
+                    drawNextPiece('multiplayer');
+                    
+                    // 检查游戏是否结束
+                    if (isGameOver('multiplayer')) {
+                        endMultiplayerGame();
+                        return;
+                    }
+                }
+            }
+        }
+
+        // 检查方块是否可以移动
+        function canMove(board, piece, rowOffset, colOffset) {
+            for (let row = 0; row < piece.matrix.length; row++) {
+                for (let col = 0; col < piece.matrix[row].length; col++) {
+                    if (piece.matrix[row][col]) {
+                        const newRow = piece.row + row + rowOffset;
+                        const newCol = piece.col + col + colOffset;
+                        
+                        // 检查是否超出边界
+                        if (newRow >= board.length || newCol < 0 || newCol >= board[0].length) {
+                            return false;
+                        }
+                        
+                        // 检查是否与已有方块重叠
+                        if (newRow >= 0 && board[newRow][newCol]) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        // 锁定方块到游戏板
+        function lockPiece(gameMode) {
+            if (gameMode === 'single') {
+                const { board, currentPiece } = gameState.single;
+                
+                for (let row = 0; row < currentPiece.matrix.length; row++) {
+                    for (let col = 0; col < currentPiece.matrix[row].length; col++) {
+                        if (currentPiece.matrix[row][col]) {
+                            const boardRow = currentPiece.row + row;
+                            const boardCol = currentPiece.col + col;
+                            
+                            if (boardRow >= 0) {
+                                board[boardRow][boardCol] = currentPiece.shape;
+                            }
+                        }
+                    }
+                }
+            } else if (gameMode === 'multiplayer') {
+                const { playerBoard, currentPiece } = gameState.multiplayer;
+                
+                for (let row = 0; row < currentPiece.matrix.length; row++) {
+                    for (let col = 0; col < currentPiece.matrix[row].length; col++) {
+                        if (currentPiece.matrix[row][col]) {
+                            const boardRow = currentPiece.row + row;
+                            const boardCol = currentPiece.col + col;
+                            
+                            if (boardRow >= 0) {
+                                playerBoard[boardRow][boardCol] = currentPiece.shape;
+                            }
+                        }
+                    }
+                }
+                
+                // 更新数据库
+                updatePlayerState();
+            }
+        }
+
+        // 检查并清除完整的行
+        function checkLines(gameMode) {
+            let board, score;
+            
+            if (gameMode === 'single') {
+                board = gameState.single.board;
+                score = gameState.single.score;
+            } else if (gameMode === 'multiplayer') {
+                board = gameState.multiplayer.playerBoard;
+                score = gameState.multiplayer.score;
+            }
+            
+            let linesCleared = 0;
+            
+            for (let row = board.length - 1; row >= 0; row--) {
+                // 检查行是否完整
+                if (board[row].every(cell => cell !== 0)) {
+                    // 移除该行
+                    board.splice(row, 1);
+                    // 在顶部添加新行
+                    board.unshift(new Array(config.boardWidth).fill(0));
+                    linesCleared++;
+                    row++; // 重新检查当前行，因为上面的行下移了
                 }
             }
             
             // 更新分数
-            if (rowsCleared > 0) {
-                score += [40, 100, 300, 1200][rowsCleared - 1];
+            if (linesCleared > 0) {
+                const points = [0, 100, 300, 500, 800][linesCleared] || 0;
+                
+                if (gameMode === 'single') {
+                    gameState.single.score += points;
+                    elements.game.score.textContent = gameState.single.score;
+                    
+                    // 根据分数增加速度
+                    if (gameState.single.score > 1000 && gameState.single.speed > 200) {
+                        gameState.single.speed = Math.max(200, 1000 - Math.floor(gameState.single.score / 1000) * 100);
+                        clearInterval(gameState.single.gameInterval);
+                        gameState.single.gameInterval = setInterval(() => {
+                            movePieceDown('single');
+                        }, gameState.single.speed);
+                    }
+                } else if (gameMode === 'multiplayer') {
+                    gameState.multiplayer.score += points;
+                    if (gameState.multiplayer.playerId === 1) {
+                        elements.game.player1Score.textContent = gameState.multiplayer.score;
+                    } else {
+                        elements.game.player2Score.textContent = gameState.multiplayer.score;
+                    }
+                    
+                    // 更新数据库
+                    updatePlayerState();
+                }
             }
         }
-        
-        // 碰撞检测
-        function collision(offsetX, offsetY, piece) {
-            for (let r = 0; r < piece.length; r++) {
-                for (let c = 0; c < piece[r].length; c++) {
-                    if (!piece[r][c]) continue;
-                    
-                    const newX = currentPiece.x + c + offsetX;
-                    const newY = currentPiece.y + r + offsetY;
-                    
-                    if (newX < 0 || newX >= COLS || newY >= ROWS) {
-                        return true;
-                    }
-                    
-                    if (newY < 0) {
-                        continue;
-                    }
-                    
-                    if (board[newY][newX] !== 0) {
+
+        // 检查游戏是否结束
+        function isGameOver(gameMode) {
+            if (gameMode === 'single') {
+                // 检查第一行是否有方块
+                for (let col = 0; col < config.boardWidth; col++) {
+                    if (gameState.single.board[0][col]) {
                         return true;
                     }
                 }
+                return false;
+            } else if (gameMode === 'multiplayer') {
+                // 检查第一行是否有方块
+                for (let col = 0; col < config.boardWidth; col++) {
+                    if (gameState.multiplayer.playerBoard[0][col]) {
+                        return true;
+                    }
+                }
+                return false;
             }
-            return false;
         }
-        
+
+        // 结束单人游戏
+        function endSingleGame() {
+            gameState.single.isPlaying = false;
+            gameState.single.isGameOver = true;
+            clearInterval(gameState.single.gameInterval);
+            
+            // 显示游戏结束界面
+            elements.game.finalScore.textContent = gameState.single.score;
+            elements.game.gameOver.style.display = 'flex';
+            
+            // 重置按钮状态
+            elements.buttons.startSingleGame.textContent = '开始游戏';
+            elements.buttons.startSingleGame.disabled = false;
+        }
+
+        // 重新开始单人游戏
+        function restartSingleGame() {
+            initSingleGame();
+            startSingleGame();
+        }
+
         // 旋转方块
-        function rotate() {
-            if (!gameStarted || gameOver) return;
+        function rotatePiece(gameMode) {
+            let piece, board;
             
-            const originalShape = currentPiece.shape;
-            const rows = currentPiece.shape.length;
-            const cols = currentPiece.shape[0].length;
+            if (gameMode === 'single') {
+                if (!gameState.single.isPlaying || gameState.single.isGameOver) return;
+                piece = gameState.single.currentPiece;
+                board = gameState.single.board;
+            } else if (gameMode === 'multiplayer') {
+                if (!gameState.multiplayer.isPlaying || gameState.multiplayer.isGameOver) return;
+                piece = gameState.multiplayer.currentPiece;
+                board = gameState.multiplayer.playerBoard;
+            }
             
-            // 创建新的旋转后的形状
-            const rotated = [];
-            for (let c = 0; c < cols; c++) {
-                rotated[c] = [];
-                for (let r = rows - 1; r >= 0; r--) {
-                    rotated[c][rows - 1 - r] = currentPiece.shape[r][c];
+            if (!piece) return;
+            
+            // 创建旋转后的矩阵
+            const newMatrix = [];
+            for (let i = 0; i < piece.matrix[0].length; i++) {
+                newMatrix[i] = [];
+                for (let j = 0; j < piece.matrix.length; j++) {
+                    newMatrix[i][j] = piece.matrix[piece.matrix.length - 1 - j][i];
                 }
             }
             
-            // 检查旋转后是否会碰撞
-            if (!collision(0, 0, rotated)) {
-                currentPiece.shape = rotated;
-            }
-        }
-        
-        // 键盘控制
-        function control(e) {
-            if (!gameStarted || gameOver) return;
+            // 检查旋转后是否有效
+            const originalMatrix = piece.matrix;
+            piece.matrix = newMatrix;
             
-            switch (e.keyCode) {
-                case 37: // 左箭头
-                    if (!collision(-1, 0, currentPiece.shape)) {
-                        currentPiece.x--;
-                    }
-                    break;
-                case 39: // 右箭头
-                    if (!collision(1, 0, currentPiece.shape)) {
-                        currentPiece.x++;
-                    }
-                    break;
-                case 40: // 下箭头
-                    drop();
-                    dropStart = performance.now(); // 重置下落计时器
-                    break;
-                case 38: // 上箭头
-                    rotate();
-                    break;
-                case 32: // 空格键
-                    hardDrop();
-                    break;
+            if (!canMove(board, piece, 0, 0)) {
+                // 如果旋转无效，恢复原矩阵
+                piece.matrix = originalMatrix;
+                return;
             }
-        }
-        
-        // 硬降落(直接落到底部)
-        function hardDrop() {
-            if (!gameStarted || gameOver) return;
             
-            while (!collision(0, 1, currentPiece.shape)) {
-                currentPiece.y++;
+            // 绘制更新后的游戏板
+            drawBoard(gameMode);
+            
+            if (gameMode === 'multiplayer') {
+                updateOpponentView();
             }
-            drop(); // 触发锁定和检查
         }
-        
-        // 开始单人游戏
-        function startSinglePlayer() {
-            showScreen('screen-1001');
-            resetGame();
+
+        // 快速下落
+        function hardDrop(gameMode) {
+            if (gameMode === 'single') {
+                if (!gameState.single.isPlaying || gameState.single.isGameOver) return;
+                
+                while (canMove(gameState.single.board, gameState.single.currentPiece, 1, 0)) {
+                    gameState.single.currentPiece.row++;
+                }
+                
+                drawBoard('single');
+                lockPiece('single');
+                checkLines('single');
+                generateNextPiece('single');
+                drawNextPiece('single');
+                
+                if (isGameOver('single')) {
+                    endSingleGame();
+                    return;
+                }
+            } else if (gameMode === 'multiplayer') {
+                if (!gameState.multiplayer.isPlaying || gameState.multiplayer.isGameOver) return;
+                
+                while (canMove(gameState.multiplayer.playerBoard, gameState.multiplayer.currentPiece, 1, 0)) {
+                    gameState.multiplayer.currentPiece.row++;
+                }
+                
+                drawBoard('multiplayer');
+                lockPiece('multiplayer');
+                checkLines('multiplayer');
+                generateNextPiece('multiplayer');
+                drawNextPiece('multiplayer');
+                
+                if (isGameOver('multiplayer')) {
+                    endMultiplayerGame();
+                    return;
+                }
+                
+                updateOpponentView();
+            }
         }
-        
-        // 显示双人游戏界面(暂未实现)
-        function showTwoPlayer() {
-            alert('双人游戏功能正在开发中，请先玩单人游戏!');
+
+        // 处理键盘输入
+        function handleKeyPress(e) {
+            // 检查当前活动屏幕
+            const activeScreen = Object.keys(elements.screens).find(
+                key => elements.screens[key].style.display === 'block'
+            );
+            
+            // 只在游戏屏幕中处理键盘输入
+            if (activeScreen === 'single' && gameState.single.isPlaying && !gameState.single.isGameOver) {
+                switch (e.keyCode) {
+                    case 37: // 左箭头
+                        if (canMove(gameState.single.board, gameState.single.currentPiece, 0, -1)) {
+                            gameState.single.currentPiece.col--;
+                            drawBoard('single');
+                        }
+                        break;
+                    case 39: // 右箭头
+                        if (canMove(gameState.single.board, gameState.single.currentPiece, 0, 1)) {
+                            gameState.single.currentPiece.col++;
+                            drawBoard('single');
+                        }
+                        break;
+                    case 40: // 下箭头
+                        movePieceDown('single');
+                        break;
+                    case 38: // 上箭头
+                        rotatePiece('single');
+                        break;
+                    case 32: // 空格
+                        hardDrop('single');
+                        break;
+                }
+            } else if (activeScreen === 'multiplayerGame' && gameState.multiplayer.isPlaying && !gameState.multiplayer.isGameOver) {
+                switch (e.keyCode) {
+                    case 37: // 左箭头
+                        if (canMove(gameState.multiplayer.playerBoard, gameState.multiplayer.currentPiece, 0, -1)) {
+                            gameState.multiplayer.currentPiece.col--;
+                            drawBoard('multiplayer');
+                            updateOpponentView();
+                        }
+                        break;
+                    case 39: // 右箭头
+                        if (canMove(gameState.multiplayer.playerBoard, gameState.multiplayer.currentPiece, 0, 1)) {
+                            gameState.multiplayer.currentPiece.col++;
+                            drawBoard('multiplayer');
+                            updateOpponentView();
+                        }
+                        break;
+                    case 40: // 下箭头
+                        movePieceDown('multiplayer');
+                        break;
+                    case 38: // 上箭头
+                        rotatePiece('multiplayer');
+                        break;
+                    case 32: // 空格
+                        hardDrop('multiplayer');
+                        break;
+                }
+            }
         }
-        
-        // 开始游戏
-        function startGame() {
-            gameStarted = true;
-            gameOver = false;
-            dropStart = performance.now();
-        }
-        
-        // 返回主菜单
-        function backToMenu() {
-            showScreen('screen-1000');
-            resetGame();
-        }
-        
-        // 显示指定屏幕
-        function showScreen(screenId) {
-            // 隐藏所有屏幕
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
+
+        // 创建房间
+        function createRoom() {
+            // 生成6位随机房间号
+            const roomId = Math.floor(100000 + Math.random() * 900000).toString();
+            gameState.multiplayer.roomId = roomId;
+            gameState.multiplayer.isHost = true;
+            gameState.multiplayer.playerId = 1;
+            
+            // 显示房间号
+            elements.multiplayer.roomIdDisplay.textContent = roomId;
+            
+            // 初始化玩家游戏状态
+            gameState.multiplayer.playerBoard = createEmptyBoard();
+            gameState.multiplayer.opponentBoard = createEmptyBoard();
+            gameState.multiplayer.score = 0;
+            gameState.multiplayer.opponentScore = 0;
+            gameState.multiplayer.isPlaying = false;
+            gameState.multiplayer.isGameOver = false;
+            gameState.multiplayer.opponentGameOver = false;
+            
+            // 创建房间引用
+            roomRef = database.ref(`rooms/${roomId}`);
+            
+            // 设置房间数据
+            roomRef.set({
+                player1: {
+                    board: gameState.multiplayer.playerBoard,
+                    score: 0,
+                    isReady: false,
+                    isGameOver: false
+                },
+                player2: null,
+                gameStarted: false
             });
             
-            // 显示指定屏幕
-            document.getElementById(screenId).classList.add('active');
+            // 监听房间变化
+            roomRef.on('value', snapshot => {
+                const roomData = snapshot.val();
+                
+                if (!roomData) {
+                    // 房间被删除
+                    alert('房间已关闭');
+                    showScreen('multiplayer');
+                    return;
+                }
+                
+                // 更新玩家2状态
+                if (roomData.player2) {
+                    elements.multiplayer.player1Status.textContent = '玩家2已加入';
+                    
+                    // 更新对手游戏板
+                    gameState.multiplayer.opponentBoard = roomData.player2.board || createEmptyBoard();
+                    gameState.multiplayer.opponentScore = roomData.player2.score || 0;
+                    gameState.multiplayer.opponentGameOver = roomData.player2.isGameOver || false;
+                    
+                    // 更新UI
+                    if (gameState.multiplayer.playerId === 1) {
+                        elements.game.player2Score.textContent = gameState.multiplayer.opponentScore;
+                        drawOpponentBoard();
+                        
+                        // 显示开始游戏按钮
+                        elements.buttons.startMultiplayerGame.style.display = 'inline-block';
+                    } else {
+                        elements.game.player1Score.textContent = gameState.multiplayer.opponentScore;
+                        drawOpponentBoard();
+                    }
+                    
+                    // 检查游戏是否开始
+                    if (roomData.gameStarted && !gameState.multiplayer.isPlaying) {
+                        startMultiplayerGame();
+                    }
+                } else {
+                    elements.multiplayer.player1Status.textContent = '等待玩家2加入...';
+                }
+            });
         }
-        
-        // 重置游戏
-        function resetGame() {
-            createBoard();
-            currentPiece = generatePiece();
-            nextPiece = generatePiece();
-            score = 0;
-            gameOver = false;
-            gameStarted = false;
-            gameSpeed = 1000;
-            dropStart = performance.now();
-            lastTime = 0;
+
+        // 加入房间
+        function joinRoom() {
+            const roomId = elements.multiplayer.roomIdInput.value.trim();
+            
+            if (!roomId || roomId.length !== 6) {
+                elements.multiplayer.joinStatus.textContent = '请输入有效的6位房间号';
+                return;
+            }
+            
+            // 检查房间是否存在
+            const ref = database.ref(`rooms/${roomId}`);
+            ref.once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    elements.multiplayer.joinStatus.textContent = '房间不存在';
+                    return;
+                }
+                
+                const roomData = snapshot.val();
+                
+                if (roomData.player2) {
+                    elements.multiplayer.joinStatus.textContent = '房间已满';
+                    return;
+                }
+                
+                // 设置游戏状态
+                gameState.multiplayer.roomId = roomId;
+                gameState.multiplayer.isHost = false;
+                gameState.multiplayer.playerId = 2;
+                
+                // 初始化玩家游戏状态
+                gameState.multiplayer.playerBoard = createEmptyBoard();
+                gameState.multiplayer.opponentBoard = roomData.player1.board || createEmptyBoard();
+                gameState.multiplayer.score = 0;
+                gameState.multiplayer.opponentScore = roomData.player1.score || 0;
+                gameState.multiplayer.isPlaying = false;
+                gameState.multiplayer.isGameOver = false;
+                gameState.multiplayer.opponentGameOver = false;
+                
+                // 设置房间引用
+                roomRef = ref;
+                
+                // 加入房间
+                ref.update({
+                    player2: {
+                        board: gameState.multiplayer.playerBoard,
+                        score: 0,
+                        isReady: false,
+                        isGameOver: false
+                    }
+                });
+                
+                // 监听房间变化
+                ref.on('value', snapshot => {
+                    const updatedRoomData = snapshot.val();
+                    
+                    if (!updatedRoomData) {
+                        // 房间被删除
+                        alert('房间已关闭');
+                        showScreen('multiplayer');
+                        return;
+                    }
+                    
+                    // 更新对手游戏板
+                    gameState.multiplayer.opponentBoard = updatedRoomData.player1.board || createEmptyBoard();
+                    gameState.multiplayer.opponentScore = updatedRoomData.player1.score || 0;
+                    gameState.multiplayer.opponentGameOver = updatedRoomData.player1.isGameOver || false;
+                    
+                    // 更新UI
+                    elements.game.player1Score.textContent = gameState.multiplayer.opponentScore;
+                    drawOpponentBoard();
+                    
+                    // 检查游戏是否开始
+                    if (updatedRoomData.gameStarted && !gameState.multiplayer.isPlaying) {
+                        startMultiplayerGame();
+                    }
+                });
+                
+                // 显示游戏界面
+                showMultiplayerGameScreen();
+            }).catch(error => {
+                console.error('加入房间错误:', error);
+                elements.multiplayer.joinStatus.textContent = '加入房间失败';
+            });
         }
-        
+
+        // 显示多人游戏界面
+        function showMultiplayerGameScreen() {
+            // 更新UI
+            elements.multiplayer.currentRoomId.textContent = gameState.multiplayer.roomId;
+            
+            if (gameState.multiplayer.playerId === 1) {
+                elements.multiplayer.multiplayerStatus.textContent = '玩家1已加入，等待玩家2...';
+                elements.buttons.startMultiplayerGame.style.display = 'none';
+            } else {
+                elements.multiplayer.multiplayerStatus.textContent = '玩家2已加入，等待游戏开始...';
+                elements.buttons.startMultiplayerGame.style.display = 'none';
+            }
+            
+            // 初始化游戏板
+            initBoard();
+            
+            // 生成下一个方块
+            generateNextPiece('multiplayer');
+            
+            // 绘制初始状态
+            drawBoard('multiplayer');
+            drawNextPiece('multiplayer');
+            drawOpponentBoard();
+            
+            // 显示游戏界面
+            showScreen('multiplayerGame');
+        }
+
+        // 绘制对手游戏板
+        function drawOpponentBoard() {
+            const board = gameState.multiplayer.opponentBoard;
+            const boardElement = gameState.multiplayer.playerId === 1 ? 
+                elements.game.player2Board : elements.game.player1Board;
+            
+            // 清除现有方块
+            const cells = boardElement.querySelectorAll('.cell');
+            cells.forEach(cell => cell.remove());
+            
+            // 绘制固定方块
+            for (let row = 0; row < board.length; row++) {
+                for (let col = 0; col < board[row].length; col++) {
+                    if (board[row][col]) {
+                        const cell = document.createElement('div');
+                        cell.className = `cell ${board[row][col]}`;
+                        cell.style.left = `${col * config.cellSize}px`;
+                        cell.style.top = `${row * config.cellSize}px`;
+                        boardElement.appendChild(cell);
+                    }
+                }
+            }
+        }
+
+        // 开始多人游戏
+        function startMultiplayerGame() {
+            // 只有房主可以开始游戏
+            if (gameState.multiplayer.playerId === 1) {
+                roomRef.update({
+                    gameStarted: true
+                });
+            }
+            
+            // 设置游戏状态
+            gameState.multiplayer.isPlaying = true;
+            gameState.multiplayer.isGameOver = false;
+            
+            // 生成第一个方块
+            if (!gameState.multiplayer.currentPiece) {
+                generateNextPiece('multiplayer');
+                gameState.multiplayer.currentPiece = {
+                    shape: gameState.multiplayer.nextPiece.shape,
+                    matrix: gameState.multiplayer.nextPiece.matrix,
+                    row: 0,
+                    col: Math.floor(config.boardWidth / 2) - Math.floor(gameState.multiplayer.nextPiece.matrix[0].length / 2)
+                };
+                generateNextPiece('multiplayer');
+            }
+            
+            // 开始游戏循环
+            gameState.multiplayer.gameInterval = setInterval(() => {
+                movePieceDown('multiplayer');
+            }, gameState.multiplayer.speed);
+            
+            // 更新UI
+            elements.multiplayer.multiplayerStatus.textContent = '游戏进行中...';
+            elements.buttons.startMultiplayerGame.style.display = 'none';
+            
+            // 更新玩家状态
+            updatePlayerState();
+        }
+
+        // 更新玩家状态到数据库
+        function updatePlayerState() {
+            if (!roomRef || !gameState.multiplayer.isPlaying) return;
+            
+            const playerKey = `player${gameState.multiplayer.playerId}`;
+            
+            roomRef.update({
+                [playerKey]: {
+                    board: gameState.multiplayer.playerBoard,
+                    score: gameState.multiplayer.score,
+                    isReady: true,
+                    isGameOver: gameState.multiplayer.isGameOver
+                }
+            });
+        }
+
+        // 更新对手视图
+        function updateOpponentView() {
+            if (!gameState.multiplayer.currentPiece) return;
+            
+            const playerKey = `player${gameState.multiplayer.playerId}`;
+            
+            roomRef.update({
+                [playerKey]: {
+                    currentPiece: gameState.multiplayer.currentPiece,
+                    board: gameState.multiplayer.playerBoard,
+                    score: gameState.multiplayer.score,
+                    isReady: true,
+                    isGameOver: gameState.multiplayer.isGameOver
+                }
+            });
+        }
+
+        // 结束多人游戏
+        function endMultiplayerGame() {
+            gameState.multiplayer.isPlaying = false;
+            gameState.multiplayer.isGameOver = true;
+            clearInterval(gameState.multiplayer.gameInterval);
+            
+            // 更新数据库
+            updatePlayerState();
+            
+            // 显示游戏结束界面
+            elements.game.playerFinalScore.textContent = gameState.multiplayer.score;
+            
+            // 检查对手是否也结束了游戏
+            if (gameState.multiplayer.opponentGameOver) {
+                // 显示游戏结果
+                if (gameState.multiplayer.score > gameState.multiplayer.opponentScore) {
+                    elements.game.gameResult.textContent = '你赢了!';
+                } else if (gameState.multiplayer.score < gameState.multiplayer.opponentScore) {
+                    elements.game.gameResult.textContent = '你输了!';
+                } else {
+                    elements.game.gameResult.textContent = '平局!';
+                }
+                
+                elements.game.multiplayerGameOver.style.display = 'flex';
+            }
+        }
+
+        // 离开房间
+        function leaveRoom() {
+            if (roomRef) {
+                if (gameState.multiplayer.isHost) {
+                    // 房主离开，删除房间
+                    roomRef.remove();
+                } else {
+                    // 玩家离开，移除玩家数据
+                    roomRef.update({
+                        player2: null,
+                        gameStarted: false
+                    });
+                }
+                
+                roomRef.off(); // 移除所有监听器
+                roomRef = null;
+            }
+            
+            // 重置多人游戏状态
+            gameState.multiplayer = {
+                roomId: null,
+                isHost: false,
+                playerId: null,
+                playerBoard: [],
+                opponentBoard: [],
+                currentPiece: null,
+                nextPiece: null,
+                score: 0,
+                opponentScore: 0,
+                isPlaying: false,
+                gameInterval: null,
+                speed: 1000,
+                isGameOver: false,
+                opponentGameOver: false
+            };
+        }
+
         // 初始化游戏
         window.onload = init;
     </script>
