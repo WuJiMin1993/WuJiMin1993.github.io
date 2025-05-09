@@ -5,91 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>俄罗斯方块 - 主界面</title>
     <style>
-        /* 主界面样式 */
         body {
             font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: white;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            overflow: hidden;
+        }
+        
+        .title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+        }
+        
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .menu-btn {
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
             color: white;
-        }
-        
-        #main-container {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 40px 60px;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-        }
-        
-        h1 {
-            font-size: 3em;
-            margin-bottom: 40px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-        
-        .game-btn {
-            display: block;
-            width: 220px;
-            padding: 15px;
-            margin: 20px auto;
-            font-size: 1.2em;
-            color: white;
-            background: linear-gradient(45deg, #4e54c8, #8f94fb);
             border: none;
-            border-radius: 50px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
-        .game-btn:hover {
+        .menu-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            background: linear-gradient(45deg, #8f94fb, #4e54c8);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #5d7de8, #9668d6);
         }
         
-        .game-btn:active {
+        .menu-btn:active {
             transform: translateY(1px);
-        }
-        
-        .game-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
-    <!-- 主界面容器 -->
-    <div id="main-container" data-screen-id="1000">
-        <h1>俄罗斯方块</h1>
-        <!-- 单人游戏按钮 -->
-        <button class="game-btn" id="single-player-btn">单人游戏</button>
-        <!-- 双人游戏按钮（暂时禁用） -->
-        <button class="game-btn" id="multi-player-btn" disabled>双人游戏</button>
+    <div class="title">俄罗斯方块</div>
+    <div class="menu-container">
+        <button class="menu-btn" onclick="startSinglePlayer()">单人游戏</button>
+        <button class="menu-btn" onclick="startTwoPlayer()">双人游戏</button>
     </div>
 
     <script>
-        // 主框架脚本
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取按钮元素
-            const singlePlayerBtn = document.getElementById('single-player-btn');
-            const multiPlayerBtn = document.getElementById('multi-player-btn');
-            
-            // 单人游戏按钮点击事件
-            singlePlayerBtn.addEventListener('click', function() {
-                // 跳转到单人游戏界面
-                window.location.href = 'Single-player.html';
-            });
-            
-            // 双人游戏按钮点击事件（暂时不做处理）
-            multiPlayerBtn.addEventListener('click', function() {
-                alert('双人游戏功能暂未开放');
-            });
-        });
+        // 跳转到单人游戏界面
+        function startSinglePlayer() {
+            window.location.href = "Single-player.html";
+        }
+        
+        // 跳转到双人游戏界面
+        function startTwoPlayer() {
+            window.location.href = "Two-player.html";
+        }
     </script>
 </body>
 </html>
