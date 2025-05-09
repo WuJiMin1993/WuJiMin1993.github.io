@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>俄罗斯方块 - 单人游戏</title>
     <style>
-        /* 全局样式重置 */
         * {
             margin: 0;
             padding: 0;
@@ -16,7 +15,6 @@
             font-family: 'Arial', sans-serif;
             background-color: #121212;
             color: #ffffff;
-            overflow: hidden;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -24,10 +22,8 @@
             padding-top: 20px;
         }
         
-        /* 游戏主容器 */
         #game-container {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
             align-items: flex-start;
             gap: 30px;
@@ -35,14 +31,12 @@
             max-width: 900px;
         }
         
-        /* 游戏区域 */
         #tetris-board {
             border: 3px solid #00ffff;
             background-color: rgba(0, 0, 0, 0.7);
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
         }
         
-        /* 信息面板 */
         .info-panel {
             background-color: rgba(0, 0, 0, 0.7);
             border: 2px solid #00ffff;
@@ -52,7 +46,6 @@
             box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
         }
         
-        /* 下一个方块预览 */
         #next-piece-container {
             margin-bottom: 25px;
             text-align: center;
@@ -64,7 +57,6 @@
             margin-top: 10px;
         }
         
-        /* 分数显示 */
         #score-display {
             font-size: 1.8rem;
             margin-bottom: 25px;
@@ -72,7 +64,6 @@
             text-align: center;
         }
         
-        /* 游戏控制按钮 */
         .control-button {
             padding: 12px 20px;
             margin: 8px 0;
@@ -93,7 +84,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         
-        /* 返回按钮 */
         #back-button {
             position: absolute;
             top: 20px;
@@ -119,7 +109,6 @@
             box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
         
-        /* 游戏说明 */
         #instructions {
             margin-top: 30px;
             padding: 20px;
@@ -142,7 +131,6 @@
             margin-bottom: 10px;
         }
         
-        /* 游戏结束弹窗 */
         #game-over-modal {
             display: none;
             position: fixed;
@@ -180,7 +168,6 @@
             color: #00ffff;
         }
         
-        /* 标题样式 */
         .game-title {
             color: #00ffff;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
@@ -191,20 +178,15 @@
     </style>
 </head>
 <body>
-    <!-- 返回按钮 -->
     <div id="back-button" title="返回主界面">←</div>
     
-    <!-- 游戏标题 -->
     <h1 class="game-title">俄罗斯方块</h1>
     
-    <!-- 游戏主容器 -->
     <div id="game-container" data-interface-id="1001">
-        <!-- 游戏区域 -->
         <div>
             <canvas id="tetris-board" width="300" height="600"></canvas>
         </div>
         
-        <!-- 信息面板 -->
         <div class="info-panel">
             <div id="score-display">得分: 0</div>
             
@@ -218,7 +200,6 @@
         </div>
     </div>
     
-    <!-- 游戏说明 -->
     <div id="instructions">
         <h3>游戏说明</h3>
         <p>← → 键: 左右移动方块</p>
@@ -228,7 +209,6 @@
         <p>P 键: 暂停/继续游戏</p>
     </div>
     
-    <!-- 游戏结束弹窗 -->
     <div id="game-over-modal">
         <div class="modal-content">
             <div class="modal-title">游戏结束!</div>
@@ -239,50 +219,43 @@
 
     <script>
         // 游戏常量
-        const COLS = 10; // 游戏区域列数
-        const ROWS = 20; // 游戏区域行数
-        const BLOCK_SIZE = 30; // 每个方块的大小(像素)
-        const NEXT_BLOCK_SIZE = 24; // 下一个方块预览的大小
+        const COLS = 10;
+        const ROWS = 20;
+        const BLOCK_SIZE = 30;
+        const NEXT_BLOCK_SIZE = 24;
         
         // 方块形状定义
         const SHAPES = [
-            // I 形
             [
                 [0, 0, 0, 0],
                 [1, 1, 1, 1],
                 [0, 0, 0, 0],
                 [0, 0, 0, 0]
             ],
-            // J 形
             [
                 [1, 0, 0],
                 [1, 1, 1],
                 [0, 0, 0]
             ],
-            // L 形
             [
                 [0, 0, 1],
                 [1, 1, 1],
                 [0, 0, 0]
             ],
-            // O 形
             [
                 [1, 1],
                 [1, 1]
             ],
-            // S 形
             [
                 [0, 1, 1],
                 [1, 1, 0],
                 [0, 0, 0]
             ],
-            // T 形
             [
                 [0, 1, 0],
                 [1, 1, 1],
                 [0, 0, 0]
             ],
-            // Z 形
             [
                 [1, 1, 0],
                 [0, 1, 1],
@@ -292,36 +265,36 @@
         
         // 方块颜色
         const COLORS = [
-            '#00ffff', // I - 青色
-            '#0000ff', // J - 蓝色
-            '#ffaa00', // L - 橙色
-            '#ffff00', // O - 黄色
-            '#00ff00', // S - 绿色
-            '#aa00ff', // T - 紫色
-            '#ff0000'  // Z - 红色
+            '#00ffff',
+            '#0000ff',
+            '#ffaa00',
+            '#ffff00',
+            '#00ff00',
+            '#aa00ff',
+            '#ff0000'
         ];
         
         // 游戏状态变量
-        let canvas, ctx; // 游戏画布和上下文
-        let nextCanvas, nextCtx; // 下一个方块预览画布
-        let board = []; // 游戏板数组
-        let currentPiece = null; // 当前方块
-        let nextPiece = null; // 下一个方块
-        let score = 0; // 当前分数
-        let gameOver = false; // 游戏是否结束
-        let isPaused = false; // 游戏是否暂停
-        let isStarted = false; // 游戏是否已开始
-        let dropInterval = 1000; // 方块下落间隔(毫秒)
-        let dropStart; // 下落开始时间
-        let animationId; // 动画ID
+        let canvas, ctx;
+        let nextCanvas, nextCtx;
+        let board = [];
+        let currentPiece = null;
+        let nextPiece = null;
+        let score = 0;
+        let gameOver = false;
+        let isPaused = false;
+        let isStarted = false;
+        let dropInterval = 1000;
+        let dropStart;
+        let animationId;
         
-        // 速度等级和对应的下落间隔
+        // 速度等级
         const SPEED_LEVELS = [
-            { score: 0, interval: 1000 },    // 初始速度
-            { score: 1000, interval: 700 },  // 1000分后加速
-            { score: 3000, interval: 500 },  // 3000分后加速
-            { score: 6000, interval: 300 },  // 6000分后加速
-            { score: 10000, interval: 200 }  // 10000分后加速
+            { score: 0, interval: 1000 },
+            { score: 1000, interval: 700 },
+            { score: 3000, interval: 500 },
+            { score: 6000, interval: 300 },
+            { score: 10000, interval: 200 }
         ];
         
         // DOM元素
@@ -335,28 +308,20 @@
         
         // 初始化游戏
         function init() {
-            // 获取游戏画布和上下文
             canvas = document.getElementById('tetris-board');
             ctx = canvas.getContext('2d');
             
-            // 获取下一个方块预览画布
             nextCanvas = document.getElementById('next-piece');
             nextCtx = nextCanvas.getContext('2d');
             
-            // 设置画布大小
             canvas.width = COLS * BLOCK_SIZE;
             canvas.height = ROWS * BLOCK_SIZE;
             
-            // 初始化游戏板
             createBoard();
-            
-            // 生成下一个方块（但不生成当前方块，直到游戏开始）
             nextPiece = generatePiece();
             
-            // 设置事件监听器
             setEventListeners();
             
-            // 绘制初始状态
             draw();
             drawNextPiece();
         }
@@ -391,7 +356,7 @@
             currentPiece = nextPiece;
             nextPiece = generatePiece();
             
-            // 检查游戏是否结束 - 只有当方块生成时已经与已有方块重叠且部分在顶部之外才结束游戏
+            // 检查游戏是否结束
             if (collision(0, 0)) {
                 // 检查是否有方块超过游戏区域顶部
                 if (isGameOver()) {
@@ -414,15 +379,12 @@
         
         // 绘制游戏板
         function draw() {
-            // 清空画布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 绘制网格线（仅在游戏未开始时显示）
             if (!isStarted) {
                 ctx.strokeStyle = 'rgba(0, 255, 255, 0.2)';
                 ctx.lineWidth = 0.5;
                 
-                // 绘制垂直线
                 for (let c = 0; c <= COLS; c++) {
                     ctx.beginPath();
                     ctx.moveTo(c * BLOCK_SIZE, 0);
@@ -430,7 +392,6 @@
                     ctx.stroke();
                 }
                 
-                // 绘制水平线
                 for (let r = 0; r <= ROWS; r++) {
                     ctx.beginPath();
                     ctx.moveTo(0, r * BLOCK_SIZE);
@@ -439,7 +400,6 @@
                 }
             }
             
-            // 绘制已固定的方块
             for (let r = 0; r < ROWS; r++) {
                 for (let c = 0; c < COLS; c++) {
                     if (board[r][c]) {
@@ -448,7 +408,6 @@
                 }
             }
             
-            // 绘制当前移动的方块（如果游戏已开始）
             if (isStarted && currentPiece) {
                 for (let r = 0; r < currentPiece.shape.length; r++) {
                     for (let c = 0; c < currentPiece.shape[r].length; c++) {
@@ -483,7 +442,6 @@
                 BLOCK_SIZE
             );
             
-            // 添加高光效果
             ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
             ctx.fillRect(
                 x * BLOCK_SIZE + 2,
@@ -503,15 +461,12 @@
         
         // 绘制下一个方块预览
         function drawNextPiece() {
-            // 清空预览画布
             nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
             
             if (nextPiece) {
-                // 计算居中位置
                 const offsetX = (nextCanvas.width - nextPiece.shape[0].length * NEXT_BLOCK_SIZE) / 2;
                 const offsetY = (nextCanvas.height - nextPiece.shape.length * NEXT_BLOCK_SIZE) / 2;
                 
-                // 绘制下一个方块
                 for (let r = 0; r < nextPiece.shape.length; r++) {
                     for (let c = 0; c < nextPiece.shape[r].length; c++) {
                         if (nextPiece.shape[r][c]) {
@@ -526,7 +481,7 @@
                             nextCtx.strokeStyle = '#000000';
                             nextCtx.strokeRect(
                                 offsetX + c * NEXT_BLOCK_SIZE,
-                                offsetY + r * NEXT_BOCK_SIZE,
+                                offsetY + r * NEXT_BLOCK_SIZE,
                                 NEXT_BLOCK_SIZE,
                                 NEXT_BLOCK_SIZE
                             );
@@ -542,18 +497,15 @@
             
             for (let r = 0; r < piece.shape.length; r++) {
                 for (let c = 0; c < piece.shape[r].length; c++) {
-                    // 如果方块单元为空则跳过
                     if (!piece.shape[r][c]) continue;
                     
                     const newX = piece.x + c + offsetX;
                     const newY = piece.y + r + offsetY;
                     
-                    // 检查是否超出边界
                     if (newX < 0 || newX >= COLS || newY >= ROWS) {
                         return true;
                     }
                     
-                    // 检查是否与已固定的方块重叠
                     if (newY >= 0 && board[newY][newX]) {
                         return true;
                     }
@@ -566,7 +518,6 @@
         function rotate() {
             if (!isStarted || isPaused || gameOver) return;
             
-            // 创建旋转后的形状
             const rotated = [];
             for (let c = 0; c < currentPiece.shape[0].length; c++) {
                 rotated[c] = [];
@@ -575,19 +526,15 @@
                 }
             }
             
-            // 保存原始形状以便回滚
             const originalShape = currentPiece.shape;
             currentPiece.shape = rotated;
             
-            // 检查旋转后是否碰撞
             if (collision(0, 0)) {
-                // 如果碰撞，尝试左右移动
                 if (!collision(-1, 0)) {
                     currentPiece.x -= 1;
                 } else if (!collision(1, 0)) {
                     currentPiece.x += 1;
                 } else {
-                    // 无法旋转，恢复原始形状
                     currentPiece.shape = originalShape;
                 }
             }
@@ -606,7 +553,6 @@
                 return true;
             }
             
-            // 如果是向下移动且不能移动，则固定方块
             if (offsetY === 1) {
                 lockPiece();
                 generateNewPiece();
@@ -621,11 +567,8 @@
         function hardDrop() {
             if (!isStarted || isPaused || gameOver) return;
             
-            while (move(0, 1)) {
-                // 继续下落直到不能移动
-            }
+            while (move(0, 1)) {}
             
-            // 固定方块并生成新方块
             lockPiece();
             generateNewPiece();
             draw();
@@ -638,14 +581,12 @@
                 for (let c = 0; c < currentPiece.shape[r].length; c++) {
                     if (!currentPiece.shape[r][c]) continue;
                     
-                    // 确保不会超出上边界
                     if (currentPiece.y + r < 0) continue;
                     
                     board[currentPiece.y + r][currentPiece.x + c] = currentPiece.color;
                 }
             }
             
-            // 检查并清除已填满的行
             clearLines();
         }
         
@@ -654,21 +595,16 @@
             let linesCleared = 0;
             
             for (let r = ROWS - 1; r >= 0; r--) {
-                // 检查当前行是否已填满
                 const isLineFull = board[r].every(cell => cell !== 0);
                 
                 if (isLineFull) {
-                    // 移除当前行
                     board.splice(r, 1);
-                    // 在顶部添加新行
                     board.unshift(new Array(COLS).fill(0));
-                    // 因为删除了行，需要重新检查当前行
                     r++;
                     linesCleared++;
                 }
             }
             
-            // 更新分数
             if (linesCleared > 0) {
                 updateScore(linesCleared);
             }
@@ -676,14 +612,11 @@
         
         // 更新分数
         function updateScore(linesCleared) {
-            // 根据消除的行数计算得分
-            const points = [0, 40, 100, 300, 1200]; // 0, 1, 2, 3, 4行
+            const points = [0, 40, 100, 300, 1200];
             score += points[linesCleared];
             
-            // 更新显示
             scoreDisplay.textContent = `得分: ${score}`;
             
-            // 根据分数调整下落速度
             for (let i = SPEED_LEVELS.length - 1; i >= 0; i--) {
                 if (score >= SPEED_LEVELS[i].score) {
                     dropInterval = SPEED_LEVELS[i].interval;
@@ -694,17 +627,12 @@
         
         // 游戏主循环
         function gameLoop(timestamp) {
-            if (!isStarted || gameOver || isPaused) {
-                return;
-            }
+            if (!isStarted || gameOver || isPaused) return;
             
-            // 计算时间差
             const delta = timestamp - dropStart;
             
-            // 如果时间差大于下落间隔，方块下落
             if (delta > dropInterval) {
                 if (!move(0, 1)) {
-                    // 如果不能下落，固定方块并生成新方块
                     lockPiece();
                     generateNewPiece();
                     drawNextPiece();
@@ -712,10 +640,7 @@
                 dropStart = timestamp;
             }
             
-            // 绘制游戏状态
             draw();
-            
-            // 继续循环
             animationId = requestAnimationFrame(gameLoop);
         }
         
@@ -725,7 +650,6 @@
                 resetGame();
             }
             
-            // 如果是第一次开始游戏，生成当前方块
             if (!isStarted) {
                 generateNewPiece();
                 isStarted = true;
@@ -734,16 +658,13 @@
             gameOver = false;
             isPaused = false;
             
-            // 更新按钮状态
             startButton.textContent = '重新开始';
             pauseButton.disabled = false;
             pauseButton.textContent = '暂停';
             
-            // 开始游戏循环
             dropStart = performance.now();
             animationId = requestAnimationFrame(gameLoop);
             
-            // 绘制游戏状态
             draw();
             drawNextPiece();
         }
@@ -766,30 +687,22 @@
         
         // 重置游戏
         function resetGame() {
-            // 取消动画帧
             cancelAnimationFrame(animationId);
             
-            // 重置游戏状态
             score = 0;
             gameOver = false;
             isPaused = false;
             isStarted = false;
             dropInterval = 1000;
             
-            // 更新显示
             scoreDisplay.textContent = `得分: ${score}`;
             
-            // 重置游戏板
             createBoard();
-            
-            // 生成新方块（仅下一个方块）
             nextPiece = generatePiece();
             
-            // 绘制初始状态
             draw();
             drawNextPiece();
             
-            // 更新按钮状态
             startButton.textContent = '开始游戏';
             pauseButton.disabled = true;
             pauseButton.textContent = '暂停';
@@ -799,10 +712,7 @@
         function showGameOver() {
             cancelAnimationFrame(animationId);
             
-            // 更新最终得分
             finalScoreDisplay.textContent = score;
-            
-            // 显示游戏结束弹窗
             gameOverModal.style.display = 'flex';
         }
         
@@ -813,46 +723,28 @@
         
         // 设置事件监听器
         function setEventListeners() {
-            // 键盘控制
             document.addEventListener('keydown', function(e) {
                 if (!isStarted || gameOver) return;
                 
                 switch (e.keyCode) {
-                    case 37: // 左箭头
-                        move(-1, 0);
-                        break;
-                    case 39: // 右箭头
-                        move(1, 0);
-                        break;
-                    case 40: // 下箭头
-                        move(0, 1);
-                        break;
-                    case 38: // 上箭头
-                        rotate();
-                        break;
-                    case 32: // 空格键
-                        hardDrop();
-                        break;
-                    case 80: // P键暂停
-                        togglePause();
-                        break;
+                    case 37: move(-1, 0); break;
+                    case 39: move(1, 0); break;
+                    case 40: move(0, 1); break;
+                    case 38: rotate(); break;
+                    case 32: hardDrop(); break;
+                    case 80: togglePause(); break;
                 }
             });
             
-            // 开始按钮
             startButton.addEventListener('click', startGame);
-            
-            // 暂停按钮
             pauseButton.addEventListener('click', togglePause);
             
-            // 返回按钮
             backButton.addEventListener('click', function() {
                 if (confirm('确定要返回主界面吗？当前游戏进度将丢失。')) {
                     window.location.href = 'index.html';
                 }
             });
             
-            // 重新开始按钮
             restartButton.addEventListener('click', function() {
                 hideGameOver();
                 resetGame();
@@ -860,7 +752,6 @@
             });
         }
         
-        // 初始化游戏
         window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
