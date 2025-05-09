@@ -325,6 +325,7 @@
         let dropStart; // 方块下落开始时间
         let lastTime = 0; // 上一帧时间
         let gameSpeed = 1000; // 初始下落速度(毫秒)
+        let animationId; // 用于存储动画帧ID
         
         // 初始化游戏
         function init() {
@@ -351,7 +352,7 @@
             nextPiece = generatePiece();
             
             // 开始游戏循环
-            requestAnimationFrame(gameLoop);
+            gameLoop();
             
             // 默认显示主菜单
             showScreen('main-menu');
@@ -465,7 +466,7 @@
             
             // 如果游戏未结束，继续循环
             if (!gameOver) {
-                requestAnimationFrame(gameLoop);
+                animationId = requestAnimationFrame(gameLoop);
             } else {
                 // 游戏结束处理
                 showGameOver();
@@ -489,13 +490,21 @@
         
         // 重新开始游戏
         function restartGame() {
+            // 移除游戏结束界面
             const gameOverDiv = document.querySelector('.game-over');
             if (gameOverDiv) {
                 gameOverDiv.remove();
             }
             
+            // 重置游戏状态
             resetGame();
+            
+            // 重新开始游戏
             startGame();
+            
+            // 重新启动游戏循环
+            cancelAnimationFrame(animationId);
+            gameLoop();
         }
         
         // 方块下落
@@ -704,12 +713,6 @@
             gameSpeed = 1000;
             dropStart = performance.now();
             lastTime = 0;
-            
-            // 移除游戏结束界面
-            const gameOverDiv = document.querySelector('.game-over');
-            if (gameOverDiv) {
-                gameOverDiv.remove();
-            }
         }
         
         // 初始化游戏
