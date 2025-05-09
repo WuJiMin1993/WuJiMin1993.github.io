@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>经典俄罗斯方块</title>
     <style>
+        /* 基础样式设置 */
         body {
             font-family: Arial, sans-serif;
-            background-color: #222;
+            background-color: #222; /* 深色背景 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,11 +18,13 @@
             color: white;
         }
         
+        /* 主菜单和游戏界面初始隐藏 */
         #main-menu, #single-player-game {
             text-align: center;
             display: none;
         }
         
+        /* 活动界面显示样式 */
         .active {
             display: flex !important;
             flex-direction: column;
@@ -29,8 +32,9 @@
             justify-content: center;
         }
         
+        /* 菜单按钮样式 */
         .menu-btn {
-            background-color: #4CAF50;
+            background-color: #4CAF50; /* 绿色按钮 */
             border: none;
             color: white;
             padding: 15px 32px;
@@ -46,12 +50,14 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
+        /* 菜单按钮悬停效果 */
         .menu-btn:hover {
             background-color: #45a049;
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
         
+        /* 单人游戏界面样式 */
         #single-player-game {
             position: relative;
             width: 600px;
@@ -64,6 +70,7 @@
             align-items: center;
         }
         
+        /* 游戏容器布局 */
         .game-container {
             display: flex;
             justify-content: space-between;
@@ -71,12 +78,14 @@
             margin-top: 20px;
         }
         
+        /* 游戏画布样式 */
         #game-board {
             border: 2px solid #444;
             background-color: #111;
             display: block;
         }
         
+        /* 游戏信息区域样式 */
         .game-info {
             width: 200px;
             margin-left: 20px;
@@ -84,6 +93,7 @@
             flex-direction: column;
         }
         
+        /* 得分显示样式 */
         #score-display {
             color: white;
             font-size: 20px;
@@ -95,6 +105,7 @@
             text-align: center;
         }
         
+        /* 操作说明样式 */
         #instructions {
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -104,6 +115,7 @@
             line-height: 1.6;
         }
         
+        /* 操作说明标题样式 */
         #instructions h3 {
             margin-top: 0;
             color: #4CAF50;
@@ -112,11 +124,12 @@
             text-align: center;
         }
         
+        /* 返回按钮样式 */
         #back-btn {
             position: absolute;
             top: 20px;
             left: 20px;
-            background-color: #f44336;
+            background-color: #f44336; /* 红色按钮 */
             border: none;
             color: white;
             padding: 10px;
@@ -132,17 +145,19 @@
             transition: all 0.3s;
         }
         
+        /* 返回按钮悬停效果 */
         #back-btn:hover {
             background-color: #d32f2f;
             transform: scale(1.1);
         }
         
+        /* 开始游戏按钮样式 */
         #start-game-btn {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #2196F3;
+            background-color: #2196F3; /* 蓝色按钮 */
             border: none;
             color: white;
             padding: 15px 32px;
@@ -150,7 +165,7 @@
             text-decoration: none;
             display: inline-block;
             font-size: 18px;
-            cursor: pointer;
+            cursor: button;
             border-radius: 5px;
             transition: all 0.3s;
             z-index: 10;
@@ -158,11 +173,13 @@
             font-weight: bold;
         }
         
+        /* 开始游戏按钮悬停效果 */
         #start-game-btn:hover {
             background-color: #0b7dda;
             transform: translate(-50%, -50%) scale(1.05);
         }
         
+        /* 游戏结束界面样式 */
         .game-over {
             position: absolute;
             top: 0;
@@ -179,17 +196,20 @@
             border-radius: 10px;
         }
         
+        /* 游戏结束标题样式 */
         .game-over h2 {
             font-size: 36px;
             margin-bottom: 20px;
             color: #f44336;
         }
         
+        /* 游戏结束文本样式 */
         .game-over p {
             font-size: 24px;
             margin-bottom: 30px;
         }
         
+        /* 重新开始按钮样式 */
         .restart-btn {
             background-color: #4CAF50;
             border: none;
@@ -205,17 +225,20 @@
             font-weight: bold;
         }
         
+        /* 重新开始按钮悬停效果 */
         .restart-btn:hover {
             background-color: #45a049;
             transform: scale(1.05);
         }
         
+        /* 主标题样式 */
         h1 {
             color: #4CAF50;
             margin-bottom: 30px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
+        /* 游戏标题样式 */
         #game-title {
             color: #4CAF50;
             font-size: 24px;
@@ -226,7 +249,7 @@
     </style>
 </head>
 <body>
-    <!-- 主菜单 -->
+    <!-- 主菜单界面 -->
     <div id="main-menu" class="active">
         <h1>经典俄罗斯方块</h1>
         <button id="single-player-btn" class="menu-btn">单人游戏</button>
@@ -238,11 +261,17 @@
         <div id="game-title">俄罗斯方块</div>
         <button id="back-btn">←</button>
         
+        <!-- 游戏主区域 -->
         <div class="game-container">
+            <!-- 游戏画布 -->
             <canvas id="game-board" width="300" height="600"></canvas>
             
+            <!-- 游戏信息区域 -->
             <div class="game-info">
+                <!-- 得分显示 -->
                 <div id="score-display">得分: 0</div>
+                
+                <!-- 操作说明 -->
                 <div id="instructions">
                     <h3>操作说明:</h3>
                     <p>↑: 旋转方块</p>
@@ -254,14 +283,17 @@
             </div>
         </div>
         
+        <!-- 开始游戏按钮 -->
         <button id="start-game-btn">开始游戏</button>
     </div>
 
     <script>
-        // 游戏常量
-        const COLS = 10;
-        const ROWS = 20;
-        const BLOCK_SIZE = 30;
+        // 游戏常量定义
+        const COLS = 10; // 游戏板列数
+        const ROWS = 20; // 游戏板行数
+        const BLOCK_SIZE = 30; // 每个方块的大小(像素)
+        
+        // 方块颜色定义
         const COLORS = [
             '#00FFFF', // I - 青色
             '#0000FF', // J - 蓝色
@@ -283,20 +315,20 @@
             [[1, 1, 0], [0, 1, 1], [0, 0, 0]]                         // Z
         ];
         
-        // 游戏状态
-        let canvas, ctx;
-        let board = [];
-        let currentPiece, nextPiece;
-        let score = 0;
-        let gameOver = false;
-        let gameStarted = false;
-        let dropStart;
-        let lastTime = 0;
+        // 游戏状态变量
+        let canvas, ctx; // 画布和绘图上下文
+        let board = []; // 游戏板数组
+        let currentPiece, nextPiece; // 当前方块和下一个方块
+        let score = 0; // 游戏得分
+        let gameOver = false; // 游戏结束标志
+        let gameStarted = false; // 游戏开始标志
+        let dropStart; // 方块下落开始时间
+        let lastTime = 0; // 上一帧时间
         let gameSpeed = 1000; // 初始下落速度(毫秒)
         
         // 初始化游戏
         function init() {
-            // 设置按钮事件
+            // 设置按钮事件监听
             document.getElementById('single-player-btn').addEventListener('click', startSinglePlayer);
             document.getElementById('two-player-btn').addEventListener('click', showTwoPlayer);
             document.getElementById('back-btn').addEventListener('click', backToMenu);
@@ -320,6 +352,9 @@
             
             // 开始游戏循环
             requestAnimationFrame(gameLoop);
+            
+            // 默认显示主菜单
+            showScreen('main-menu');
         }
         
         // 创建游戏板
@@ -328,7 +363,7 @@
             for (let r = 0; r < ROWS; r++) {
                 board[r] = [];
                 for (let c = 0; c < COLS; c++) {
-                    board[r][c] = 0;
+                    board[r][c] = 0; // 0表示空位置
                 }
             }
         }
@@ -375,7 +410,7 @@
             }
         }
         
-        // 绘制方块
+        // 绘制当前方块
         function drawPiece(piece) {
             for (let r = 0; r < piece.shape.length; r++) {
                 for (let c = 0; c < piece.shape[r].length; c++) {
