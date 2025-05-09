@@ -7,13 +7,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #222;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             overflow: hidden;
+            color: white;
         }
         
         #main-menu, #single-player-game {
@@ -22,7 +23,10 @@
         }
         
         .active {
-            display: block !important;
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
         .menu-btn {
@@ -37,49 +41,69 @@
             margin: 10px;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
             width: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
         .menu-btn:hover {
             background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
         
         #single-player-game {
             position: relative;
+            width: 350px;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
         
         #game-board {
-            border: 2px solid #333;
+            border: 2px solid #444;
             background-color: #111;
+            margin: 0 auto;
+            display: block;
         }
         
         #score-display {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 20px;
+            right: 20px;
             color: white;
             font-size: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
             border-radius: 5px;
+            font-weight: bold;
         }
         
         #instructions {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+            bottom: 20px;
+            left: 20px;
             color: white;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
             border-radius: 5px;
-            max-width: 200px;
+            width: 150px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        #instructions h3 {
+            margin-top: 0;
+            color: #4CAF50;
+            border-bottom: 1px solid #4CAF50;
+            padding-bottom: 5px;
         }
         
         #back-btn {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 20px;
+            left: 20px;
             background-color: #f44336;
             border: none;
             color: white;
@@ -87,10 +111,18 @@
             border-radius: 50%;
             cursor: pointer;
             font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
         }
         
         #back-btn:hover {
             background-color: #d32f2f;
+            transform: scale(1.1);
         }
         
         #start-game-btn {
@@ -105,15 +137,18 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
             z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
         }
         
         #start-game-btn:hover {
             background-color: #0b7dda;
+            transform: translate(-50%, -50%) scale(1.05);
         }
         
         .game-over {
@@ -122,41 +157,62 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.75);
+            background-color: rgba(0, 0, 0, 0.85);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: white;
-            z-index: 5;
+            z-index: 20;
+            border-radius: 10px;
         }
         
         .game-over h2 {
-            font-size: 30px;
+            font-size: 36px;
             margin-bottom: 20px;
+            color: #f44336;
         }
         
         .game-over p {
-            font-size: 20px;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-bottom: 30px;
         }
         
         .restart-btn {
             background-color: #4CAF50;
             border: none;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            font-weight: bold;
         }
         
         .restart-btn:hover {
             background-color: #45a049;
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        #game-title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #4CAF50;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
@@ -170,6 +226,7 @@
     
     <!-- 单人游戏界面 -->
     <div id="single-player-game">
+        <div id="game-title">俄罗斯方块</div>
         <canvas id="game-board" width="300" height="600"></canvas>
         <div id="score-display">得分: 0</div>
         <button id="back-btn">←</button>
@@ -190,7 +247,13 @@
         const ROWS = 20;
         const BLOCK_SIZE = 30;
         const COLORS = [
-            'cyan', 'blue', 'orange', 'yellow', 'green', 'purple', 'red'
+            '#00FFFF', // I - 青色
+            '#0000FF', // J - 蓝色
+            '#FF7F00', // L - 橙色
+            '#FFFF00', // O - 黄色
+            '#00FF00', // S - 绿色
+            '#800080', // T - 紫色
+            '#FF0000'  // Z - 红色
         ];
         
         // 方块形状定义
@@ -273,6 +336,20 @@
         
         // 绘制游戏板
         function drawBoard() {
+            // 绘制背景网格
+            ctx.fillStyle = '#111';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制网格线
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 0.5;
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    ctx.strokeRect(c * BLOCK_SIZE, r * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                }
+            }
+            
+            // 绘制已固定的方块
             for (let r = 0; r < ROWS; r++) {
                 for (let c = 0; c < COLS; c++) {
                     if (board[r][c]) {
@@ -298,7 +375,14 @@
             ctx.fillStyle = color;
             ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
             
-            ctx.strokeStyle = 'black';
+            // 添加方块内阴影效果
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x * BLOCK_SIZE + 2, y * BLOCK_SIZE + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            
+            // 添加方块边框
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.lineWidth = 1;
             ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
         
