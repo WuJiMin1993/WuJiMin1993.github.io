@@ -358,7 +358,6 @@
             
             // 检查游戏是否结束
             if (collision(0, 0)) {
-                // 检查是否有方块超过游戏区域顶部
                 if (isGameOver()) {
                     gameOver = true;
                     showGameOver();
@@ -368,10 +367,12 @@
         
         // 检查游戏是否结束
         function isGameOver() {
-            // 检查游戏板上方是否有方块
-            for (let c = 0; c < COLS; c++) {
-                if (board[0][c] !== 0) {
-                    return true;
+            // 检查当前方块是否已经超出游戏区域顶部
+            for (let r = 0; r < currentPiece.shape.length; r++) {
+                for (let c = 0; c < currentPiece.shape[r].length; c++) {
+                    if (currentPiece.shape[r][c] && currentPiece.y + r < 0) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -569,13 +570,6 @@
             
             // 先执行下落直到不能移动
             while (move(0, 1)) {}
-            
-            // 检查游戏是否结束
-            if (isGameOver()) {
-                gameOver = true;
-                showGameOver();
-                return;
-            }
             
             // 固定方块并生成新方块
             lockPiece();
