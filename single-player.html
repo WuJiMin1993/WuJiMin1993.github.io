@@ -287,6 +287,7 @@
         let dropInterval = 1000;
         let dropStart;
         let animationId;
+        let lastDropTime = 0;
         
         // 速度等级
         const SPEED_LEVELS = [
@@ -465,7 +466,7 @@
             nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
             
             if (nextPiece) {
-                const offsetX = (nextCanvas.width - nextPiece.shape[0].length * NEXT_BLOCK_SIZE) / 2;
+                const offsetX = (nextCanvas.width - nextPiece.shape[0].length * NEXT_BOCK_SIZE) / 2;
                 const offsetY = (nextCanvas.height - nextPiece.shape.length * NEXT_BLOCK_SIZE) / 2;
                 
                 for (let r = 0; r < nextPiece.shape.length; r++) {
@@ -630,9 +631,16 @@
         
         // 游戏主循环
         function gameLoop(timestamp) {
-            if (!isStarted || gameOver || isPaused) return;
+            if (!isStarted || gameOver || isPaused) {
+                animationId = requestAnimationFrame(gameLoop);
+                return;
+            }
             
-            const delta = timestamp - dropStart;
+            if (!lastDropTime) {
+                lastDropTime = timestamp;
+            }
+            
+            const delta = timestamp - lastDropTime;
             
             if (delta > dropInterval) {
                 if (!move(0, 1)) {
@@ -640,7 +648,7 @@
                     generateNewPiece();
                     drawNextPiece();
                 }
-                dropStart = timestamp;
+                lastDropTime = timestamp;
             }
             
             draw();
@@ -660,12 +668,12 @@
             
             gameOver = false;
             isPaused = false;
+            lastDropTime = 0;
             
             startButton.textContent = '重新开始';
             pauseButton.disabled = false;
             pauseButton.textContent = '暂停';
             
-            dropStart = performance.now();
             animationId = requestAnimationFrame(gameLoop);
             
             draw();
@@ -682,7 +690,7 @@
                 cancelAnimationFrame(animationId);
                 pauseButton.textContent = '继续';
             } else {
-                dropStart = performance.now() - (dropInterval - (performance.now() - dropStart));
+                lastDropTime = performance.now();
                 animationId = requestAnimationFrame(gameLoop);
                 pauseButton.textContent = '暂停';
             }
@@ -697,6 +705,7 @@
             isPaused = false;
             isStarted = false;
             dropInterval = 1000;
+            lastDropTime = 0;
             
             scoreDisplay.textContent = `得分: ${score}`;
             
