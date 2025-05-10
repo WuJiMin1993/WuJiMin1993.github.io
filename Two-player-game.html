@@ -301,6 +301,9 @@
             isReady: false
         };
         
+        // 当前玩家的方块
+        let player_piece = null;
+
         // 初始化游戏
         function init() {
             // 获取玩家角色和房间号
@@ -325,7 +328,7 @@
             
             // 设置初始房间数据
             if (playerRole === 'player1') {
-                roomRef.set({
+                const initialData = {
                     player1: {
                         board: player1.board,
                         piece: null,
@@ -343,7 +346,9 @@
                         isReady: false
                     },
                     gameStarted: false
-                });
+                };
+                
+                roomRef.set(initialData);
                 player1.isReady = true;
             }
             
@@ -356,7 +361,7 @@
                 gameStarted = data.gameStarted;
                 
                 // 更新玩家状态显示
-                if (data.player2.isReady) {
+                if (data.player2 && data.player2.isReady) {
                     player2Status.textContent = '玩家2已加入';
                     player2Status.classList.add('active');
                     
@@ -370,29 +375,33 @@
                 
                 // 更新玩家数据
                 if (playerRole === 'player1') {
-                    player2.board = data.player2.board || createMatrix(COLS, ROWS);
-                    player2.score = data.player2.score || 0;
-                    player2.gameOver = data.player2.gameOver || false;
-                    player2.isReady = data.player2.isReady || false;
-                    
-                    if (data.player2.piece) {
-                        player2.piece = data.player2.piece.matrix;
-                        player2.pos = data.player2.pos;
+                    if (data.player2) {
+                        player2.board = data.player2.board || createMatrix(COLS, ROWS);
+                        player2.score = data.player2.score || 0;
+                        player2.gameOver = data.player2.gameOver || false;
+                        player2.isReady = data.player2.isReady || false;
+                        
+                        if (data.player2.piece) {
+                            player2.piece = data.player2.piece.matrix;
+                            player2.pos = data.player2.pos;
+                        }
                     }
                 } else {
-                    player1.board = data.player1.board || createMatrix(COLS, ROWS);
-                    player1.score = data.player1.score || 0;
-                    player1.gameOver = data.player1.gameOver || false;
-                    player1.isReady = data.player1.isReady || false;
-                    
-                    if (data.player1.piece) {
-                        player1.piece = data.player1.piece.matrix;
-                        player1.pos = data.player1.pos;
+                    if (data.player1) {
+                        player1.board = data.player1.board || createMatrix(COLS, ROWS);
+                        player1.score = data.player1.score || 0;
+                        player1.gameOver = data.player1.gameOver || false;
+                        player1.isReady = data.player1.isReady || false;
+                        
+                        if (data.player1.piece) {
+                            player1.piece = data.player1.piece.matrix;
+                            player1.pos = data.player1.pos;
+                        }
                     }
                 }
                 
                 // 检查游戏是否结束
-                if (data.player1.gameOver && data.player2.gameOver) {
+                if (data.player1 && data.player2 && data.player1.gameOver && data.player2.gameOver) {
                     gameOver = true;
                     showGameOver(data.player1.score, data.player2.score);
                 }
@@ -404,12 +413,14 @@
             
             // 玩家2加入时自动准备
             if (playerRole === 'player2') {
-                roomRef.update({
+                const updateData = {
                     'player2/isReady': true,
                     'player2/board': createMatrix(COLS, ROWS),
                     'player2/score': 0,
                     'player2/gameOver': false
-                });
+                };
+                
+                roomRef.update(updateData);
                 player2.isReady = true;
             }
             
@@ -639,9 +650,9 @@
                 player.gameOver = true;
                 
                 // 更新游戏结束状态到数据库
-                roomRef.update({
-                    [playerRole + '.gameOver']: true
-                });
+                const updateData = {};
+                updateData[playerRole + '/gameOver'] = true;
+                roomRef.update(updateData);
             }
             
             // 更新到数据库
@@ -692,10 +703,12 @@
             
             const player = playerRole === 'player1' ? player1 : player2;
             
-            roomRef.update({
-                [playerRole + '.score']: player.score,
-                [playerRole + '.board']: playerRole === 'player1' ? player1.board : player2.board
-            });
+            const updateData = {
+                [playerRole + '/score']: player.score,
+                [playerRole + '/board']: playerRole === 'player1' ? player1.board : player2.board
+            };
+            
+            roomRef.update(updateData);
         }
         
         // 更新玩家状态到数据库
@@ -704,14 +717,14 @@
             
             const player = playerRole === 'player1' ? player1 : player2;
             const updateData = {
-                [playerRole + '.piece']: {
+                [playerRole + '/piece']: {
                     matrix: player_piece,
                     color: COLORS[player_piece[0][0]]
                 },
-                [playerRole + '.pos']: player.pos,
-                [playerRole + '.score']: player.score,
-                [playerRole + '.board']: playerRole === 'player1' ? player1.board : player2.board,
-                [playerRole + '.gameOver']: player.gameOver
+                [playerRole + '/pos']: player.pos,
+                [playerRole + '/score']: player.score,
+                [playerRole + '/board']: playerRole === 'player1' ? player1.board : player2.board,
+                [playerRole + '/gameOver']: player.gameOver
             };
 
             roomRef.update(updateData);
