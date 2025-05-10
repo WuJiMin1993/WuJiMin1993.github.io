@@ -288,7 +288,8 @@
             piece: null,
             pos: {x: 0, y: 0},
             score: 0,
-            gameOver: false
+            gameOver: false,
+            isReady: false
         };
         
         let player2 = {
@@ -296,7 +297,8 @@
             piece: null,
             pos: {x: 0, y: 0},
             score: 0,
-            gameOver: false
+            gameOver: false,
+            isReady: false
         };
         
         // 初始化游戏
@@ -329,17 +331,20 @@
                         piece: null,
                         pos: null,
                         score: 0,
-                        gameOver: false
+                        gameOver: false,
+                        isReady: true
                     },
                     player2: {
                         board: player2.board,
                         piece: null,
                         pos: null,
                         score: 0,
-                        gameOver: false
+                        gameOver: false,
+                        isReady: false
                     },
                     gameStarted: false
                 });
+                player1.isReady = true;
             }
             
             // 监听房间变化
@@ -351,29 +356,34 @@
                 gameStarted = data.gameStarted;
                 
                 // 更新玩家状态显示
-                if (data.player1.board[0].some(cell => cell !== 0)) {
+                if (data.player2.isReady) {
                     player2Status.textContent = '玩家2已加入';
                     player2Status.classList.add('active');
                     
                     if (playerRole === 'player1') {
-                        startBtn.disabled = false;
+                        startBtn.disabled = !(data.player1.isReady && data.player2.isReady);
                     }
+                } else {
+                    player2Status.textContent = '等待玩家2';
+                    player2Status.classList.remove('active');
                 }
                 
                 // 更新玩家数据
                 if (playerRole === 'player1') {
-                    player2.board = data.player2.board;
-                    player2.score = data.player2.score;
-                    player2.gameOver = data.player2.gameOver;
+                    player2.board = data.player2.board || createMatrix(COLS, ROWS);
+                    player2.score = data.player2.score || 0;
+                    player2.gameOver = data.player2.gameOver || false;
+                    player2.isReady = data.player2.isReady || false;
                     
                     if (data.player2.piece) {
                         player2.piece = data.player2.piece.matrix;
                         player2.pos = data.player2.pos;
                     }
                 } else {
-                    player1.board = data.player1.board;
-                    player1.score = data.player1.score;
-                    player1.gameOver = data.player1.gameOver;
+                    player1.board = data.player1.board || createMatrix(COLS, ROWS);
+                    player1.score = data.player1.score || 0;
+                    player1.gameOver = data.player1.gameOver || false;
+                    player1.isReady = data.player1.isReady || false;
                     
                     if (data.player1.piece) {
                         player1.piece = data.player1.piece.matrix;
@@ -392,15 +402,21 @@
                 player2ScoreDisplay.textContent = player2.score;
             });
             
+            // 玩家2加入时自动准备
+            if (playerRole === 'player2') {
+                roomRef.update({
+                    'player2/isReady': true,
+                    'player2/board': createMatrix(COLS, ROWS),
+                    'player2/score': 0,
+                    'player2/gameOver': false
+                });
+                player2.isReady = true;
+            }
+            
             // 事件监听
             startBtn.addEventListener('click', startGame);
             backBtn.addEventListener('click', backToLobby);
             document.addEventListener('keydown', handleKeyPress);
-            
-            // 如果是玩家1，生成初始方块
-            if (playerRole === 'player1') {
-                resetPiece();
-            }
             
             // 开始游戏循环
             requestAnimationFrame(update);
@@ -481,11 +497,12 @@
         function collide(matrix, pos, board) {
             for (let y = 0; y < matrix.length; ++y) {
                 for (let x = 0; x < matrix[y].length; ++x) {
-                    if (matrix[y][x] !== 0 &&
-                        (board[y + pos.y] === undefined ||
-                         board[y + pos.y][x + pos.x] === undefined ||
-                         board[y + pos.y][x + pos.x] !== 0)) {
-                        return true;
+                    if (matrix[y][x] !== 0) {
+                        const newX = pos.x + x;
+                        const newY = pos.y + y;
+                        
+                        if (newX < 0 || newX >= COLS || newY >= ROWS) return true;
+                        if (newY >= 0 && board[newY][newX] !== 0) return true;
                     }
                 }
             }
@@ -686,14 +703,18 @@
             if (!roomRef) return;
             
             const player = playerRole === 'player1' ? player1 : player2;
-            
-            roomRef.update({
+            const updateData = {
                 [playerRole + '.piece']: {
                     matrix: player.piece,
                     color: COLORS[player.piece[0][0]]
                 },
-                [playerRole + '.pos']: player.pos
-            });
+                [playerRole + '.pos']: player.pos,
+                [playerRole + '.score']: player.score,
+                [playerRole + '.board']: playerRole === 'player1' ? player1.board : player2.board,
+                [playerRole + '.gameOver']: player.gameOver
+            };
+
+            roomRef.update(updateData);
         }
         
         // 处理按键
@@ -737,13 +758,20 @@
         
         // 开始游戏
         function startGame() {
-            if (playerRole !== 'player1') return;
-            
-            roomRef.update({
-                gameStarted: true
-            });
-            
-            startBtn.disabled = true;
+            if (!gameStarted) {
+                roomRef.update({
+                    gameStarted: true
+                });
+                startBtn.disabled = true;
+                
+                // 双方玩家生成初始方块
+                if (playerRole === 'player1') {
+                    resetPiece();
+                }
+                if (playerRole === 'player2') {
+                    resetPiece();
+                }
+            }
         }
         
         // 显示游戏结束
