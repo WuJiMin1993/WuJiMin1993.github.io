@@ -515,7 +515,7 @@
             
             const player = playerRole === 'player1' ? player1 : player2;
             const board = playerRole === 'player1' ? player1.board : player2.board;
-            const matrix = player.piece;
+            const matrix = player_piece;
             const N = matrix.length;
             
             // 转置矩阵
@@ -557,7 +557,7 @@
             const board = playerRole === 'player1' ? player1.board : player2.board;
             
             player.pos.y++;
-            if (collide(player.piece, player.pos, board)) {
+            if (collide(player_piece, player.pos, board)) {
                 player.pos.y--;
                 merge();
                 resetPiece();
@@ -577,7 +577,7 @@
             const player = playerRole === 'player1' ? player1 : player2;
             const board = playerRole === 'player1' ? player1.board : player2.board;
             
-            while (!collide(player.piece, player.pos, board)) {
+            while (!collide(player_piece, player.pos, board)) {
                 player.pos.y++;
             }
             player.pos.y--;
@@ -599,7 +599,7 @@
             const board = playerRole === 'player1' ? player1.board : player2.board;
             
             player.pos.x += dir;
-            if (collide(player.piece, player.pos, board)) {
+            if (collide(player_piece, player.pos, board)) {
                 player.pos.x -= dir;
             }
             
@@ -612,7 +612,7 @@
             const player = playerRole === 'player1' ? player1 : player2;
             const board = playerRole === 'player1' ? player1.board : player2.board;
             
-            player.piece.forEach((row, y) => {
+            player_piece.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
                         board[y + player.pos.y][x + player.pos.x] = value;
@@ -630,12 +630,12 @@
             
             // 生成新方块
             const type = Math.floor(Math.random() * 7) + 1;
-            player.piece = SHAPES[type];
+            player_piece = SHAPES[type];
             player.pos.y = 0;
-            player.pos.x = Math.floor(COLS / 2) - Math.floor(player.piece[0].length / 2);
+            player.pos.x = Math.floor(COLS / 2) - Math.floor(player_piece[0].length / 2);
             
             // 检查游戏是否结束
-            if (collide(player.piece, player.pos, board)) {
+            if (collide(player_piece, player.pos, board)) {
                 player.gameOver = true;
                 
                 // 更新游戏结束状态到数据库
@@ -705,8 +705,8 @@
             const player = playerRole === 'player1' ? player1 : player2;
             const updateData = {
                 [playerRole + '.piece']: {
-                    matrix: player.piece,
-                    color: COLORS[player.piece[0][0]]
+                    matrix: player_piece,
+                    color: COLORS[player_piece[0][0]]
                 },
                 [playerRole + '.pos']: player.pos,
                 [playerRole + '.score']: player.score,
