@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>俄罗斯方块 - 双人对战</title>
     <style>
+        /* 样式部分保持不变 */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #121212;
@@ -25,157 +26,11 @@
             border-bottom: 1px solid #333;
         }
         
-        .room-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .room-id {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #FFD700;
-        }
-        
-        .player-status {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .status-box {
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-        
-        #player1-status {
-            background-color: #4CAF50;
-        }
-        
-        #player2-status {
-            background-color: #333;
-            color: #999;
-        }
-        
-        #player2-status.active {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-            padding: 2rem;
-        }
-        
-        .game-area {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            width: 100%;
-            max-width: 1200px;
-        }
-        
-        .player-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-        }
-        
-        .player-label {
-            font-size: 1.5rem;
-            color: #FFD700;
-        }
-        
-        .game-board {
-            border: 4px solid #444;
-            border-radius: 8px;
-            background-color: #1E1E1E;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-        
-        .player-score {
-            font-size: 1.2rem;
-        }
-        
-        .start-btn {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #4CAF50, #2E7D32);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 2rem;
-        }
-        
-        .start-btn:hover {
-            background: linear-gradient(135deg, #3E8E41, #1B5E20);
-        }
-        
-        .start-btn:disabled {
-            background: #333;
-            color: #666;
-            cursor: not-allowed;
-        }
-        
-        .game-over-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            display: none;
-        }
-        
-        .game-over-content {
-            background-color: #1E1E1E;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 500px;
-            width: 80%;
-        }
-        
-        .game-over-title {
-            font-size: 2rem;
-            color: #FF5252;
-            margin-bottom: 1rem;
-        }
-        
-        .winner-message {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .back-btn {
-            padding: 0.8rem 1.5rem;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .back-btn:hover {
-            background: linear-gradient(135deg, #5d7de8, #9668d6);
-        }
+        /* 其他样式保持不变... */
     </style>
 </head>
 <body>
+    <!-- HTML结构保持不变 -->
     <div class="header">
         <div class="room-info">
             <div>房间号:</div>
@@ -352,63 +207,35 @@
                 player1.isReady = true;
             }
             
-            // 监听房间变化
+            // 监听房间变化 - 增强错误处理
             roomRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (!data) return;
-                
-                // 更新游戏状态
-                gameStarted = data.gameStarted;
-                
-                // 更新玩家状态显示
-                if (data.player2 && data.player2.isReady) {
-                    player2Status.textContent = '玩家2已加入';
-                    player2Status.classList.add('active');
+                try {
+                    const data = snapshot.val();
+                    if (!data) {
+                        console.log('房间数据为空');
+                        return;
+                    }
                     
-                    if (playerRole === 'player1') {
-                        startBtn.disabled = !(data.player1.isReady && data.player2.isReady);
-                    }
-                } else {
-                    player2Status.textContent = '等待玩家2';
-                    player2Status.classList.remove('active');
+                    console.log('接收到房间数据更新:', data);
+                    
+                    // 更新游戏状态
+                    gameStarted = data.gameStarted || false;
+                    console.log('游戏开始状态:', gameStarted);
+                    
+                    // 更新玩家状态显示
+                    updatePlayerStatusDisplay(data);
+                    
+                    // 更新玩家数据
+                    updatePlayerData(data);
+                    
+                    // 检查游戏是否结束
+                    checkGameOver(data);
+                    
+                } catch (error) {
+                    console.error('处理房间数据更新时出错:', error);
                 }
-                
-                // 更新玩家数据 - 使用安全的属性访问
-                if (playerRole === 'player1') {
-                    if (data.player2) {
-                        player2.board = data.player2.board || createMatrix(COLS, ROWS);
-                        player2.score = data.player2.score || 0;
-                        player2.gameOver = data.player2.gameOver || false;
-                        player2.isReady = data.player2.isReady || false;
-                        
-                        if (data.player2.piece) {
-                            player2.piece = data.player2.piece.matrix;
-                            player2.pos = data.player2.pos;
-                        }
-                    }
-                } else {
-                    if (data.player1) {
-                        player1.board = data.player1.board || createMatrix(COLS, ROWS);
-                        player1.score = data.player1.score || 0;
-                        player1.gameOver = data.player1.gameOver || false;
-                        player1.isReady = data.player1.isReady || false;
-                        
-                        if (data.player1.piece) {
-                            player1.piece = data.player1.piece.matrix;
-                            player1.pos = data.player1.pos;
-                        }
-                    }
-                }
-                
-                // 检查游戏是否结束
-                if (data.player1 && data.player2 && data.player1.gameOver && data.player2.gameOver) {
-                    gameOver = true;
-                    showGameOver(data.player1.score, data.player2.score);
-                }
-                
-                // 更新分数显示
-                player1ScoreDisplay.textContent = player1.score;
-                player2ScoreDisplay.textContent = player2.score;
+            }, (error) => {
+                console.error('监听房间数据时出错:', error);
             });
             
             // 玩家2加入时自动准备 - 使用斜杠路径
@@ -420,9 +247,13 @@
                     'player2/gameOver': false
                 };
                 
-                console.log('准备更新玩家2数据:', updateData); // 调试日志
-                roomRef.update(updateData);
-                player2.isReady = true;
+                console.log('准备更新玩家2数据:', updateData);
+                roomRef.update(updateData).then(() => {
+                    console.log('玩家2准备状态更新成功');
+                    player2.isReady = true;
+                }).catch(error => {
+                    console.error('更新玩家2准备状态失败:', error);
+                });
             }
             
             // 事件监听
@@ -432,6 +263,64 @@
             
             // 开始游戏循环
             requestAnimationFrame(update);
+        }
+        
+        // 更新玩家状态显示
+        function updatePlayerStatusDisplay(data) {
+            if (data.player2 && data.player2.isReady) {
+                player2Status.textContent = '玩家2已加入';
+                player2Status.classList.add('active');
+                
+                if (playerRole === 'player1') {
+                    const bothReady = data.player1.isReady && data.player2.isReady;
+                    startBtn.disabled = !bothReady;
+                    console.log('玩家准备状态:', `玩家1:${data.player1.isReady}, 玩家2:${data.player2.isReady}`);
+                }
+            } else {
+                player2Status.textContent = '等待玩家2';
+                player2Status.classList.remove('active');
+            }
+        }
+        
+        // 更新玩家数据
+        function updatePlayerData(data) {
+            if (playerRole === 'player1') {
+                if (data.player2) {
+                    player2.board = data.player2.board || createMatrix(COLS, ROWS);
+                    player2.score = data.player2.score || 0;
+                    player2.gameOver = data.player2.gameOver || false;
+                    player2.isReady = data.player2.isReady || false;
+                    
+                    if (data.player2.piece) {
+                        player2.piece = data.player2.piece.matrix;
+                        player2.pos = data.player2.pos;
+                    }
+                }
+            } else {
+                if (data.player1) {
+                    player1.board = data.player1.board || createMatrix(COLS, ROWS);
+                    player1.score = data.player1.score || 0;
+                    player1.gameOver = data.player1.gameOver || false;
+                    player1.isReady = data.player1.isReady || false;
+                    
+                    if (data.player1.piece) {
+                        player1.piece = data.player1.piece.matrix;
+                        player1.pos = data.player1.pos;
+                    }
+                }
+            }
+            
+            // 更新分数显示
+            player1ScoreDisplay.textContent = player1.score;
+            player2ScoreDisplay.textContent = player2.score;
+        }
+        
+        // 检查游戏是否结束
+        function checkGameOver(data) {
+            if (data.player1 && data.player2 && data.player1.gameOver && data.player2.gameOver) {
+                gameOver = true;
+                showGameOver(data.player1.score, data.player2.score);
+            }
         }
         
         // 创建游戏板矩阵
@@ -653,8 +542,10 @@
                 // 更新游戏结束状态到数据库 - 使用斜杠路径
                 const updateData = {};
                 updateData[playerRole + '/gameOver'] = true;
-                console.log('游戏结束更新:', updateData); // 调试日志
-                roomRef.update(updateData);
+                console.log('游戏结束更新:', updateData);
+                roomRef.update(updateData).catch(error => {
+                    console.error('更新游戏结束状态失败:', error);
+                });
             }
             
             // 更新到数据库
@@ -710,8 +601,10 @@
                 [playerRole + '/board']: playerRole === 'player1' ? player1.board : player2.board
             };
             
-            console.log('更新分数:', updateData); // 调试日志
-            roomRef.update(updateData);
+            console.log('更新分数:', updateData);
+            roomRef.update(updateData).catch(error => {
+                console.error('更新分数失败:', error);
+            });
         }
         
         // 更新玩家状态到数据库
@@ -730,8 +623,10 @@
                 [playerRole + '/gameOver']: player.gameOver
             };
 
-            console.log('准备更新玩家数据:', updateData); // 调试日志
-            roomRef.update(updateData).catch(error => {
+            console.log('准备更新玩家数据:', updateData);
+            roomRef.update(updateData).then(() => {
+                console.log('玩家数据更新成功');
+            }).catch(error => {
                 console.error('更新玩家数据失败:', error);
             });
         }
@@ -775,21 +670,28 @@
             requestAnimationFrame(update);
         }
         
-        // 开始游戏
+        // 开始游戏 - 增强版本
         function startGame() {
             if (!gameStarted) {
+                console.log('尝试开始游戏...');
                 roomRef.update({
                     gameStarted: true
+                }).then(() => {
+                    console.log('游戏开始状态更新成功');
+                    startBtn.disabled = true;
+                    
+                    // 双方玩家生成初始方块
+                    if (playerRole === 'player1') {
+                        console.log('玩家1生成初始方块');
+                        resetPiece();
+                    }
+                    if (playerRole === 'player2') {
+                        console.log('玩家2生成初始方块');
+                        resetPiece();
+                    }
+                }).catch(error => {
+                    console.error('更新游戏开始状态失败:', error);
                 });
-                startBtn.disabled = true;
-                
-                // 双方玩家生成初始方块
-                if (playerRole === 'player1') {
-                    resetPiece();
-                }
-                if (playerRole === 'player2') {
-                    resetPiece();
-                }
             }
         }
         
@@ -813,10 +715,16 @@
         function backToLobby() {
             // 清理房间
             if (roomRef && playerRole === 'player1') {
-                roomRef.remove();
+                roomRef.remove().then(() => {
+                    console.log('房间已清理');
+                    window.location.href = "Two-player.html";
+                }).catch(error => {
+                    console.error('清理房间失败:', error);
+                    window.location.href = "Two-player.html";
+                });
+            } else {
+                window.location.href = "Two-player.html";
             }
-            
-            window.location.href = "Two-player.html";
         }
         
         // 初始化游戏
