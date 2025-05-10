@@ -326,7 +326,7 @@
             // 初始化Firebase引用
             roomRef = database.ref('rooms/' + roomId);
             
-            // 设置初始房间数据
+            // 设置初始房间数据 - 使用嵌套对象而不是点号路径
             if (playerRole === 'player1') {
                 const initialData = {
                     player1: {
@@ -373,7 +373,7 @@
                     player2Status.classList.remove('active');
                 }
                 
-                // 更新玩家数据
+                // 更新玩家数据 - 使用安全的属性访问
                 if (playerRole === 'player1') {
                     if (data.player2) {
                         player2.board = data.player2.board || createMatrix(COLS, ROWS);
@@ -411,7 +411,7 @@
                 player2ScoreDisplay.textContent = player2.score;
             });
             
-            // 玩家2加入时自动准备
+            // 玩家2加入时自动准备 - 使用斜杠路径
             if (playerRole === 'player2') {
                 const updateData = {
                     'player2/isReady': true,
@@ -420,6 +420,7 @@
                     'player2/gameOver': false
                 };
                 
+                console.log('准备更新玩家2数据:', updateData); // 调试日志
                 roomRef.update(updateData);
                 player2.isReady = true;
             }
@@ -649,9 +650,10 @@
             if (collide(player_piece, player.pos, board)) {
                 player.gameOver = true;
                 
-                // 更新游戏结束状态到数据库
+                // 更新游戏结束状态到数据库 - 使用斜杠路径
                 const updateData = {};
                 updateData[playerRole + '/gameOver'] = true;
+                console.log('游戏结束更新:', updateData); // 调试日志
                 roomRef.update(updateData);
             }
             
@@ -708,6 +710,7 @@
                 [playerRole + '/board']: playerRole === 'player1' ? player1.board : player2.board
             };
             
+            console.log('更新分数:', updateData); // 调试日志
             roomRef.update(updateData);
         }
         
@@ -717,17 +720,20 @@
             
             const player = playerRole === 'player1' ? player1 : player2;
             const updateData = {
-                [playerRole + '/piece']: {
+                [playerRole + '/piece']: player_piece ? {
                     matrix: player_piece,
                     color: COLORS[player_piece[0][0]]
-                },
+                } : null,
                 [playerRole + '/pos']: player.pos,
                 [playerRole + '/score']: player.score,
                 [playerRole + '/board']: playerRole === 'player1' ? player1.board : player2.board,
                 [playerRole + '/gameOver']: player.gameOver
             };
 
-            roomRef.update(updateData);
+            console.log('准备更新玩家数据:', updateData); // 调试日志
+            roomRef.update(updateData).catch(error => {
+                console.error('更新玩家数据失败:', error);
+            });
         }
         
         // 处理按键
