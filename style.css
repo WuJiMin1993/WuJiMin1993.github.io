@@ -1,4 +1,4 @@
-/* 全局样式 */
+/* 基础样式重置 */
 * {
     margin: 0;
     padding: 0;
@@ -7,8 +7,8 @@
 }
 
 body {
-    background-color: #1a1a2e;
-    color: #e6e6e6;
+    background-color: #f0e6d2;
+    color: #333;
     line-height: 1.6;
 }
 
@@ -16,162 +16,164 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    text-align: center;
 }
 
-.game-title {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #f8bb22;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+/* 游戏屏幕样式 */
+.game-screen {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 .game-image {
     max-width: 100%;
     height: auto;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    margin: 15px 0;
+    border: 3px solid #8b5a2b;
 }
 
 .scene-text {
-    font-size: 1.2rem;
-    margin-bottom: 30px;
-    padding: 15px;
-    background-color: rgba(30, 30, 46, 0.7);
-    border-radius: 8px;
-    line-height: 1.8;
+    font-size: 18px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: #333;
+    padding: 10px;
+    background-color: #f9f3e9;
+    border-radius: 5px;
 }
 
+/* 按钮样式 */
 .buttons-container {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
+    justify-content: space-between;
     margin-top: 20px;
-}
-
-.main-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 1.2rem;
-    margin: 20px 0;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.3s;
-}
-
-.main-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
+    flex-wrap: wrap;
 }
 
 .action-button {
     padding: 12px 24px;
-    font-size: 1rem;
+    font-size: 16px;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: all 0.3s;
-    min-width: 120px;
-}
-
-.left-button {
-    background-color: #3498db;
+    transition: all 0.3s ease;
+    margin: 5px;
+    background-color: #4a7c59;
     color: white;
-}
-
-.right-button {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.center-button {
-    background-color: #9b59b6;
-    color: white;
-    width: 80%;
-    margin: 0 auto;
+    font-weight: bold;
 }
 
 .action-button:hover {
-    transform: scale(1.05);
+    transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.hint-box {
+.left-button {
+    background-color: #4a7c59;
+    flex: 1;
+    min-width: 45%;
+}
+
+.right-button {
+    background-color: #c14543;
+    flex: 1;
+    min-width: 45%;
+}
+
+.center-button {
+    background-color: #6d597a;
+    width: 80%;
+    margin: 10px auto;
+}
+
+.main-button {
+    padding: 15px 30px;
+    font-size: 18px;
+    background-color: #8b5a2b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.main-button:hover {
+    background-color: #a0784a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 错误提示弹窗 */
+.popup {
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     z-index: 100;
-    max-width: 80%;
-    text-align: center;
-    animation: fadeIn 0.5s;
+    animation: fadeIn 0.3s;
 }
 
+.popup-content {
+    text-align: center;
+}
+
+#error-message {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* 结果页面样式 */
+.results-screen {
+    text-align: center;
+    padding: 20px;
+}
+
+.results-stats {
+    margin: 20px 0;
+    font-size: 18px;
+}
+
+.results-stats p {
+    margin: 10px 0;
+}
+
+.results-stats span {
+    font-weight: bold;
+    color: #4a7c59;
+}
+
+/* 动画效果 */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-.results-container {
-    background-color: rgba(30, 30, 46, 0.9);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.result-image {
-    max-width: 100%;
-    border-radius: 10px;
-    margin: 20px 0;
-}
-
-.result-item {
-    font-size: 1.3rem;
-    margin: 15px 0;
-}
-
-.result-item span {
-    color: #f8bb22;
-    font-weight: bold;
-}
-
-.error {
-    color: #e74c3c;
-    font-size: 1.2rem;
-    padding: 20px;
-}
-
 /* 响应式设计 */
 @media (max-width: 600px) {
-    .game-title {
-        font-size: 1.8rem;
+    .container {
+        padding: 10px;
     }
     
     .scene-text {
-        font-size: 1rem;
+        font-size: 16px;
     }
     
     .action-button {
         padding: 10px 15px;
-        font-size: 0.9rem;
-        min-width: 100px;
+        font-size: 14px;
     }
     
     .main-button {
         padding: 12px 24px;
-        font-size: 1rem;
+        font-size: 16px;
     }
 }
