@@ -3,25 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>魔法世界 - 章节游戏</title>
+    <title>魔法冒险 - 章节</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container" id="scene-container">
-        <!-- 所有章节场景将通过JavaScript动态加载 -->
+        <!-- 章节1场景 -->
+        <div class="scene" id="scene-2101" data-scene-id="2101">
+            <div class="scene-content">
+                <p>主人公Tom生活在魔法世界的魔法学校里，他每天都_____图书馆</p>
+                <img src="images/画面01.jpg" alt="魔法学校图书馆" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" id="button-3101" data-correct="true" data-target="2102">打扫</button>
+                    <button class="game-button right-button" id="button-3102" data-correct="false" data-message="日常行为用一般现在时" data-target="2102">正在打扫</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2102" data-scene-id="2102">
+            <div class="scene-content">
+                <p>有一天，Tom发现他昨天_____的一个箱子今天被打开了，并且里面冒着蓝光。</p>
+                <img src="images/画面02.jpg" alt="魔法箱子" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" id="button-3103" data-correct="true" data-target="2103">锁上</button>
+                    <button class="game-button right-button" id="button-3104" data-correct="false" data-message="描述昨天发生的简单行为用一般过去时" data-target="2103">正在锁上</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2103" data-scene-id="2103">
+            <div class="scene-content">
+                <p>Tom好奇，走进一看，是个闪着蓝光的魔法棒，旁白有个标签，写着"时态魔法棒"。</p>
+                <img src="images/画面03.jpg" alt="时态魔法棒" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button full-button" data-target="2104">继续</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2104" data-scene-id="2104">
+            <div class="scene-content">
+                <p>Tom心生好奇，他把魔法棒藏在衣服里，明天一早_____户外试一下魔法棒的威力。</p>
+                <img src="images/画面04.jpg" alt="Tom藏魔法棒" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2201">将去</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述未来发生的简单行为用一般将来时" data-target="2201">已经去</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 章节2场景 -->
+        <div class="scene" id="scene-2201" data-scene-id="2201">
+            <div class="scene-content">
+                <p>时间来到第二天早上，他_____着魔法扫帚飞往学习旁边的一个森林里。</p>
+                <img src="images/画面05.jpg" alt="Tom骑扫帚" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2202">正在骑</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述正在进行的行为用现在进行时" data-target="2203">已经骑</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2202" data-scene-id="2202">
+            <div class="scene-content">
+                <p>昨天这个时候，Tom正_____图书馆，但他觉得这个魔法棒会很好玩，所以决定今天不去打扫图书馆了。</p>
+                <img src="images/画面06.jpg" alt="Tom回忆" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2203">正在打扫</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述过去正在进行的行为用过去进行时" data-target="2202">已经打扫</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2203" data-scene-id="2203">
+            <div class="scene-content">
+                <p>为了防止图书馆馆长Jimmy发现Tom偷懒，Tom将很早到达将图书馆进行_____。</p>
+                <img src="images/画面07.jpg" alt="Tom计划" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2301">打扫</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述将来正在进行的行为用将来进行时" data-target="2301">已经打扫</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 章节3场景 -->
+        <div class="scene" id="scene-2301" data-scene-id="2301">
+            <div class="scene-content">
+                <p>Tom停在了森林里的小溪旁边，然后从衣服里拿出【一般现在】魔法棒。他想，这魔法棒叫"时态"，难道启动它的咒语和时态有关？</p>
+                <img src="images/画面08.jpg" alt="Tom研究魔法棒" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2302">拿出</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述日常行为一般现在时" data-target="2302">已经拿出</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2302" data-scene-id="2302">
+            <div class="scene-content">
+                <p>于是，他决定结合在魔法学校学习的咒语试一下。<br>Tom用魔法棒指向小溪，念了一句："一条香喷喷的鱼已经被烤熟了【现在完成】"。</p>
+                <img src="images/画面09.jpg" alt="Tom施法" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2303">已经被烤熟</button>
+                    <button class="game-button right-button" data-correct="false" data-message="咒语未生效，请重新试" data-target="2302">将来被烤熟</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2303" data-scene-id="2303">
+            <div class="scene-content">
+                <p>只见念完咒语之后，突然一道蓝色闪光过后，一个用树枝做的烤架，上面有一条香喷喷的烤鱼出现在了Tom的面前。</p>
+                <img src="images/画面10.jpg" alt="魔法烤鱼" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button full-button" data-target="2304">继续</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2304" data-scene-id="2304">
+            <div class="scene-content">
+                <p>Tom想，我来这之前，还没吃东西呢【过去完成】。正好可以包餐一顿。<br>Tom拿起吃了起来。</p>
+                <img src="images/画面11.jpg" alt="Tom吃鱼" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2305">已经烤好的鱼</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述已经完成的的行为用现在完成时" data-target="2305">将要烤好</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2305" data-scene-id="2305">
+            <div class="scene-content">
+                <p>Tom边吃边想，当我​掌握了这根魔杖，那个总是欺负我的巫师就会被打败。【将来完成】。（By the time I have mastered this magic wand, the wizard who always bullies me will have been defeated.）</p>
+                <img src="images/画面12.jpg" alt="Tom思考" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2401">将会被打败</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述将来完成的的行为用将来完成时" data-target="2401">已经被打败</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 章节4场景 -->
+        <div class="scene" id="scene-2401" data-scene-id="2401">
+            <div class="scene-content">
+                <p>虽然Tom已经来到魔法学校_____一年时间【现在完成进行】，但是魔法的知识还是比不过巫师Mike。</p>
+                <img src="images/画面13.jpg" alt="Tom在学校" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2402">学习了</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述过去的行为持续到现在用现在完成进行" data-target="2402">将学习</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2402" data-scene-id="2402">
+            <div class="scene-content">
+                <p>Tom意识到了魔法棒的厉害之处，于是Tom来到了以前经常戏弄他的巫师Mike的家里。<br>Tom说："Mike，现在我_____魔法打败你了，你出来接受我的挑战吧"</p>
+                <img src="images/画面14.jpg" alt="Tom挑战Mike" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2403">可以用</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述正在进行的行为用现在进行时" data-target="2403">正在用</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2403" data-scene-id="2403">
+            <div class="scene-content">
+                <p>今天是个阳光明媚的日子，只见Mike带着一个大大的灰色巫师帽从房间里走了出来，说到"Tom，在过去的一年时间里，已经多次_____我了【过去完成进行时】。（You had been repeatedly losing to me over the past year.）还是不服输吗"</p>
+                <img src="images/画面15.jpg" alt="Mike出现" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2404">输给</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述正在进行的行为用现在进行时" data-target="2404">将输给</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2404" data-scene-id="2404">
+            <div class="scene-content">
+                <p>只见Tom用魔法棒指向天空，用咒语说了一句："It's going to rain soon"，魔法棒发出来蓝光。</p>
+                <img src="images/画面16.jpg" alt="Tom施法下雨" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button full-button" data-target="2405">继续</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2405" data-scene-id="2405">
+            <div class="scene-content">
+                <p>果然，不一会儿天空出现了乌云，打起了雷，开始下起了下雨点。</p>
+                <img src="images/画面17.jpg" alt="下雨" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button full-button" data-target="2406">继续</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2406" data-scene-id="2406">
+            <div class="scene-content">
+                <p>Mike看见后下了一跳，说到："到明天为止，我已经学了魔法2年了【将来完成进行时】（By tomorrow, I have been studying magic for 2 years now）。却从来没看过这么厉害的魔法，我承认你已经比我厉害了"</p>
+                <img src="images/画面18.jpg" alt="Mike认输" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2407">已经学了</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述将来完成进行时" data-target="2407">将要学</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2407" data-scene-id="2407">
+            <div class="scene-content">
+                <p>Tom想再炫耀一下魔法棒的威力，准备念出下一个咒语时，突然一道光闪过，图书馆馆长Jimmy出现在面前。</p>
+                <img src="images/画面19.jpg" alt="Jimmy出现" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button full-button" data-target="2408">继续</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2408" data-scene-id="2408">
+            <div class="scene-content">
+                <p>馆长说到："Tom，我找了它找了一整天，原来被你拿走了"。</p>
+                <img src="images/画面20.jpg" alt="Jimmy质问" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button left-button" data-correct="true" data-target="2409">找了</button>
+                    <button class="game-button right-button" data-correct="false" data-message="描述过去完成" data-target="2409">将找</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2409" data-scene-id="2409">
+            <div class="scene-content">
+                <p>Jimmy举起手，魔法棒自动飞到Jimmy的手里。然后，Jimmy领着Tom，说道"赶紧回去给我打扫图书馆".....</p>
+                <img src="images/画面21.jpg" alt="Jimmy收回魔法棒" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button full-button" data-target="2410">查看结果</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="scene-2410" data-scene-id="2410">
+            <div class="scene-content">
+                <h2>排行榜</h2>
+                <div class="result-container">
+                    <div class="result-item">
+                        <span class="result-label">正确率:</span>
+                        <span class="result-value" id="accuracy-rate">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">闯关所用时间:</span>
+                        <span class="result-value" id="time-used">0分0秒</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">总得分:</span>
+                        <span class="result-value" id="total-score">0</span>
+                    </div>
+                </div>
+                <img src="images/画面22.jpg" alt="排行榜" class="scene-image">
+                <div class="button-container">
+                    <button class="game-button full-button" onclick="location.href='index.html'">返回首页</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- 提示框 -->
-    <div id="hint-box" class="hint-box">
-        <p id="hint-message"></p>
-    </div>
-
-    <!-- 游戏统计信息 -->
-    <div class="stats-container">
-        <div>正确率: <span id="accuracy-rate">0%</span></div>
-        <div>用时: <span id="time-used">00:00</span></div>
+    <!-- 错误提示框 -->
+    <div id="error-message" class="error-message">
+        <p id="error-text"></p>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // 从URL获取当前场景ID
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentSceneId = urlParams.get('scene') || '2101';
+        
+        // 初始化游戏状态
+        const gameState = {
+            currentScene: currentSceneId,
+            startTime: new Date(),
+            endTime: null,
+            score: 0,
+            correctAnswers: 0,
+            totalQuestions: 0,
+            // 计算总题目数（所有含义为"正确"的按钮数量）
+            calculateTotalQuestions: function() {
+                this.totalQuestions = document.querySelectorAll('[data-correct="true"]').length;
+            }
+        };
+        
+        // 初始化时计算总题目数
+        gameState.calculateTotalQuestions();
+        
+        // 显示当前场景
+        function showScene(sceneId) {
+            // 隐藏所有场景
+            document.querySelectorAll('.scene').forEach(scene => {
+                scene.style.display = 'none';
+            });
+            
+            // 显示当前场景
+            const currentScene = document.getElementById(`scene-${sceneId}`);
+            if (currentScene) {
+                currentScene.style.display = 'block';
+                gameState.currentScene = sceneId;
+                
+                // 如果是结果场景，计算并显示结果
+                if (sceneId === '2410') {
+                    showResults();
+                }
+            } else {
+                console.error(`Scene ${sceneId} not found`);
+            }
+        }
+        
+        // 显示结果
+        function showResults() {
+            gameState.endTime = new Date();
+            
+            // 计算用时（毫秒）
+            const timeUsedMs = gameState.endTime - gameState.startTime;
+            const timeUsedSec = Math.floor(timeUsedMs / 1000);
+            const minutes = Math.floor(timeUsedSec / 60);
+            const seconds = timeUsedSec % 60;
+            
+            // 计算时间分数（每满一分钟2分，不满1分）
+            const timeScore = minutes > 0 ? minutes * 2 : 1;
+            
+            // 计算答题分数（每道题100/N分）
+            const questionScore = Math.floor(100 / gameState.totalQuestions);
+            const totalQuestionScore = gameState.correctAnswers * questionScore;
+            
+            // 总分数 = 答题总分 - 时间分数
+            const totalScore = totalQuestionScore - timeScore;
+            
+            // 计算正确率
+            const accuracyRate = Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100);
+            
+            // 显示结果
+            document.getElementById('accuracy-rate').textContent = `${accuracyRate}%`;
+            document.getElementById('time-used').textContent = `${minutes}分${seconds}秒`;
+            document.getElementById('total-score').textContent = totalScore > 0 ? totalScore : 0;
+        }
+        
+        // 显示错误消息
+        function showError(message) {
+            const errorBox = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            
+            errorText.textContent = message;
+            errorBox.style.display = 'block';
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                errorBox.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 初始化按钮事件
+        function initButtons() {
+            document.querySelectorAll('.game-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetScene = this.getAttribute('data-target');
+                    const isCorrect = this.getAttribute('data-correct') === 'true';
+                    const errorMessage = this.getAttribute('data-message');
+                    
+                    // 如果是答题按钮，更新分数
+                    if (this.hasAttribute('data-correct')) {
+                        if (isCorrect) {
+                            gameState.correctAnswers++;
+                        } else {
+                            showError(errorMessage);
+                        }
+                    }
+                    
+                    // 跳转到目标场景
+                    if (targetScene) {
+                        showScene(targetScene);
+                    }
+                });
+            });
+        }
+        
+        // 页面加载完成后初始化
+        window.addEventListener('DOMContentLoaded', function() {
+            showScene(currentSceneId);
+            initButtons();
+        });
+    </script>
 </body>
 </html>
