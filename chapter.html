@@ -3,531 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>魔法世界 - 章节</title>
+    <title>魔法世界时态学习</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* 临时内联样式确保基本功能 */
-        .hidden { display: none; }
-        .game-container { 
-            max-width: 800px; 
-            margin: 20px auto; 
-            padding: 20px; 
-            background-color: #16213e; 
-            color: white; 
-            border-radius: 10px;
-        }
-        .game-button {
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .correct { background-color: #2e7d32; color: white; }
-        .wrong { background-color: #c62828; color: white; }
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            color: black;
-        }
-    </style>
 </head>
 <body>
     <!-- 章节1 -->
     <div class="game-container hidden" id="scene-2101">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面01" alt="魔法学校">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>主人公Tom生活在魔法世界的魔法学校里，他每天都_____图书馆</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2102"
-                    data-next-scene="2102">打扫</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："日常行为用一般现在时"显示3秒钟后跳转画面2102'
-                    data-next-scene="2102">正在打扫</button>
+            <div class="button-group">
+                <button id="btn-3101" class="game-btn left">打扫</button>
+                <button id="btn-3102" class="game-btn right">正在打扫</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2102">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面02" alt="魔法箱子">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>有一天，Tom发现他昨天_____的一个箱子今天被打开了，并且里面冒着蓝光。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2103"
-                    data-next-scene="2103">锁上</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述昨天发生的简单行为用一般过去时"显示3秒钟后跳转画面2103'
-                    data-next-scene="2103">正在锁上</button>
+            <div class="button-group">
+                <button id="btn-3103" class="game-btn left">锁上</button>
+                <button id="btn-3104" class="game-btn right">正在锁上</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2103">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面03" alt="时态魔法棒">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>Tom好奇，走进一看，是个闪着蓝光的魔法棒，旁白有个标签，写着"时态魔法棒"。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button" 
-                    data-next-scene="2104">继续</button>
+            <div class="button-group full-width">
+                <button class="game-btn full-width">继续</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2104">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面04" alt="Tom思考">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>Tom心生好奇，他把魔法棒藏在衣服里，明天一早_____户外试一下魔法棒的威力。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2201"
-                    data-next-scene="2201">将去</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述未来发生的简单行为用一般将来时"显示3秒钟后跳转画面2201'
-                    data-next-scene="2201">已经去</button>
+            <div class="button-group">
+                <button class="game-btn left">将去</button>
+                <button class="game-btn right">已经去</button>
+            </div>
         </div>
     </div>
 
     <!-- 章节2 -->
     <div class="game-container hidden" id="scene-2201">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面05" alt="Tom飞行">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>时间来到第二天早上，他_____着魔法扫帚飞往学习旁边的一个森林里。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2202"
-                    data-next-scene="2202">正在骑</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述正在进行的行为用现在进行时"显示3秒钟后跳转画面2203'
-                    data-next-scene="2203">已经骑</button>
+            <div class="button-group">
+                <button class="game-btn left">正在骑</button>
+                <button class="game-btn right">已经骑</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2202">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面06" alt="Tom回忆">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>昨天这个时候，Tom正_____图书馆，但他觉得这个魔法棒会很好玩，所以决定今天不去打扫图书馆了。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2203"
-                    data-next-scene="2203">正在打扫</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述过去正在进行的行为用过去进行时"显示3秒钟后跳转画面2202'
-                    data-next-scene="2202">已经打扫</button>
+            <div class="button-group">
+                <button class="game-btn left">正在打扫</button>
+                <button class="game-btn right">已经打扫</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2203">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面07" alt="Tom计划">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>为了防止图书馆馆长Jimmy发现Tom偷懒，Tom将很早到达将图书馆进行_____。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2301"
-                    data-next-scene="2301">打扫</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述将来正在进行的行为用将来进行时"显示3秒钟后跳转画面2301'
-                    data-next-scene="2301">已经打扫</button>
+            <div class="button-group">
+                <button class="game-btn left">打扫</button>
+                <button class="game-btn right">已经打扫</button>
+            </div>
         </div>
     </div>
 
     <!-- 章节3 -->
     <div class="game-container hidden" id="scene-2301">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面08" alt="Tom拿出魔法棒">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>Tom停在了森林里的小溪旁边，然后从衣服里拿出【一般现在】魔法棒。他想，这魔法棒叫"时态"，难道启动它的咒语和时态有关？</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2302"
-                    data-next-scene="2302">拿出</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述日常行为一般现在时"显示3秒钟后跳转画面2302'
-                    data-next-scene="2302">已经拿出</button>
+            <div class="button-group">
+                <button class="game-btn left">拿出</button>
+                <button class="game-btn right">已经拿出</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2302">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面09" alt="Tom念咒语">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>于是，他决定结合在魔法学校学习的咒语试一下。<br>Tom用魔法棒指向小溪，念了一句："一条香喷喷的鱼已经被烤熟了【现在完成】"。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2303"
-                    data-next-scene="2303">已经被烤熟</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："咒语未生效，请重新试"显示3秒钟后跳转画面2302'
-                    data-next-scene="2302">将来被烤熟</button>
+            <div class="button-group">
+                <button class="game-btn left">已经被烤熟</button>
+                <button class="game-btn right">将来被烤熟</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2303">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面10" alt="烤鱼出现">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>只见念完咒语之后，突然一道蓝色闪光过后，一个用树枝做的烤架，上面有一条香喷喷的烤鱼出现在了Tom的面前。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button" 
-                    data-next-scene="2304">继续</button>
+            <div class="button-group full-width">
+                <button class="game-btn full-width">继续</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2304">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面11" alt="Tom吃鱼">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>Tom想，我来这之前，还没吃东西呢【过去完成】。正好可以包餐一顿。<br>Tom拿起吃了起来。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2305"
-                    data-next-scene="2305">已经烤好的鱼</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述已经完成的的行为用现在完成时"显示3秒钟后跳转画面2305'
-                    data-next-scene="2305">将要烤好</button>
+            <div class="button-group">
+                <button class="game-btn left">已经烤好的鱼</button>
+                <button class="game-btn right">将要烤好</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2305">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面12" alt="Tom思考未来">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>Tom边吃边想，当我掌握了这根魔杖，那个总是欺负我的巫师就会被打败。【将来完成】。（By the time I have mastered this magic wand, the wizard who always bullies me will have been defeated.）</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2401"
-                    data-next-scene="2401">将会被打败</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述将来完成的的行为用将来完成时"显示3秒钟后跳转画面2401'
-                    data-next-scene="2401">已经被打败</button>
+            <div class="button-group">
+                <button class="game-btn left">将会被打败</button>
+                <button class="game-btn right">已经被打败</button>
+            </div>
         </div>
     </div>
 
     <!-- 章节4 -->
     <div class="game-container hidden" id="scene-2401">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面13" alt="Tom回忆学习">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>虽然Tom已经来到魔法学校_____一年时间【现在完成进行】，但是魔法的知识还是比不过巫师Nike。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2402"
-                    data-next-scene="2402">学习了</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述过去的行为持续到现在用现在完成进行"显示3秒钟后跳转画面2402'
-                    data-next-scene="2402">将学习</button>
+            <div class="button-group">
+                <button class="game-btn left">学习了</button>
+                <button class="game-btn right">将学习</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2402">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面14" alt="Tom挑战Nike">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>Tom意识到了魔法棒的厉害之处，于是Tom来到了以前经常戏弄他的巫师Nike的家里。<br>Tom说："Nike，现在我_____魔法打败你了，你出来接受我的挑战吧"</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2403"
-                    data-next-scene="2403">可以用</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述正在进行的行为用现在进行时"显示3秒钟后跳转画面2403'
-                    data-next-scene="2403">正在用</button>
+            <div class="button-group">
+                <button class="game-btn left">可以用</button>
+                <button class="game-btn right">正在用</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2403">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面15" alt="Nike出现">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>今天是个阳光明媚的日子，只见Nike带着一个大大的灰色巫师帽从房间里走了出来，说到"Tom，在过去的一年时间里，已经多次_____我了【过去完成进行时】。（You had been repeatedly losing to me over the past year.）还是不服输吗"</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2404"
-                    data-next-scene="2404">输给</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述正在进行的行为用现在进行时"显示3秒钟后跳转画面2404'
-                    data-next-scene="2404">将输给</button>
+            <div class="button-group">
+                <button class="game-btn left">输给</button>
+                <button class="game-btn right">将输给</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2404">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面16" alt="Tom施法">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>只见Tom用魔法棒指向天空，用咒语说了一句："It's going to rain soon"，魔法棒发出来蓝光。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button" 
-                    data-next-scene="2405">继续</button>
+            <div class="button-group full-width">
+                <button class="game-btn full-width">继续</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2405">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面17" alt="下雨">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>果然，不一会儿天空出现了乌云，打起了雷，开始下起了下雨点。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button" 
-                    data-next-scene="2406">继续</button>
+            <div class="button-group full-width">
+                <button class="game-btn full-width">继续</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2406">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面18" alt="Nike认输">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>Nike看见后下了一跳，说到："到明天为止，我已经学了魔法2年了【将来完成进行时】（By tomorrow, I have been studying magic for 2 years now）。却从来没看过这么厉害的魔法，我承认你已经比我厉害了"</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2407"
-                    data-next-scene="2407">已经学了</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述将来完成进行时"显示3秒钟后跳转画面2407'
-                    data-next-scene="2407">将要学</button>
+            <div class="button-group">
+                <button class="game-btn left">已经学了</button>
+                <button class="game-btn right">将要学</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2407">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面19" alt="Jimmy出现">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>Tom想再炫耀一下魔法棒的威力，准备念出下一个咒语时，突然一道光闪过，图书馆馆长Jimmy出现在面前。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button" 
-                    data-next-scene="2408">继续</button>
+            <div class="button-group full-width">
+                <button class="game-btn full-width">继续</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2408">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面20" alt="Jimmy说话">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>馆长说到："Tom，我找了它找了一整天，原来被你拿走了"。</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button correct" 
-                    data-feedback="跳转画面2409"
-                    data-next-scene="2409">找了</button>
-            <button class="game-button wrong" 
-                    data-feedback='高亮弹出小方框提示："描述过去完成"显示3秒钟后跳转画面2409'
-                    data-next-scene="2409">将找</button>
+            <div class="button-group">
+                <button class="game-btn left">找了</button>
+                <button class="game-btn right">将找</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2409">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=画面21" alt="Jimmy拿走魔法棒">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <p>Jimmy举起手，魔法棒自动飞到Jimmy的手里。然后，Jimmy领着Tom，说道"赶紧回去给我打扫图书馆".....</p>
-        </div>
-        <div class="button-container">
-            <button class="game-button" 
-                    data-next-scene="2410">继续</button>
+            <div class="button-group full-width">
+                <button class="game-btn full-width">继续</button>
+            </div>
         </div>
     </div>
 
     <div class="game-container hidden" id="scene-2410">
-        <div class="scene-image">
-            <img src="https://via.placeholder.com/800x400?text=结束画面" alt="游戏结束">
-        </div>
-        <div class="scene-text">
+        <div class="scene-content">
             <h2>排行榜</h2>
-            <div id="score-board">
-                <p>你的正确率: <span id="correct-rate">0%</span></p>
-                <p>所用时间: <span id="time-used">0秒</span></p>
+            <p>显示正确率、闯关所用时间</p>
+            <div class="stats">
+                <p>正确率: <span id="accuracy-rate">0%</span></p>
+                <p>用时: <span id="time-used">0秒</span></p>
             </div>
-        </div>
-        <div class="button-container">
-            <button class="game-button" onclick="restartGame()">重新开始</button>
+            <button class="game-btn center-top" id="restart-btn">重新开始</button>
         </div>
     </div>
 
-    <!-- 反馈提示框 -->
-    <div id="feedback-modal" class="modal hidden">
-        <div class="modal-content">
-            <p id="feedback-message"></p>
-        </div>
+    <!-- 提示框 -->
+    <div class="hint-box hidden" id="hint-box">
+        <p id="hint-text"></p>
     </div>
 
-    <script>
-        // 游戏状态
-        const gameState = {
-            currentScene: null,
-            correctAnswers: 0,
-            totalQuestions: 0,
-            startTime: new Date(),
-            endTime: null
-        };
-
-        // 导航到指定场景
-        function navigateToScene(sceneId) {
-            // 隐藏所有场景
-            document.querySelectorAll('.game-container').forEach(container => {
-                container.classList.add('hidden');
-            });
-            
-            // 显示目标场景
-            const targetScene = document.getElementById(`scene-${sceneId}`);
-            if (targetScene) {
-                targetScene.classList.remove('hidden');
-                gameState.currentScene = sceneId;
-                
-                // 更新URL但不刷新页面
-                history.pushState(null, '', `?scene=${sceneId}`);
-            } else {
-                console.error(`Scene ${sceneId} not found`);
-            }
-        }
-
-        // 显示反馈
-        function showFeedback(isCorrect, feedbackMessage, nextSceneId) {
-            if (isCorrect) {
-                gameState.correctAnswers++;
-            }
-            gameState.totalQuestions++;
-            
-            const feedbackModal = document.getElementById('feedback-modal');
-            const feedbackMessageElement = document.getElementById('feedback-message');
-            
-            // 设置反馈消息
-            feedbackMessageElement.textContent = extractFeedbackMessage(feedbackMessage);
-            feedbackModal.classList.remove('hidden');
-            
-            // 3秒后隐藏模态框并跳转
-            setTimeout(() => {
-                feedbackModal.classList.add('hidden');
-                handleSceneTransition(feedbackMessage, nextSceneId);
-            }, 3000);
-        }
-
-        // 提取反馈消息
-        function extractFeedbackMessage(message) {
-            if (message.includes('高亮弹出小方框提示：')) {
-                return message.match(/"(.*?)"/)[1];
-            }
-            return message;
-        }
-
-        // 处理场景跳转
-        function handleSceneTransition(feedbackMessage, nextSceneId) {
-            if (feedbackMessage.includes('跳转画面')) {
-                const targetScene = parseInt(feedbackMessage.match(/跳转画面(\d+)/)[1]);
-                navigateToScene(targetScene);
-            } else if (nextSceneId) {
-                navigateToScene(nextSceneId);
-            }
-            
-            // 如果是结束场景，计算分数
-            if (gameState.currentScene === 2410) {
-                calculateScore();
-            }
-        }
-
-        // 计算分数
-        function calculateScore() {
-            gameState.endTime = new Date();
-            const timeUsed = Math.floor((gameState.endTime - gameState.startTime) / 1000);
-            const correctRate = gameState.totalQuestions > 0 
-                ? Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100) 
-                : 0;
-            
-            // 更新UI
-            if (document.getElementById('correct-rate')) {
-                document.getElementById('correct-rate').textContent = `${correctRate}%`;
-                document.getElementById('time-used').textContent = `${timeUsed}秒`;
-            }
-        }
-
-        // 重新开始游戏
-        function restartGame() {
-            window.location.href = 'indexGBL.html';
-        }
-
-        // 初始化按钮事件
-        function initButtonEvents() {
-            // 为所有按钮添加事件监听
-            document.querySelectorAll('.game-button').forEach(button => {
-                if (!button.onclick) {
-                    button.addEventListener('click', function() {
-                        const isCorrect = this.classList.contains('correct');
-                        const feedback = this.getAttribute('data-feedback') || '';
-                        const nextScene = this.getAttribute('data-next-scene') || '';
-                        
-                        showFeedback(isCorrect, feedback, parseInt(nextScene));
-                    });
-                }
-            });
-        }
-
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            initButtonEvents();
-            
-            // 如果是从首页跳转过来的，初始化第一个场景
-            const urlParams = new URLSearchParams(window.location.search);
-            const initialScene = urlParams.get('scene');
-            if (initialScene) {
-                navigateToScene(parseInt(initialScene));
-            } else {
-                navigateToScene(2101); // 默认开始章节1
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
