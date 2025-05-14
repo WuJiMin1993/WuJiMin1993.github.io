@@ -5,33 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>魔法世界时态学习</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* 首页特有样式 */
-        #scene-2001 {
-            text-align: center;
-            padding: 40px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        #scene-2001 h1 {
-            color: #6a4c93;
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-        }
-        #btn-3001 {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            background-color: #6a4c93;
-            margin-top: 30px;
-        }
-    </style>
 </head>
 <body>
-    <div class="game-container" id="scene-2001">
-        <div class="scene-content">
-            <h1>欢迎来到魔法世界</h1>
-            <button id="btn-3001" class="game-btn" onclick="window.location.href='chapter.html?scene=2101'">游戏开始</button>
-        </div>
+    <div class="container" id="scene-2001">
+        <h1>欢迎来到魔法世界</h1>
+        <img src="开始画面.jpg" alt="魔法世界开始画面" class="scene-image">
+        <button id="btn-3001" class="main-btn" onclick="startGame()">游戏开始</button>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
