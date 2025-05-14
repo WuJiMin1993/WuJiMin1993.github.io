@@ -3,27 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>魔法世界 - 时态学习游戏</title>
+    <title>魔法世界时态学习</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container" id="scene-2001">
-        <div class="scene-image">
-            <!-- 使用占位图片，实际使用时替换为您的图片 -->
-            <img src="https://via.placeholder.com/800x400?text=开始画面" alt="魔法世界开始画面">
-        </div>
-        <div class="scene-text">
-            <p>欢迎来到魔法世界</p>
-        </div>
-        <div class="button-container center-top">
-            <button class="game-button" id="start-button">游戏开始</button>
+        <div class="scene-content">
+            <h1>欢迎来到魔法世界</h1>
+            <button id="btn-3001" class="game-btn center-top">游戏开始</button>
         </div>
     </div>
 
-    <script>
-        document.getElementById('start-button').addEventListener('click', function() {
-            window.location.href = 'chapter.html?scene=2101';
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
