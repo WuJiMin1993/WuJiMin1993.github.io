@@ -3,176 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>魔法世界时态学习 - 章节</title>
+    <title>魔法世界 - 章节游戏</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 章节1 -->
-    <div class="container scene" id="scene-2101" style="display:none;">
-        <p>主人公Tom生活在魔法世界的魔法学校里，他每天都_____图书馆</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('3101', true, '2102')">打扫</button>
-            <button class="right-btn" onclick="checkAnswer('3102', false, '2102', '日常行为用一般现在时')">正在打扫</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2102" style="display:none;">
-        <p>有一天，Tom发现他昨天_____的一个箱子今天被打开了，并且里面冒着蓝光。</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('3103', true, '2103')">锁上</button>
-            <button class="right-btn" onclick="checkAnswer('3104', false, '2103', '描述昨天发生的简单行为用一般过去时')">正在锁上</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2103" style="display:none;">
-        <p>Tom好奇，走进一看，是个闪着蓝光的魔法棒，旁白有个标签，写着"时态魔法棒"。</p>
-        <div class="fullscreen-btn" onclick="nextScene('2104')"></div>
-    </div>
-
-    <div class="container scene" id="scene-2104" style="display:none;">
-        <p>Tom心生好奇，他把魔法棒藏在衣服里，明天一早_____户外试一下魔法棒的威力。</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2201')">将去</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2201', '描述未来发生的简单行为用一般将来时')">已经去</button>
-        </div>
-    </div>
-
-    <!-- 章节2 -->
-    <div class="container scene" id="scene-2201" style="display:none;">
-        <p>时间来到第二天早上，他_____着魔法扫帚飞往学习旁边的一个森林里。</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2202')">正在骑</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2203', '描述正在进行的行为用现在进行时')">已经骑</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2202" style="display:none;">
-        <p>昨天这个时候，Tom正_____图书馆，但他觉得这个魔法棒会很好玩，所以决定今天不去打扫图书馆了。</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2203')">正在打扫</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2202', '描述过去正在进行的行为用过去进行时')">已经打扫</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2203" style="display:none;">
-        <p>为了防止图书馆馆长Jimmy发现Tom偷懒，Tom将很早到达将图书馆进行_____。</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2301')">打扫</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2301', '描述将来正在进行的行为用将来进行时')">已经打扫</button>
-        </div>
-    </div>
-
-    <!-- 章节3 -->
-    <div class="container scene" id="scene-2301" style="display:none;">
-        <p>Tom停在了森林里的小溪旁边，然后从衣服里拿出【一般现在】魔法棒。他想，这魔法棒叫"时态"，难道启动它的咒语和时态有关？</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2302')">拿出</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2302', '描述日常行为一般现在时')">已经拿出</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2302" style="display:none;">
-        <p>于是，他决定结合在魔法学校学习的咒语试一下。<br>Tom用魔法棒指向小溪，念了一句："一条香喷喷的鱼已经被烤熟了【现在完成】"。</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2303')">已经被烤熟</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2302', '咒语未生效，请重新试')">将来被烤熟</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2303" style="display:none;">
-        <p>只见念完咒语之后，突然一道蓝色闪光过后，一个用树枝做的烤架，上面有一条香喷喷的烤鱼出现在了Tom的面前。</p>
-        <div class="fullscreen-btn" onclick="nextScene('2304')"></div>
-    </div>
-
-    <div class="container scene" id="scene-2304" style="display:none;">
-        <p>Tom想，我来这之前，还没吃东西呢【过去完成】。正好可以包餐一顿。<br>Tom拿起吃了起来。</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2305')">已经烤好的鱼</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2305', '描述已经完成的的行为用现在完成时')">将要烤好</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2305" style="display:none;">
-        <p>Tom边吃边想，当我掌握了这根魔杖，那个总是欺负我的巫师就会被打败。【将来完成】。（By the time I have mastered this magic wand, the wizard who always bullies me will have been defeated.）</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2401')">将会被打败</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2401', '描述将来完成的的行为用将来完成时')">已经被打败</button>
-        </div>
-    </div>
-
-    <!-- 章节4 -->
-    <div class="container scene" id="scene-2401" style="display:none;">
-        <p>虽然Tom已经来到魔法学校_____一年时间【现在完成进行】，但是魔法的知识还是比不过巫师Nike。</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2402')">学习了</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2402', '描述过去的行为持续到现在用现在完成进行')">将学习</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2402" style="display:none;">
-        <p>Tom意识到了魔法棒的厉害之处，于是Tom来到了以前经常戏弄他的巫师Nike的家里。<br>Tom说："Nike，现在我_____魔法打败你了，你出来接受我的挑战吧"</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2403')">可以用</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2403', '描述正在进行的行为用现在进行时')">正在用</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2403" style="display:none;">
-        <p>今天是个阳光明媚的日子，只见Nike带着一个大大的灰色巫师帽从房间里走了出来，说到"Tom，在过去的一年时间里，已经多次_____我了【过去完成进行时】。（You had been repeatedly losing to me over the past year.）还是不服输吗"</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2404')">输给</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2404', '描述正在进行的行为用现在进行时')">将输给</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2404" style="display:none;">
-        <p>只见Tom用魔法棒指向天空，用咒语说了一句："It's going to rain soon"，魔法棒发出来蓝光。</p>
-        <div class="fullscreen-btn" onclick="nextScene('2405')"></div>
-    </div>
-
-    <div class="container scene" id="scene-2405" style="display:none;">
-        <p>果然，不一会儿天空出现了乌云，打起了雷，开始下起了下雨点。</p>
-        <div class="fullscreen-btn" onclick="nextScene('2406')"></div>
-    </div>
-
-    <div class="container scene" id="scene-2406" style="display:none;">
-        <p>Nike看见后下了一跳，说到："到明天为止，我已经学了魔法2年了【将来完成进行时】（By tomorrow, I have been studying magic for 2 years now）。却从来没看过这么厉害的魔法，我承认你已经比我厉害了"</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2407')">已经学了</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2407', '描述将来完成进行时')">将要学</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2407" style="display:none;">
-        <p>Tom想再炫耀一下魔法棒的威力，准备念出下一个咒语时，突然一道光闪过，图书馆馆长Jimmy出现在面前。</p>
-        <div class="fullscreen-btn" onclick="nextScene('2408')"></div>
-    </div>
-
-    <div class="container scene" id="scene-2408" style="display:none;">
-        <p>馆长说到："Tom，我找了它找了一整天，原来被你拿走了"。</p>
-        <div class="btn-group">
-            <button class="left-btn" onclick="checkAnswer('', true, '2409')">找了</button>
-            <button class="right-btn" onclick="checkAnswer('', false, '2409', '描述过去完成')">将找</button>
-        </div>
-    </div>
-
-    <div class="container scene" id="scene-2409" style="display:none;">
-        <p>Jimmy举起手，魔法棒自动飞到Jimmy的手里。然后，Jimmy领着Tom，说道"赶紧回去给我打扫图书馆".....</p>
-        <div class="fullscreen-btn" onclick="nextScene('2410')"></div>
-    </div>
-
-    <div class="container scene" id="scene-2410" style="display:none;">
-        <h2>排行榜</h2>
-        <div class="stats">
-            <p>正确率: <span id="accuracy-rate">0%</span></p>
-            <p>用时: <span id="time-used">0</span>秒</p>
-        </div>
-        <button class="restart-btn" onclick="restartGame()">重新开始</button>
+    <div class="container" id="scene-container">
+        <!-- 所有章节场景将通过JavaScript动态加载 -->
     </div>
 
     <!-- 提示框 -->
     <div id="hint-box" class="hint-box">
-        <p id="hint-text"></p>
+        <p id="hint-message"></p>
+    </div>
+
+    <!-- 游戏统计信息 -->
+    <div class="stats-container">
+        <div>正确率: <span id="accuracy-rate">0%</span></div>
+        <div>用时: <span id="time-used">00:00</span></div>
     </div>
 
     <script src="script.js"></script>
