@@ -1,25 +1,11 @@
 // 游戏状态
-let gameState = {
-    currentScene: 2001, // 初始场景
+const gameState = {
+    currentScene: null,
     correctAnswers: 0,
     totalQuestions: 0,
-    startTime: null,
+    startTime: new Date(),
     endTime: null
 };
-
-// 初始化游戏
-function initGame() {
-    gameState = {
-        currentScene: 2001,
-        correctAnswers: 0,
-        totalQuestions: 0,
-        startTime: new Date(),
-        endTime: null
-    };
-    
-    // 显示初始场景
-    navigateToScene(2001);
-}
 
 // 导航到指定场景
 function navigateToScene(sceneId) {
@@ -33,6 +19,9 @@ function navigateToScene(sceneId) {
     if (targetScene) {
         targetScene.classList.remove('hidden');
         gameState.currentScene = sceneId;
+        
+        // 更新URL但不刷新页面
+        history.pushState(null, '', `?scene=${sceneId}`);
     } else {
         console.error(`Scene ${sceneId} not found`);
     }
@@ -49,67 +38,81 @@ function showFeedback(isCorrect, feedbackMessage, nextSceneId) {
     const feedbackMessageElement = document.getElementById('feedback-message');
     
     // 设置反馈消息
-    if (typeof feedbackMessage === 'string' && feedbackMessage.includes('高亮弹出小方框提示：')) {
-        // 提取提示内容
-        const message = feedbackMessage.match(/"(.*?)"/)[1];
-        feedbackMessageElement.textContent = message;
-    } else {
-        feedbackMessageElement.textContent = isCorrect ? "回答正确！" : "回答错误！";
-    }
-    
-    // 显示模态框
+    feedbackMessageElement.textContent = extractFeedbackMessage(feedbackMessage);
     feedbackModal.classList.remove('hidden');
     
-    // 3秒后隐藏模态框并跳转到下一个场景
+    // 3秒后隐藏模态框并跳转
     setTimeout(() => {
         feedbackModal.classList.add('hidden');
-        
-        if (typeof feedbackMessage === 'string' && feedbackMessage.includes('跳转画面')) {
-            const targetScene = parseInt(feedbackMessage.match(/跳转画面(\d+)/)[1]);
-            navigateToScene(targetScene);
-        } else if (nextSceneId) {
-            navigateToScene(nextSceneId);
-        }
-        
-        // 如果是最后一个场景，计算成绩
-        if (nextSceneId === 2410 || gameState.currentScene === 2410) {
-            calculateScore();
-        }
+        handleSceneTransition(feedbackMessage, nextSceneId);
     }, 3000);
+}
+
+// 提取反馈消息
+function extractFeedbackMessage(message) {
+    if (message.includes('高亮弹出小方框提示：')) {
+        return message.match(/"(.*?)"/)[1];
+    }
+    return message;
+}
+
+// 处理场景跳转
+function handleSceneTransition(feedbackMessage, nextSceneId) {
+    if (feedbackMessage.includes('跳转画面')) {
+        const targetScene = parseInt(feedbackMessage.match(/跳转画面(\d+)/)[1]);
+        navigateToScene(targetScene);
+    } else if (nextSceneId) {
+        navigateToScene(nextSceneId);
+    }
+    
+    // 如果是结束场景，计算分数
+    if (gameState.currentScene === 2410) {
+        calculateScore();
+    }
 }
 
 // 计算分数
 function calculateScore() {
     gameState.endTime = new Date();
     const timeUsed = Math.floor((gameState.endTime - gameState.startTime) / 1000);
-    
     const correctRate = gameState.totalQuestions > 0 
         ? Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100) 
         : 0;
     
-    document.getElementById('correct-rate').textContent = `${correctRate}%`;
-    document.getElementById('time-used').textContent = `${timeUsed}秒`;
+    // 更新UI
+    if (document.getElementById('correct-rate')) {
+        document.getElementById('correct-rate').textContent = `${correctRate}%`;
+        document.getElementById('time-used').textContent = `${timeUsed}秒`;
+    }
 }
 
 // 重新开始游戏
 function restartGame() {
-    initGame();
+    window.location.href = 'indexGBL.html';
 }
 
-// 页面加载时初始化游戏
-window.onload = function() {
-    // 检查是否在章节页面
-    if (document.getElementById('scene-2101')) {
-        // 如果在章节页面，根据URL参数跳转到相应场景
-        const urlParams = new URLSearchParams(window.location.search);
-        const sceneParam = urlParams.get('scene');
-        if (sceneParam) {
-            navigateToScene(parseInt(sceneParam));
-        } else {
-            navigateToScene(2101); // 默认显示章节1第一个场景
-        }
-    } else {
-        // 如果在首页，初始化游戏
-        initGame();
+// 初始化按钮事件
+function initButtonEvents() {
+    // 为所有按钮添加事件监听
+    document.querySelectorAll('.game-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const isCorrect = this.classList.contains('correct');
+            const feedback = this.getAttribute('data-feedback') || '';
+            const nextScene = this.getAttribute('data-next-scene') || '';
+            
+            showFeedback(isCorrect, feedback, parseInt(nextScene));
+        });
+    });
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    initButtonEvents();
+    
+    // 如果是从首页跳转过来的，初始化第一个场景
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialScene = urlParams.get('scene');
+    if (initialScene) {
+        navigateToScene(parseInt(initialScene));
     }
-};
+});
