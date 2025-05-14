@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魔法世界 - 开始</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container" id="scene-2001">
+        <div class="scene-content">
+            <h1>欢迎来到魔法世界</h1>
+            <div class="buttons-container">
+                <button class="btn-main" id="btn-3001" onclick="navigateTo('chapter01.html')">游戏开始</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
