@@ -9,16 +9,21 @@
 <body>
     <div class="game-container" id="scene-2001">
         <div class="scene-image">
-            <img src="开始画面.jpg" alt="魔法世界开始画面">
+            <!-- 使用占位图片，实际使用时替换为您的图片 -->
+            <img src="https://via.placeholder.com/800x400?text=开始画面" alt="魔法世界开始画面">
         </div>
         <div class="scene-text">
             <p>欢迎来到魔法世界</p>
         </div>
         <div class="button-container center-top">
-            <button class="game-button" onclick="navigateToScene(2101)">游戏开始</button>
+            <button class="game-button" id="start-button">游戏开始</button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        document.getElementById('start-button').addEventListener('click', function() {
+            window.location.href = 'chapter.html?scene=2101';
+        });
+    </script>
 </body>
 </html>
