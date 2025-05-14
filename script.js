@@ -1,239 +1,163 @@
 // 游戏状态管理
 const gameState = {
-    currentScene: null,
-    correctAnswers: 0,
-    totalQuestions: 0,
-    startTime: null,
-    endTime: null
-};
-
-// DOM元素缓存
-const elements = {
-    hintBox: document.getElementById('hint-box'),
-    hintText: document.getElementById('hint-text'),
-    accuracyRate: document.getElementById('accuracy-rate'),
-    timeUsed: document.getElementById('time-used'),
-    restartBtn: document.getElementById('restart-btn')
+    currentScene: '2001', // 当前场景ID
+    startTime: null,      // 游戏开始时间
+    totalQuestions: 0,   // 总问题数
+    correctAnswers: 0,    // 正确答案数
+    answeredQuestions: 0  // 已回答问题数
 };
 
 // 初始化游戏
 function initGame() {
-    try {
-        // 从URL参数获取初始场景，如果没有则默认为2101
-        const urlParams = new URLSearchParams(window.location.search);
-        gameState.currentScene = urlParams.get('scene') || '2101';
-        
-        // 设置开始时间（如果是第一次进入）
-        if (!gameState.startTime) {
-            gameState.startTime = new Date();
-        }
-        
-        // 隐藏所有场景
-        document.querySelectorAll('.game-container').forEach(scene => {
-            scene.classList.add('hidden');
-        });
-        
-        // 显示当前场景
-        const currentScene = document.getElementById(`scene-${gameState.currentScene}`);
-        if (currentScene) {
-            currentScene.classList.remove('hidden');
-        } else {
-            console.error(`场景 scene-${gameState.currentScene} 未找到，将跳转到第一个场景`);
-            gameState.currentScene = '2101';
-            const fallbackScene = document.getElementById('scene-2101');
-            if (fallbackScene) {
-                fallbackScene.classList.remove('hidden');
-            } else {
-                throw new Error('无法找到初始场景');
-            }
-        }
-        
-        // 如果是结束场景，计算统计数据
-        if (gameState.currentScene === '2410') {
-            showGameStats();
-        }
-        
-        // 设置按钮事件
-        setupButtons();
-        
-    } catch (error) {
-        handleError(error, '初始化游戏失败');
-    }
-}
-
-// 显示游戏统计
-function showGameStats() {
-    try {
-        gameState.endTime = new Date();
-        const timeUsed = Math.floor((gameState.endTime - gameState.startTime) / 1000);
-        const accuracy = gameState.totalQuestions > 0 
-            ? Math.floor((gameState.correctAnswers / gameState.totalQuestions) * 100) 
-            : 0;
-        
-        elements.accuracyRate.textContent = `${accuracy}%`;
-        elements.timeUsed.textContent = `${timeUsed}秒`;
-        
-        // 重新开始按钮事件
-        if (elements.restartBtn) {
-            elements.restartBtn.addEventListener('click', resetGame);
-        }
-    } catch (error) {
-        handleError(error, '计算统计数据失败');
-    }
-}
-
-// 重置游戏
-function resetGame() {
-    gameState.currentScene = '2101';
-    gameState.correctAnswers = 0;
-    gameState.totalQuestions = 0;
+    // 重置游戏状态
     gameState.startTime = new Date();
-    gameState.endTime = null;
+    gameState.totalQuestions = document.querySelectorAll('.btn-group').length;
+    gameState.correctAnswers = 0;
+    gameState.answeredQuestions = 0;
     
-    // 使用replaceState避免回退到结束页面
-    window.history.replaceState({}, '', 'chapter.html?scene=2101');
-    initGame();
+    // 隐藏所有场景
+    document.querySelectorAll('.scene').forEach(scene => {
+        scene.style.display = 'none';
+    });
+    
+    // 显示第一个场景
+    showScene('2101');
 }
 
-// 设置按钮事件
-function setupButtons() {
-    try {
-        // 选项按钮
-        document.querySelectorAll('.game-btn[data-next]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const isCorrect = this.getAttribute('data-correct') === 'true';
-                const nextScene = this.getAttribute('data-next');
-                const hint = this.getAttribute('data-hint');
-                
-                gameState.totalQuestions++;
-                if (isCorrect) gameState.correctAnswers++;
-                
-                if (!isCorrect && hint) {
-                    showHint(hint);
-                    setTimeout(() => {
-                        goToScene(nextScene);
-                    }, 3000);
-                } else {
-                    goToScene(nextScene);
-                }
-            });
-        });
-        
-        // 继续按钮
-        document.querySelectorAll('.game-btn:not([data-next])').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const sceneContainer = this.closest('.game-container');
-                const currentSceneId = sceneContainer.id.replace('scene-', '');
-                const nextScene = gameState.sceneData[currentSceneId]?.next;
-                
-                if (nextScene) {
-                    goToScene(nextScene);
-                }
-            });
-        });
-    } catch (error) {
-        handleError(error, '设置按钮事件失败');
+// 开始游戏
+function startGame() {
+    // 从indexGBL.html跳转到chapter.html
+    window.location.href = 'chapter.html';
+}
+
+// 页面加载完成后初始化游戏
+window.onload = function() {
+    // 检查是否在章节页面
+    if (window.location.pathname.includes('chapter.html') || 
+        window.location.pathname.endsWith('/') || 
+        window.location.pathname === '') {
+        // 延迟执行以确保DOM完全加载
+        setTimeout(() => {
+            initGame();
+        }, 100);
+    }
+};
+
+// 显示指定场景
+function showScene(sceneId) {
+    // 更新当前场景
+    gameState.currentScene = sceneId;
+    
+    // 隐藏所有场景
+    document.querySelectorAll('.scene').forEach(scene => {
+        scene.style.display = 'none';
+    });
+    
+    // 显示目标场景
+    const targetScene = document.getElementById(`scene-${sceneId}`);
+    if (targetScene) {
+        targetScene.style.display = 'flex';
+    } else {
+        console.error(`场景ID ${sceneId} 不存在`);
     }
 }
 
-// 跳转到指定场景
-function goToScene(sceneId) {
-    try {
-        gameState.currentScene = sceneId;
-        
-        // 更新URL但不刷新页面
-        window.history.pushState({}, '', `?scene=${sceneId}`);
-        
-        initGame();
-    } catch (error) {
-        handleError(error, '跳转场景失败');
+// 检查答案
+function checkAnswer(buttonId, isCorrect, nextSceneId, hintMessage) {
+    // 更新已回答问题数
+    gameState.answeredQuestions++;
+    
+    // 如果答案正确，增加正确计数
+    if (isCorrect) {
+        gameState.correctAnswers++;
+    } else {
+        // 显示提示信息
+        showHint(hintMessage);
     }
-}
-
-// 显示提示
-function showHint(text) {
-    try {
-        if (elements.hintBox && elements.hintText) {
-            elements.hintText.textContent = text;
-            elements.hintBox.classList.remove('hidden');
-            
+    
+    // 如果有下一个场景，跳转到下一个场景
+    if (nextSceneId) {
+        // 如果是错误答案且有提示，延迟跳转
+        if (!isCorrect && hintMessage) {
             setTimeout(() => {
-                elements.hintBox.classList.add('hidden');
-            }, 3000);
+                showScene(nextSceneId);
+            }, 3000); // 3秒后跳转
+        } else {
+            showScene(nextSceneId);
         }
-    } catch (error) {
-        console.error('显示提示失败:', error);
+    }
+    
+    // 如果是最后一个场景，计算并显示统计信息
+    if (nextSceneId === '2410') {
+        setTimeout(() => {
+            showStats();
+        }, 500);
     }
 }
 
-// 错误处理
-function handleError(error, context) {
-    console.error(`${context}:`, error);
+// 显示提示信息
+function showHint(message) {
+    const hintBox = document.getElementById('hint-box');
+    const hintText = document.getElementById('hint-text');
     
-    // 创建错误显示元素
-    const errorDisplay = document.createElement('div');
-    errorDisplay.style.position = 'fixed';
-    errorDisplay.style.top = '0';
-    errorDisplay.style.left = '0';
-    errorDisplay.style.right = '0';
-    errorDisplay.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
-    errorDisplay.style.color = 'white';
-    errorDisplay.style.padding = '15px';
-    errorDisplay.style.zIndex = '9999';
-    errorDisplay.style.textAlign = 'center';
-    errorDisplay.style.fontWeight = 'bold';
-    errorDisplay.textContent = `${context}，请刷新页面重试 (${error.message})`;
-    
-    document.body.appendChild(errorDisplay);
-    
-    // 5秒后自动移除错误信息
-    setTimeout(() => {
-        errorDisplay.remove();
-    }, 5000);
+    if (hintBox && hintText) {
+        hintText.textContent = message;
+        hintBox.style.visibility = 'visible';
+        hintBox.style.opacity = '1';
+        
+        // 3秒后自动隐藏提示
+        setTimeout(() => {
+            hintBox.style.opacity = '0';
+            hintBox.style.visibility = 'hidden';
+        }, 3000);
+    }
 }
 
-// 全局错误处理
-window.addEventListener('error', function(event) {
-    handleError(event.error, '全局错误');
-});
-
-// 处理浏览器前进/后退按钮
-window.addEventListener('popstate', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const scene = urlParams.get('scene');
-    if (scene) {
-        gameState.currentScene = scene;
-        initGame();
-    }
-});
-
-// DOM加载完成后初始化游戏
-document.addEventListener('DOMContentLoaded', function() {
-    // 场景数据映射
-    gameState.sceneData = {
-        '2101': { next: '2102' },
-        '2102': { next: '2103' },
-        '2103': { next: '2104' },
-        '2104': { next: '2201' },
-        '2201': { next: '2202' },
-        '2202': { next: '2203' },
-        '2203': { next: '2301' },
-        '2301': { next: '2302' },
-        '2302': { next: '2303' },
-        '2303': { next: '2304' },
-        '2304': { next: '2305' },
-        '2305': { next: '2401' },
-        '2401': { next: '2402' },
-        '2402': { next: '2403' },
-        '2403': { next: '2404' },
-        '2404': { next: '2405' },
-        '2405': { next: '2406' },
-        '2406': { next: '2407' },
-        '2407': { next: '2408' },
-        '2408': { next: '2409' },
-        '2409': { next: '2410' },
-        '2410': { next: null }
-    };
+// 下一场景
+function nextScene(nextSceneId) {
+    showScene(nextSceneId);
     
-    initGame();
-});
+    // 如果是最后一个场景，计算并显示统计信息
+    if (nextSceneId === '2410') {
+        setTimeout(() => {
+            showStats();
+        }, 500);
+    }
+}
+
+// 显示统计信息
+function showStats() {
+    // 计算正确率
+    const accuracy = gameState.totalQuestions > 0 
+        ? Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100) 
+        : 0;
+    
+    // 计算用时
+    const endTime = new Date();
+    const timeUsed = Math.round((endTime - gameState.startTime) / 1000);
+    
+    // 更新UI
+    const accuracyElement = document.getElementById('accuracy-rate');
+    const timeUsedElement = document.getElementById('time-used');
+    
+    if (accuracyElement) accuracyElement.textContent = `${accuracy}%`;
+    if (timeUsedElement) timeUsedElement.textContent = timeUsed;
+}
+
+// 重新开始游戏
+function restartGame() {
+    // 重置游戏状态
+    gameState.startTime = new Date();
+    gameState.correctAnswers = 0;
+    gameState.answeredQuestions = 0;
+    
+    // 重新从第一个场景开始
+    showScene('2101');
+}
+
+// 错误处理：捕获全局错误
+window.onerror = function(message, source, lineno, colno, error) {
+    console.error(`发生错误: ${message} at ${source}:${lineno}:${colno}`);
+    showHint('游戏发生错误，请刷新页面重试');
+    return true; // 阻止默认错误处理
+};
