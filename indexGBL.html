@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>魔法世界 - 时态学习游戏</title>
+    <title>魔法世界 - 时态学习</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,22 +12,37 @@
         <div class="scene" id="scene-2001" data-scene-id="2001">
             <div class="scene-content">
                 <h1>欢迎来到魔法世界</h1>
-                <div class="scene-image">
-                    <!-- 图片路径根据实际Github仓库调整 -->
-                    <img src="images/开始画面.jpg" alt="魔法世界开始画面">
-                </div>
+                <img src="images/开始画面.jpg" alt="魔法世界开始画面" class="scene-image">
                 <div class="button-container">
-                    <button class="main-button" id="button-3001" onclick="handleButtonClick(3001)">游戏开始</button>
+                    <button class="game-button" id="button-3001" data-target="2101">游戏开始</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- 提示框 -->
-    <div id="hint-box" class="hint-box">
-        <p id="hint-message"></p>
-    </div>
-
+    
     <script src="script.js"></script>
+    <script>
+        // 初始化游戏状态
+        const gameState = {
+            currentScene: 2001,
+            startTime: null,
+            endTime: null,
+            score: 0,
+            correctAnswers: 0,
+            totalQuestions: 0,
+            // 初始化时会计算总题目数
+        };
+        
+        // 游戏开始时初始化状态
+        document.getElementById('button-3001').addEventListener('click', function() {
+            gameState.startTime = new Date();
+            
+            // 计算总题目数（所有含义为"正确"的按钮数量）
+            gameState.totalQuestions = document.querySelectorAll('[data-correct="true"]').length;
+            
+            // 跳转到第一个章节场景
+            window.location.href = 'chapter.html?scene=2101';
+        });
+    </script>
 </body>
 </html>
