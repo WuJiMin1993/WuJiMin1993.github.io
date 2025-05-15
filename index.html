@@ -3,52 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英语时态魔法冒险</title>
+    <title>时态魔法冒险</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 开始画面 -->
     <div id="start-screen" class="screen">
-        <h1>英语时态魔法冒险</h1>
-        <button id="start-btn" class="center-btn">游戏开始</button>
+        <img src="images/开始画面.jpg" alt="开始画面" class="background-image">
+        <button id="start-button" class="center-top-button">游戏开始</button>
     </div>
 
     <script>
-        // 游戏状态对象，用于记录分数和时间
-        const gameState = {
-            score: 0,
-            startTime: null,
-            correctAnswers: 0,
-            totalQuestions: 15
-        };
-
-        // 保存游戏状态到本地存储
-        function saveGameState() {
-            localStorage.setItem('gameState', JSON.stringify(gameState));
-        }
-
-        // 从本地存储加载游戏状态
-        function loadGameState() {
-            const savedState = localStorage.getItem('gameState');
-            if (savedState) {
-                Object.assign(gameState, JSON.parse(savedState));
+        // 预加载章节图片
+        function preloadImages() {
+            const imageUrls = [];
+            for (let i = 1; i <= 21; i++) {
+                imageUrls.push(`images/画面${i.toString().padStart(2, '0')}.jpg`);
             }
+            
+            imageUrls.forEach(url => {
+                const img = new Image();
+                img.src = url;
+            });
         }
 
-        // 开始游戏按钮点击事件
-        document.getElementById('start-btn').addEventListener('click', function() {
-            // 重置游戏状态
-            gameState.score = 0;
-            gameState.correctAnswers = 0;
-            gameState.startTime = new Date();
-            saveGameState();
+        // 页面加载完成后执行
+        window.addEventListener('DOMContentLoaded', () => {
+            // 预加载图片
+            preloadImages();
             
-            // 跳转到章节页面
-            window.location.href = 'chapter.html';
-        });
-
-        // 页面加载时检查是否有进行中的游戏
-        window.addEventListener('load', function() {
-            loadGameState();
+            // 开始按钮点击事件
+            document.getElementById('start-button').addEventListener('click', () => {
+                // 淡出效果
+                document.getElementById('start-screen').style.opacity = '0';
+                
+                // 延迟跳转以实现淡出效果
+                setTimeout(() => {
+                    window.location.href = 'chapter.html#2101';
+                }, 500);
+            });
         });
     </script>
 </body>
