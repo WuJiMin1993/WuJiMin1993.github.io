@@ -7,96 +7,70 @@
 }
 
 body {
-    width: 100vw;
-    height: 100vh;
     overflow: hidden;
-    position: relative;
+    height: 100vh;
+    width: 100vw;
 }
 
-/* 游戏屏幕样式 */
-.game-screen {
+/* 场景容器 */
+.scene-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-/* 游戏容器 */
-.game-container {
-    width: 90%;
-    max-width: 800px;
-    height: 80%;
-    background-color: rgba(0, 0, 0, 0.6);
-    border-radius: 15px;
-    padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    position: relative;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    transition: background-image 0.5s ease;
 }
 
-/* 文字显示区域 */
-.text-display {
-    flex: 1;
+/* 文本容器 */
+.text-container {
+    max-width: 80%;
+    margin: 0 auto;
     padding: 20px;
-    overflow-y: auto;
-    font-size: 1.2rem;
-    line-height: 1.6;
-}
-
-.text-display h1, .text-display h2 {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
     text-align: center;
     margin-bottom: 20px;
-    color: #f8d56b;
+}
+
+.text-container p {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
 }
 
 /* 按钮容器 */
 .button-container {
     display: flex;
     justify-content: center;
-    padding: 20px;
+    width: 80%;
+    margin-top: 20px;
     gap: 20px;
 }
 
-/* 按钮位置布局 */
-.left-right {
-    justify-content: space-between;
-}
-
-.center-top {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-}
-
-.full-width {
-    width: 100%;
-}
-
-/* 游戏按钮 */
+/* 游戏按钮样式 */
 .game-button {
-    padding: 12px 25px;
-    font-size: 1.1rem;
+    padding: 15px 30px;
+    font-size: 1.2rem;
     border: none;
-    border-radius: 30px;
-    background-color: #5d3a8a;
+    border-radius: 5px;
+    background-color: #4a6fa5;
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 150px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    min-width: 150px;
 }
 
 .game-button:hover {
-    background-color: #7d5ba6;
+    background-color: #3a5a8f;
     transform: translateY(-2px);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
 }
@@ -106,94 +80,68 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* 左右按钮特定样式 */
-.left-button {
-    background-color: #4c7f99;
+/* 按钮位置类 */
+.left {
+    align-self: flex-start;
 }
 
-.left-button:hover {
-    background-color: #5d9dbd;
+.right {
+    align-self: flex-end;
 }
 
-.right-button {
-    background-color: #994c4c;
+.center-top {
+    align-self: center;
+    margin-top: -100px;
 }
 
-.right-button:hover {
-    background-color: #bd5d5d;
+.full {
+    width: 100%;
 }
 
-/* 提示框 */
-.hint-box {
+/* 错误提示框 */
+.error-popup {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
+    background-color: rgba(255, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
-    max-width: 80%;
-    text-align: center;
+    color: white;
     font-size: 1.2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
     z-index: 100;
-    animation: popIn 0.3s ease-out;
+    animation: popup 0.5s ease;
 }
 
-@keyframes popIn {
-    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+@keyframes popup {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
 }
 
 /* 结果页面样式 */
-.result-container {
-    margin-top: 30px;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-}
-
 .result-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
+    margin: 15px 0;
     font-size: 1.3rem;
 }
 
 .result-label {
     font-weight: bold;
-    color: #f8d56b;
+    margin-right: 10px;
 }
 
 .result-value {
-    color: #fff;
+    color: #ffcc00;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-    .game-container {
-        width: 95%;
-        height: 90%;
-        padding: 10px;
-    }
-    
-    .text-display {
-        font-size: 1rem;
-        padding: 10px;
-    }
-    
-    .button-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .game-button {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    
-    .left-right {
-        flex-direction: column;
-    }
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ffcc00;
 }
