@@ -3,88 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英语时态魔法冒险</title>
+    <title>时态魔法棒 - 开始</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 开始画面容器 -->
     <div id="game-container">
-        <!-- 背景图片 -->
+        <!-- 开始画面背景图 -->
         <img id="background-image" src="images/开始画面.jpg" alt="开始画面" class="fade-in">
         
         <!-- 游戏开始按钮 -->
-        <button id="start-button" class="center-top fade-in">游戏开始</button>
+        <button id="start-btn" class="center-top-btn fade-in-delay">游戏开始</button>
     </div>
 
     <script>
         // 游戏状态管理
         const gameState = {
-            score: 0,          // 得分
-            correctAnswers: 0, // 正确答案数
-            startTime: null,   // 游戏开始时间
-            endTime: null,     // 游戏结束时间
-            clickedButtons: new Set() // 记录已点击的按钮
+            score: 0,
+            startTime: null,
+            correctAnswers: 0,
+            totalQuestions: 15
         };
 
-        // 预加载章节页面和图片
-        function preloadResources() {
-            // 将初始游戏状态保存到sessionStorage
-            sessionStorage.setItem('gameState', JSON.stringify({
-                ...gameState,
-                clickedButtons: Array.from(gameState.clickedButtons)
-            }));
-            
-            // 预加载章节HTML
-            fetch('chapter.html')
-                .then(response => response.text())
-                .then(html => {
-                    sessionStorage.setItem('chapterContent', html);
-                })
-                .catch(error => console.error('预加载章节失败:', error));
-            
-            // 预加载所有章节图片
-            const imageNames = [];
+        // 预加载章节图片
+        function preloadChapterImages() {
+            const images = [];
             for (let i = 1; i <= 21; i++) {
-                imageNames.push(`画面${i.toString().padStart(2, '0')}.jpg`);
+                const img = new Image();
+                img.src = `images/画面${i.toString().padStart(2, '0')}.jpg`;
+                images.push(img);
             }
-            
-            imageNames.forEach(img => {
-                const image = new Image();
-                image.src = `images/${img}`;
-            });
+            return images;
         }
 
-        // 初始化游戏
-        document.addEventListener('DOMContentLoaded', function() {
-            // 预加载资源
-            preloadResources();
+        // 开始游戏按钮点击事件
+        document.getElementById('start-btn').addEventListener('click', function() {
+            // 记录游戏开始时间
+            gameState.startTime = new Date();
             
-            // 开始按钮点击事件
-            document.getElementById('start-button').addEventListener('click', function() {
-                // 重置游戏状态
-                const newGameState = {
-                    score: 0,
-                    correctAnswers: 0,
-                    startTime: new Date().getTime(),
-                    endTime: null,
-                    currentScene: 2101,
-                    clickedButtons: new Set()
-                };
-                sessionStorage.setItem('gameState', JSON.stringify({
-                    ...newGameState,
-                    clickedButtons: Array.from(newGameState.clickedButtons)
-                }));
-                
-                // 淡出效果
-                document.getElementById('background-image').classList.add('fade-out');
-                this.classList.add('fade-out');
-                
-                // 延迟跳转到章节页面
-                setTimeout(() => {
-                    window.location.href = 'chapter.html'; // 改为直接跳转
-                }, 500);
-            });
+            // 预加载图片
+            preloadChapterImages();
+            
+            // 跳转到第一章
+            window.location.href = 'chapter.html#2101';
         });
+
+        // 存储游戏状态到sessionStorage
+        sessionStorage.setItem('gameState', JSON.stringify(gameState));
     </script>
 </body>
 </html>
