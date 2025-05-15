@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英语时态魔法棒</title>
+    <title>英语时态魔法冒险</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 开始画面容器 -->
     <div id="game-container">
-        <!-- 开始画面背景图 -->
-        <div id="background-image" class="fade-in"></div>
+        <!-- 背景图片 -->
+        <img id="background-image" src="images/开始画面.jpg" alt="开始画面" class="fade-in">
         
         <!-- 游戏开始按钮 -->
         <button id="start-button" class="center-top fade-in">游戏开始</button>
@@ -19,61 +20,63 @@
         // 游戏状态管理
         const gameState = {
             score: 0,          // 得分
-            correctAnswers: 0, // 正确答案数量
+            correctAnswers: 0, // 正确答案数
             startTime: null,   // 游戏开始时间
             endTime: null,     // 游戏结束时间
-            // 记录每个按钮是否被点击过
-            clickedButtons: new Set()
+            clickedButtons: new Set() // 记录已点击的按钮
         };
 
-        // 预加载所有图片
-        function preloadImages() {
-            const imageUrls = [
-                'images/开始画面.jpg',
-                'images/画面01.jpg',
-                'images/画面02.jpg',
-                'images/画面03.jpg',
-                'images/画面04.jpg',
-                'images/画面05.jpg',
-                'images/画面06.jpg',
-                'images/画面07.jpg',
-                'images/画面08.jpg',
-                'images/画面09.jpg',
-                'images/画面10.jpg',
-                'images/画面11.jpg',
-                'images/画面12.jpg',
-                'images/画面13.jpg',
-                'images/画面14.jpg',
-                'images/画面15.jpg',
-                'images/画面16.jpg',
-                'images/画面17.jpg',
-                'images/画面18.jpg',
-                'images/画面19.jpg',
-                'images/画面20.jpg',
-                'images/画面21.jpg'
-            ];
+        // 预加载章节页面和图片
+        function preloadResources() {
+            // 预加载章节HTML
+            fetch('chapter.html')
+                .then(response => response.text())
+                .then(html => {
+                    // 将章节内容存储在内存中
+                    sessionStorage.setItem('chapterContent', html);
+                })
+                .catch(error => console.error('预加载章节失败:', error));
             
-            imageUrls.forEach(url => {
-                const img = new Image();
-                img.src = url;
+            // 预加载所有章节图片
+            const imageNames = [];
+            for (let i = 1; i <= 21; i++) {
+                imageNames.push(`画面${i.toString().padStart(2, '0')}.jpg`);
+            }
+            
+            imageNames.forEach(img => {
+                const image = new Image();
+                image.src = `images/${img}`;
             });
         }
 
         // 初始化游戏
         document.addEventListener('DOMContentLoaded', function() {
-            // 设置开始画面背景
-            document.getElementById('background-image').style.backgroundImage = "url('images/开始画面.jpg')";
-            
-            // 预加载图片
-            preloadImages();
+            // 预加载资源
+            preloadResources();
             
             // 开始按钮点击事件
             document.getElementById('start-button').addEventListener('click', function() {
                 // 记录游戏开始时间
                 gameState.startTime = new Date();
                 
-                // 跳转到章节1的第一个画面
-                window.location.href = 'chapter.html#2101';
+                // 淡出效果
+                document.getElementById('background-image').classList.add('fade-out');
+                this.classList.add('fade-out');
+                
+                // 延迟加载章节页面
+                setTimeout(() => {
+                    // 检查是否已预加载章节内容
+                    const chapterContent = sessionStorage.getItem('chapterContent');
+                    if (chapterContent) {
+                        // 直接使用预加载的内容
+                        document.documentElement.innerHTML = chapterContent;
+                        // 初始化章节游戏逻辑
+                        initializeChapterGame();
+                    } else {
+                        // 如果预加载失败，则正常加载
+                        window.location.href = 'chapter.html';
+                    }
+                }, 500); // 与CSS过渡时间匹配
             });
         });
     </script>
