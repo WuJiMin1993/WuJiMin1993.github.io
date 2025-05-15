@@ -1,4 +1,4 @@
-/* 基础样式重置 */
+/* 基础重置 */
 * {
     margin: 0;
     padding: 0;
@@ -7,198 +7,193 @@
 }
 
 body {
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
+    position: relative;
 }
 
-/* 全屏容器 */
-.full-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+/* 游戏屏幕样式 */
+.game-screen {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    padding: 20px;
-    text-align: center;
-}
-
-/* 居中内容 */
-.content-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
     width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* 游戏容器 */
+.game-container {
+    width: 90%;
     max-width: 800px;
-}
-
-/* 主按钮样式 */
-.main-button {
-    padding: 12px 30px;
-    font-size: 18px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: all 0.3s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.main-button:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* 场景文本样式 */
-.scene-text {
-    font-size: 24px;
-    margin-bottom: 40px;
+    height: 80%;
     background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 15px;
     padding: 20px;
-    border-radius: 10px;
-    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* 文字显示区域 */
+.text-display {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    font-size: 1.2rem;
     line-height: 1.6;
 }
 
+.text-display h1, .text-display h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #f8d56b;
+}
+
 /* 按钮容器 */
-.buttons-container {
+.button-container {
     display: flex;
     justify-content: center;
+    padding: 20px;
     gap: 20px;
+}
+
+/* 按钮位置布局 */
+.left-right {
+    justify-content: space-between;
+}
+
+.center-top {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+}
+
+.full-width {
     width: 100%;
-    max-width: 800px;
-    flex-wrap: wrap;
 }
 
-/* 动作按钮样式 */
-.action-button {
+/* 游戏按钮 */
+.game-button {
     padding: 12px 25px;
-    font-size: 16px;
+    font-size: 1.1rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 30px;
+    background-color: #5d3a8a;
+    color: white;
     cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
     min-width: 150px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.action-button:hover {
+.game-button:hover {
+    background-color: #7d5ba6;
     transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* 按钮位置样式 */
-.action-button.left {
-    background-color: #2196F3;
-    color: white;
+.game-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.action-button.right {
-    background-color: #f44336;
-    color: white;
+/* 左右按钮特定样式 */
+.left-button {
+    background-color: #4c7f99;
 }
 
-.action-button.center {
-    background-color: #FFC107;
-    color: black;
-    margin: 0 auto;
+.left-button:hover {
+    background-color: #5d9dbd;
 }
 
-/* 提示容器 */
-.hint-container {
-    position: fixed;
+.right-button {
+    background-color: #994c4c;
+}
+
+.right-button:hover {
+    background-color: #bd5d5d;
+}
+
+/* 提示框 */
+.hint-box {
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(255, 235, 59, 0.9);
-    color: black;
-    padding: 20px 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 20px;
     border-radius: 10px;
-    font-size: 18px;
-    font-weight: bold;
+    max-width: 80%;
+    text-align: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     z-index: 100;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    animation: pulse 0.5s ease-in-out;
+    animation: popIn 0.3s ease-out;
 }
 
-/* 提示动画 */
-@keyframes pulse {
-    0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
-    50% { transform: translate(-50%, -50%) scale(1.05); }
+@keyframes popIn {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
     100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* 排行榜样式 */
-.scoreboard {
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    max-width: 500px;
-    width: 90%;
+/* 结果页面样式 */
+.result-container {
+    margin-top: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
 }
 
-.scoreboard h2 {
-    margin-bottom: 20px;
-    color: #FFC107;
-    font-size: 28px;
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
 }
 
-.scoreboard p {
-    font-size: 20px;
-    margin: 15px 0;
-    color: white;
-}
-
-.scoreboard span {
-    color: #4CAF50;
+.result-label {
     font-weight: bold;
+    color: #f8d56b;
 }
 
-/* 隐藏类 */
-.hidden {
-    display: none !important;
+.result-value {
+    color: #fff;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .scene-text {
-        font-size: 18px;
-        padding: 15px;
+    .game-container {
+        width: 95%;
+        height: 90%;
+        padding: 10px;
     }
     
-    .action-button {
-        padding: 10px 20px;
-        font-size: 14px;
-        min-width: 120px;
+    .text-display {
+        font-size: 1rem;
+        padding: 10px;
     }
     
-    .buttons-container {
+    .button-container {
         flex-direction: column;
         gap: 10px;
     }
     
-    .scoreboard {
-        padding: 20px;
+    .game-button {
+        width: 100%;
+        margin-bottom: 10px;
     }
     
-    .scoreboard h2 {
-        font-size: 24px;
-    }
-    
-    .scoreboard p {
-        font-size: 18px;
+    .left-right {
+        flex-direction: column;
     }
 }
