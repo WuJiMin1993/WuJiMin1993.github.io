@@ -7,141 +7,55 @@
 }
 
 body {
-    width: 100vw;
+    background-color: #1a1a2e;
+    color: #ffffff;
     height: 100vh;
     overflow: hidden;
-    background-color: #000;
 }
 
-/* 游戏容器 */
 #game-container {
-    position: relative;
     width: 100%;
     height: 100%;
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-}
-
-/* 背景图片样式 */
-#background-image {
-    position: absolute;
-    width: 75%;
-    max-height: 70%;
-    object-fit: contain;
-    z-index: 1;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-/* 文字内容区域 */
-#text-content {
-    position: absolute;
-    top: 15%;
-    width: 80%;
-    max-height: 40%;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
-    font-size: 1.5rem;
-    text-align: center;
-    z-index: 2;
-    overflow-y: auto;
-}
-
-/* 按钮容器 */
-#buttons-container {
-    position: absolute;
-    bottom: 10%;
-    width: 80%;
-    display: flex;
     justify-content: center;
-    gap: 20px;
-    z-index: 2;
 }
 
-/* 按钮通用样式 */
-button {
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 8px;
-    background-color: #4a6fa5;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-button:hover {
-    background-color: #3a5a8f;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-/* 特定位置按钮样式 */
-.left-btn {
-    margin-right: auto;
-}
-
-.right-btn {
-    margin-left: auto;
-}
-
-.full-btn {
-    width: 100%;
-    margin: 0 auto;
-}
-
-.center-top-btn {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-}
-
-/* 提示框样式 */
-#hint-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    background-color: rgba(255, 255, 0, 0.9);
-    border-radius: 8px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: center;
-    z-index: 3;
-    box-shadow: 0 0 20px rgba(255, 255, 0, 0.7);
-}
-
-.hidden {
+.scene {
     display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
-/* 淡入淡出动画 */
-.fade-in {
-    animation: fadeIn 1s ease-in-out;
+.scene.active {
+    display: flex;
+    opacity: 1;
 }
 
-.fade-in-delay {
-    animation: fadeIn 1s ease-in-out 0.5s both;
+/* 图片容器样式 */
+.image-container {
+    width: 75%;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+}
+
+.scene-image {
+    width: 100%;
+    max-height: 60vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards;
 }
 
 @keyframes fadeIn {
@@ -149,66 +63,185 @@ button:disabled {
     to { opacity: 1; }
 }
 
-/* 结果页面样式 */
-.results-container {
+/* 文本容器样式 */
+.text-container {
+    width: 80%;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px auto;
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+/* 按钮容器样式 */
+.button-container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.button-container.split {
+    justify-content: space-between;
+}
+
+.button-container.full-width {
+    justify-content: center;
+}
+
+.button-container.center-bottom {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 按钮样式 */
+.game-button {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 50px;
+    background-color: #4e54c8;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.game-button:hover {
+    background-color: #6a71e6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.game-button:active {
+    transform: translateY(0);
+}
+
+.game-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.left-button {
+    background-color: #4e54c8;
+}
+
+.right-button {
+    background-color: #f39c12;
+}
+
+.full-button {
+    width: 80%;
+    max-width: 400px;
+    background-color: #2ecc71;
+}
+
+.main-button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.main-button:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* 反馈框样式 */
+.feedback-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    z-index: 100;
+    animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    80% { transform: translate(-50%, -50%) scale(1.1); }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* 总结页面样式 */
+.summary-container {
     width: 80%;
     max-width: 600px;
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 30px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
+    border-radius: 10px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
-.results-container h1 {
-    margin-bottom: 30px;
-    color: #4a6fa5;
-}
-
-.result-item {
+.summary-item {
     display: flex;
     justify-content: space-between;
-    margin: 20px 0;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
+    margin: 15px 0;
+    font-size: 1.2rem;
 }
 
-.result-label {
+.summary-label {
     font-weight: bold;
-    color: #333;
+    color: #3498db;
 }
 
-.result-value {
+.summary-value {
+    color: #ffffff;
+}
+
+.total-score {
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 2px solid #4e54c8;
+    font-size: 1.4rem;
+}
+
+.total-score .summary-label {
+    color: #2ecc71;
+}
+
+.total-score .summary-value {
     font-weight: bold;
-    color: #4a6fa5;
+    color: #2ecc71;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    #text-content {
-        font-size: 1.2rem;
-        top: 10%;
-        max-height: 35%;
-    }
-    
-    #buttons-container {
-        flex-direction: column;
-        gap: 10px;
-        bottom: 5%;
-    }
-    
-    button {
-        width: 100%;
-        padding: 12px;
-        font-size: 1rem;
-    }
-    
-    .left-btn, .right-btn {
-        margin: 0;
-    }
-    
-    #background-image {
+    .image-container, .text-container, .button-container {
         width: 95%;
-        max-height: 60%;
+    }
+    
+    .text-container {
+        font-size: 1rem;
+        padding: 15px;
+    }
+    
+    .game-button {
+        padding: 10px 15px;
+        font-size: 1rem;
+        min-width: 120px;
+    }
+    
+    .summary-item {
+        font-size: 1rem;
     }
 }
