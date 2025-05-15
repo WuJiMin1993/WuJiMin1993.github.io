@@ -28,11 +28,16 @@
 
         // 预加载章节页面和图片
         function preloadResources() {
+            // 将初始游戏状态保存到sessionStorage
+            sessionStorage.setItem('gameState', JSON.stringify({
+                ...gameState,
+                clickedButtons: Array.from(gameState.clickedButtons)
+            }));
+            
             // 预加载章节HTML
             fetch('chapter.html')
                 .then(response => response.text())
                 .then(html => {
-                    // 将章节内容存储在内存中
                     sessionStorage.setItem('chapterContent', html);
                 })
                 .catch(error => console.error('预加载章节失败:', error));
@@ -56,27 +61,28 @@
             
             // 开始按钮点击事件
             document.getElementById('start-button').addEventListener('click', function() {
-                // 记录游戏开始时间
-                gameState.startTime = new Date();
+                // 重置游戏状态
+                const newGameState = {
+                    score: 0,
+                    correctAnswers: 0,
+                    startTime: new Date().getTime(),
+                    endTime: null,
+                    currentScene: 2101,
+                    clickedButtons: new Set()
+                };
+                sessionStorage.setItem('gameState', JSON.stringify({
+                    ...newGameState,
+                    clickedButtons: Array.from(newGameState.clickedButtons)
+                }));
                 
                 // 淡出效果
                 document.getElementById('background-image').classList.add('fade-out');
                 this.classList.add('fade-out');
                 
-                // 延迟加载章节页面
+                // 延迟跳转到章节页面
                 setTimeout(() => {
-                    // 检查是否已预加载章节内容
-                    const chapterContent = sessionStorage.getItem('chapterContent');
-                    if (chapterContent) {
-                        // 直接使用预加载的内容
-                        document.documentElement.innerHTML = chapterContent;
-                        // 初始化章节游戏逻辑
-                        initializeChapterGame();
-                    } else {
-                        // 如果预加载失败，则正常加载
-                        window.location.href = 'chapter.html';
-                    }
-                }, 500); // 与CSS过渡时间匹配
+                    window.location.href = 'chapter.html'; // 改为直接跳转
+                }, 500);
             });
         });
     </script>
