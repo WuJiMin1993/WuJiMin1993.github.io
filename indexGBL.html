@@ -3,64 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>魔法世界 - 欢迎</title>
+    <title>魔法世界英语时态游戏</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
-        <!-- 游戏开始画面 -->
-        <div id="scene-2001" class="scene active">
-            <div class="image-container" id="image-2001">
-                <!-- 图片将通过CSS或JavaScript动态加载 -->
-            </div>
-            <div class="text-container">
-                <p>欢迎来到魔法世界</p>
-            </div>
-            <div class="button-container">
-                <button id="button-3001" class="game-button center-top" onclick="startGame()">游戏开始</button>
-            </div>
+    <!-- 开始画面 -->
+    <div id="game-container" class="full-screen" style="background-image: url('images/开始画面.jpg');">
+        <div class="content-center">
+            <h1 id="welcome-text">欢迎来到魔法世界</h1>
+            <button id="start-button" class="main-button">游戏开始</button>
         </div>
     </div>
 
     <script>
         // 游戏状态管理
         const gameState = {
-            currentScene: '2001',
+            currentScene: 'indexGBL',
+            score: 0,
             correctAnswers: 0,
             startTime: null,
-            totalQuestions: 15
+            endTime: null
         };
 
-        // 开始游戏函数
-        function startGame() {
-            // 记录开始时间
-            gameState.startTime = new Date();
-            // 跳转到第一个章节场景
-            window.location.href = 'chapter.html?scene=2101';
-        }
-
-        // 检查图片是否存在
-        function checkImageExists(imagePath, callback) {
-            const img = new Image();
-            img.onload = function() { callback(true); };
-            img.onerror = function() { callback(false); };
-            img.src = imagePath;
-        }
-
-        // 页面加载时检查并设置背景图片
-        window.onload = function() {
-            const imageContainer = document.getElementById('image-2001');
-            const imagePath = 'images/开始画面.jpg';
-            
-            checkImageExists(imagePath, function(exists) {
-                if (exists) {
-                    imageContainer.style.backgroundImage = `url('${imagePath}')`;
-                } else {
-                    imageContainer.style.backgroundColor = '#3498db'; // 蓝色背景
-                    imageContainer.innerHTML = '<p>开始画面</p>';
-                }
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', function() {
+            // 开始按钮点击事件
+            document.getElementById('start-button').addEventListener('click', function() {
+                // 记录游戏开始时间
+                gameState.startTime = new Date();
+                // 跳转到第一个场景
+                window.location.href = 'chapter.html?scene=2101';
             });
-        };
+        });
     </script>
 </body>
 </html>
