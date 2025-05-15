@@ -3,38 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>魔法世界英语时态游戏</title>
+    <title>魔法世界时态学习</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <!-- 开始画面 -->
-    <div id="game-container" class="full-screen" style="background-image: url('images/开始画面.jpg');">
-        <div class="content-center">
-            <h1 id="welcome-text">欢迎来到魔法世界</h1>
-            <button id="start-button" class="main-button">游戏开始</button>
+<body id="indexGBL" class="game-screen">
+    <!-- 游戏开始画面 -->
+    <div class="game-container">
+        <div class="text-display">
+            <h1>欢迎来到魔法世界</h1>
+        </div>
+        <div class="button-container center-top">
+            <button id="3001" class="game-button" onclick="startGame()">游戏开始</button>
         </div>
     </div>
 
     <script>
-        // 游戏状态管理
-        const gameState = {
-            currentScene: 'indexGBL',
-            score: 0,
-            correctAnswers: 0,
-            startTime: null,
-            endTime: null
-        };
-
-        // 初始化游戏
-        document.addEventListener('DOMContentLoaded', function() {
-            // 开始按钮点击事件
-            document.getElementById('start-button').addEventListener('click', function() {
-                // 记录游戏开始时间
-                gameState.startTime = new Date();
-                // 跳转到第一个场景
-                window.location.href = 'chapter.html?scene=2101';
-            });
-        });
+        // 开始游戏函数
+        function startGame() {
+            // 初始化游戏状态
+            localStorage.setItem('score', '0');
+            localStorage.setItem('startTime', new Date().getTime());
+            localStorage.setItem('correctAnswers', '0');
+            
+            // 跳转到第一个章节画面
+            window.location.href = 'chapter.html?scene=2101';
+        }
     </script>
 </body>
 </html>
