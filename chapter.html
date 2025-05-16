@@ -1,730 +1,617 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>英语时态魔法冒险 - 游戏章节</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- 引入Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-</head>
-<body>
-    <!-- 游戏主容器 -->
-    <div id="game-container" class="page-container">
-        <!-- 图片容器 -->
-        <div class="image-container">
-            <img id="current-image" src="" alt="游戏画面">
-        </div>
+<script type="text/javascript">
+// 解析URL参数
+function getQueryParams() {
+    const params = {};
+    const queryString = window.location.search.substring(1);
+    const pairs = queryString.split('&');
+    
+    for (const pair of pairs) {
+        const [key, value] = pair.split('=');
+        params[key] = decodeURIComponent(value);
+    }
+    
+    return params;
+}
+
+// 初始化Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDHRYTBU74r31MPYVAAnRMwKM76c_-BduQ",
+    authDomain: "tetrisonline-ca400.firebaseapp.com",
+    projectId: "tetrisonline-ca400",
+    storageBucket: "tetrisonline-ca400.appspot.com",
+    messagingSenderId: "58207939196",
+    appId: "1:58207939196:web:b34f403204096084ee37f9",
+    measurementId: "G-GG7GNEQ718"
+};
+
+// 初始化Firebase应用
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// 获取URL参数
+const queryParams = getQueryParams();
+const currentRoomCode = queryParams.room || '';
+const playerId = queryParams.player || generatePlayerId();
+
+// 生成随机玩家ID
+function generatePlayerId() {
+    return 'player-' + Math.random().toString(36).substr(2, 9);
+}
+
+// 游戏状态变量
+let gameState = {
+    currentPage: '2101', // 当前页面ID
+    score: 0,           // 总得分
+    correctAnswers: 0,  // 正确答案数
+    startTime: null,    // 游戏开始时间
+    timeUsed: 0,        // 已用时间(秒)
+    answeredPages: {}   // 已答题目记录
+};
+
+// 预加载的图片
+let preloadedImages = {};
+
+// 显示提示框
+function showAlert(message, duration = 3000) {
+    const alertModal = document.getElementById('alert-modal');
+    const alertMessage = document.getElementById('alert-message');
+    
+    alertMessage.textContent = message;
+    alertModal.style.display = 'block';
+    
+    if (duration > 0) {
+        setTimeout(() => {
+            alertModal.style.display = 'none';
+        }, duration);
+    }
+}
+
+// 隐藏所有页面
+function hideAllPages() {
+    const pages = document.querySelectorAll('.game-page');
+    pages.forEach(page => {
+        page.classList.remove('active');
+    });
+}
+
+// 显示指定页面
+function showPage(pageId) {
+    hideAllPages();
+    const page = document.getElementById(`page-${pageId}`);
+    if (page) {
+        page.classList.add('active');
         
-        <!-- 文本容器 -->
-        <div class="text-container">
-            <p id="game-text"></p>
-        </div>
-        
-        <!-- 按钮容器 -->
-        <div id="button-container" class="button-container">
-            <!-- 按钮将通过JavaScript动态生成 -->
-        </div>
-    </div>
-
-    <!-- 提示信息模态框 -->
-    <div id="message-modal" class="modal">
-        <div class="modal-content">
-            <p id="message-text"></p>
-        </div>
-    </div>
-
-    <!-- 游戏总结页面 (页面ID:2501) -->
-    <div id="summary-page" class="page-container" style="display: none;">
-        <div class="summary-container">
-            <h2>游戏总结</h2>
-            <div class="summary-item">
-                <span>正确率:</span>
-                <span id="correct-rate">0%</span>
-            </div>
-            <div class="summary-item">
-                <span>用时:</span>
-                <span id="time-used">0分0秒</span>
-            </div>
-            <div class="summary-item">
-                <span>总得分:</span>
-                <span id="total-score">0</span>
-            </div>
-            
-            <h3>房间排名 (Top 10)</h3>
-            <div id="ranking-list" class="ranking-list">
-                <!-- 排名将通过JavaScript动态生成 -->
-            </div>
-            
-            <button id="restart-btn" class="game-btn">重新开始</button>
-        </div>
-    </div>
-
-    <script>
-        // Firebase配置
-        const firebaseConfig = {
-            apiKey: "AIzaSyDHRYTBU74r31MPYVAAnRMwKM76c_-BduQ",
-            authDomain: "tetrisonline-ca400.firebaseapp.com",
-            projectId: "tetrisonline-ca400",
-            storageBucket: "tetrisonline-ca400.appspot.com",
-            messagingSenderId: "58207939196",
-            appId: "1:58207939196:web:b34f403204096084ee37f9",
-            measurementId: "G-GG7GNEQ718"
-        };
-
-        // 初始化Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // 从URL获取房间ID和玩家ID
-        const urlParams = new URLSearchParams(window.location.search);
-        const roomId = urlParams.get('roomId');
-        const playerId = urlParams.get('playerId');
-
-        // 游戏状态变量
-        let currentPageId = "2101"; // 当前页面ID
-        let gameStarted = false; // 游戏是否开始
-        let startTime = 0; // 游戏开始时间
-        let score = 0; // 得分
-        let correctAnswers = 0; // 正确答案数量
-        let clickedButtons = new Set(); // 记录已点击的按钮
-        let nextPageId = ""; // 下一个页面ID
-        let timeInterval = null; // 计时器
-
-        // DOM元素
-        const gameContainer = document.getElementById('game-container');
-        const currentImage = document.getElementById('current-image');
-        const gameText = document.getElementById('game-text');
-        const buttonContainer = document.getElementById('button-container');
-        const messageModal = document.getElementById('message-modal');
-        const messageText = document.getElementById('message-text');
-        const summaryPage = document.getElementById('summary-page');
-        const correctRateEl = document.getElementById('correct-rate');
-        const timeUsedEl = document.getElementById('time-used');
-        const totalScoreEl = document.getElementById('total-score');
-        const rankingList = document.getElementById('ranking-list');
-        const restartBtn = document.getElementById('restart-btn');
-
-        // 游戏页面配置
-        const pageConfigs = {
-            // 章节1
-            "2101": {
-                image: "画面01.jpg",
-                text: "主人公Tom生活在魔法世界的魔法学校里，他每天都_____图书馆。",
-                buttons: [
-                    {
-                        text: "打扫",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2102"
-                    },
-                    {
-                        text: "正在打扫",
-                        position: "right",
-                        isCorrect: false,
-                        message: "日常行为用一般现在时",
-                        nextPage: "2102"
-                    }
-                ]
-            },
-            "2102": {
-                image: "画面02.jpg",
-                text: "有一天，Tom发现他昨天_____的一个箱子今天被打开了，并且里面冒着蓝光。",
-                buttons: [
-                    {
-                        text: "锁上",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2103"
-                    },
-                    {
-                        text: "正在锁上",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述昨天发生的简单行为用一般过去时",
-                        nextPage: "2103"
-                    }
-                ]
-            },
-            "2103": {
-                image: "画面03.jpg",
-                text: "Tom好奇，走进一看，是个闪着蓝光的魔法棒，旁白有个标签，写着"时态魔法棒"。",
-                buttons: [
-                    {
-                        text: "继续",
-                        position: "center",
-                        isCorrect: null,
-                        nextPage: "2104"
-                    }
-                ]
-            },
-            "2104": {
-                image: "画面04.jpg",
-                text: "Tom心生好奇，他把魔法棒藏在衣服里，带离了图书馆，准备明天_____户外试一下魔法棒的威力。",
-                buttons: [
-                    {
-                        text: "将去",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2201"
-                    },
-                    {
-                        text: "已经去",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述未来发生的简单行为用一般将来时",
-                        nextPage: "2201"
-                    }
-                ]
-            },
-            // 章节2
-            "2201": {
-                image: "画面05.jpg",
-                text: "时间来到第二天早上，他_____着魔法扫帚飞往学习旁边的一个森林里。",
-                buttons: [
-                    {
-                        text: "正在骑",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2202"
-                    },
-                    {
-                        text: "已经骑",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述正在进行的行为用现在进行时",
-                        nextPage: "2202"
-                    }
-                ]
-            },
-            "2202": {
-                image: "画面06.jpg",
-                text: "昨天这个时候，Tom正_____图书馆，但他觉得这个魔法棒会很好玩，所以决定今天不去打扫图书馆了。",
-                buttons: [
-                    {
-                        text: "正在打扫",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2203"
-                    },
-                    {
-                        text: "已经打扫",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述过去正在进行的行为用过去进行时",
-                        nextPage: "2203"
-                    }
-                ]
-            },
-            "2203": {
-                image: "画面07.jpg",
-                text: "为了防止图书馆馆长Jimmy发现Tom偷懒，Tom将很早到达将图书馆进行_____。",
-                buttons: [
-                    {
-                        text: "打扫",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2301"
-                    },
-                    {
-                        text: "已经打扫",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述将来正在进行的行为用将来进行时",
-                        nextPage: "2301"
-                    }
-                ]
-            },
-            // 章节3
-            "2301": {
-                image: "画面08.jpg",
-                text: "Tom停在了森林里的小溪旁边，然后从衣服里拿出【一般现在】魔法棒。他想，这魔法棒叫"时态"，难道启动它的咒语和时态有关？",
-                buttons: [
-                    {
-                        text: "拿出",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2302"
-                    },
-                    {
-                        text: "已经拿出",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述日常行为一般现在时",
-                        nextPage: "2302"
-                    }
-                ]
-            },
-            "2302": {
-                image: "画面09.jpg",
-                text: "于是，他决定结合在魔法学校学习的咒语试一下。Tom用魔法棒指向小溪，念了一句："一条香喷喷的鱼____了【现在完成】"",
-                buttons: [
-                    {
-                        text: "已经被烤熟",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2303"
-                    },
-                    {
-                        text: "将来被烤熟",
-                        position: "right",
-                        isCorrect: false,
-                        message: "咒语未生效，Tom重新念了一条香喷喷的鱼已经被烤熟了",
-                        nextPage: "2303"
-                    }
-                ]
-            },
-            "2303": {
-                image: "画面10.jpg",
-                text: "只见念完咒语之后，突然一道蓝色闪光过后，一个用树枝做的烤架，上面有一条香喷喷的烤鱼出现在了Tom的面前。",
-                buttons: [
-                    {
-                        text: "继续",
-                        position: "center",
-                        isCorrect: null,
-                        nextPage: "2304"
-                    }
-                ]
-            },
-            "2304": {
-                image: "画面11.jpg",
-                text: "Tom想，我来这之前，还没吃东西呢【过去完成】。正好可以包餐一顿。Tom拿起吃了起来。",
-                buttons: [
-                    {
-                        text: "已经烤好的鱼",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2305"
-                    },
-                    {
-                        text: "将要烤好",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述已经完成的的行为用现在完成时",
-                        nextPage: "2305"
-                    }
-                ]
-            },
-            "2305": {
-                image: "画面12.jpg",
-                text: "Tom边吃边想，当我掌握了这根魔杖，那个总是欺负我的巫师就会被打败。【将来完成】。（By the time I have mastered this magic wand, the wizard who always bullies me will have been defeated.）",
-                buttons: [
-                    {
-                        text: "将会被打败",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2401"
-                    },
-                    {
-                        text: "已经被打败",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述将来完成的的行为用将来完成时",
-                        nextPage: "2401"
-                    }
-                ]
-            },
-            // 章节4
-            "2401": {
-                image: "画面13.jpg",
-                text: "虽然Tom已经来到魔法学校_____一年时间【现在完成进行】，但是魔法的知识还是比不过巫师Mike。",
-                buttons: [
-                    {
-                        text: "学习了",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2402"
-                    },
-                    {
-                        text: "将学习",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述过去的行为持续到现在用现在完成进行",
-                        nextPage: "2402"
-                    }
-                ]
-            },
-            "2402": {
-                image: "画面14.jpg",
-                text: "Tom意识到了魔法棒的厉害之处，于是Tom来到了以前经常戏弄他的巫师Mike的家里。Tom说："Mike，现在我_____魔法打败你了，你出来接受我的挑战吧"",
-                buttons: [
-                    {
-                        text: "可以用",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2403"
-                    },
-                    {
-                        text: "正在用",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述正在进行的行为用现在进行时",
-                        nextPage: "2403"
-                    }
-                ]
-            },
-            "2403": {
-                image: "画面15.jpg",
-                text: "今天是个阳光明媚的日子，只见Mike带着一个大大的灰色巫师帽从房间里走了出来，说到"Tom，在过去的一年时间里，已经多次_____我了【过去完成进行时】。（You had been repeatedly losing to me over the past year.）还是不服输吗"",
-                buttons: [
-                    {
-                        text: "输给",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2404"
-                    },
-                    {
-                        text: "将输给",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述正在进行的行为用现在进行时",
-                        nextPage: "2404"
-                    }
-                ]
-            },
-            "2404": {
-                image: "画面16.jpg",
-                text: "只见Tom用魔法棒指向天空，用咒语说了一句："It's going to rain soon"，魔法棒发出来蓝光。",
-                buttons: [
-                    {
-                        text: "继续",
-                        position: "center",
-                        isCorrect: null,
-                        nextPage: "2405"
-                    }
-                ]
-            },
-            "2405": {
-                image: "画面17.jpg",
-                text: "果然，不一会儿天空出现了乌云，打起了雷，开始下起了下雨点。",
-                buttons: [
-                    {
-                        text: "继续",
-                        position: "center",
-                        isCorrect: null,
-                        nextPage: "2406"
-                    }
-                ]
-            },
-            "2406": {
-                image: "画面18.jpg",
-                text: "Mike看见后下了一跳，说到："到明天为止，我已经学了魔法2年了【将来完成进行时】（By tomorrow, I have been studying magic for 2 years now）。却从来没看过这么厉害的魔法，我承认你已经比我厉害了"",
-                buttons: [
-                    {
-                        text: "已经学了",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2407"
-                    },
-                    {
-                        text: "将要学",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述将来完成进行时",
-                        nextPage: "2407"
-                    }
-                ]
-            },
-            "2407": {
-                image: "画面19.jpg",
-                text: "Tom想再炫耀一下魔法棒的威力，准备念出下一个咒语时，突然一道光闪过，图书馆馆长Jimmy出现在面前。",
-                buttons: [
-                    {
-                        text: "继续",
-                        position: "center",
-                        isCorrect: null,
-                        nextPage: "2408"
-                    }
-                ]
-            },
-            "2408": {
-                image: "画面20.jpg",
-                text: "馆长说到："Tom，我找了它找了一整天，原来被你拿走了"。",
-                buttons: [
-                    {
-                        text: "找了",
-                        position: "left",
-                        isCorrect: true,
-                        nextPage: "2409"
-                    },
-                    {
-                        text: "将找",
-                        position: "right",
-                        isCorrect: false,
-                        message: "描述过去完成",
-                        nextPage: "2409"
-                    }
-                ]
-            },
-            "2409": {
-                image: "画面21.jpg",
-                text: "Jimmy举起手，魔法棒自动飞到Jimmy的手里。然后，Jimmy领着Tom，说道"赶紧回去给我打扫图书馆".....",
-                buttons: [
-                    {
-                        text: "游戏结束",
-                        position: "center",
-                        isCorrect: null,
-                        nextPage: "2501"
-                    }
-                ]
-            }
-        };
-
-        // 根据页面ID获取图片路径
-        function getImagePathByPageId(pageId) {
-            if (pageId === "2501") return null; // 总结页面没有图片
-            const config = pageConfigs[pageId];
-            if (!config) return null;
-            return `images/${config.image}`;
-        }
-
-        // 显示消息提示框
-        function showMessage(message, duration = 3000) {
-            messageText.textContent = message;
-            messageModal.style.display = 'block';
-            
-            if (duration > 0) {
-                setTimeout(() => {
-                    messageModal.style.display = 'none';
-                }, duration);
-            }
-        }
-
-        // 隐藏消息提示框
-        function hideMessage() {
-            messageModal.style.display = 'none';
-        }
-
-        // 更新游戏状态到Firebase
-        function updateGameState() {
-            if (!roomId || !playerId) return;
-            
-            // 计算章节进度 (1-4)
-            const chapterProgress = Math.min(4, Math.max(1, Math.floor((parseInt(currentPageId.substring(1)) - 2101) / 100) + 1));
-            
-            // 计算正确率
-            const correctRate = correctAnswers / 15 * 100;
-            
-            // 计算用时 (秒)
-            const timeUsed = Math.floor((Date.now() - startTime) / 1000);
-            
-            // 计算时间分数
-            const timeScore = Math.floor(timeUsed / 60) * 2 + (timeUsed % 60 > 0 ? 1 : 0);
-            
-            // 总得分
-            const totalScore = score + timeScore;
-            
-            // 更新到Firebase
-            database.ref(`rooms/${roomId}/players/${playerId}`).update({
-                score: totalScore,
-                correctRate: correctRate.toFixed(1),
-                progress: chapterProgress,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            }).catch(error => {
-                console.error("更新游戏状态失败:", error);
-            });
-        }
-
-        // 加载游戏页面
-        function loadPage(pageId) {
-            // 检查是否是总结页面
-            if (pageId === "2501") {
-                showSummaryPage();
-                return;
-            }
-            
-            const config = pageConfigs[pageId];
-            if (!config) {
-                console.error("无效的页面ID:", pageId);
-                return;
-            }
-            
-            // 更新当前页面ID
-            currentPageId = pageId;
-            
-            // 更新游戏状态
-            updateGameState();
-            
-            // 设置图片
-            const imagePath = getImagePathByPageId(pageId);
-            if (imagePath) {
-                currentImage.src = imagePath;
-                currentImage.style.display = 'block';
-            } else {
-                currentImage.style.display = 'none';
-            }
-            
-            // 设置文本
-            gameText.textContent = config.text;
-            
-            // 清除按钮容器
-            buttonContainer.innerHTML = '';
-            clickedButtons.clear();
-            
-            // 添加按钮
-            config.buttons.forEach(btnConfig => {
-                const button = document.createElement('button');
-                button.textContent = btnConfig.text;
-                button.className = 'game-btn';
-                
-                // 设置按钮位置
-                if (btnConfig.position === 'left') {
-                    button.style.float = 'left';
-                    button.style.marginRight = '10px';
-                } else if (btnConfig.position === 'right') {
-                    button.style.float = 'right';
-                    button.style.marginLeft = '10px';
-                } else {
-                    button.style.margin = '0 auto';
-                    button.style.display = 'block';
-                }
-                
-                // 按钮点击事件
-                button.addEventListener('click', () => {
-                    // 防止重复点击
-                    if (clickedButtons.has(button)) return;
-                    clickedButtons.add(button);
-                    
-                    // 如果是正确答案，增加分数
-                    if (btnConfig.isCorrect === true) {
-                        score += 6.7;
-                        correctAnswers++;
-                    }
-                    
-                    // 显示提示信息
-                    if (btnConfig.message) {
-                        showMessage(btnConfig.message);
-                    }
-                    
-                    // 预加载下一张图片
-                    preloadNextImage(btnConfig.nextPage);
-                    
-                    // 延迟跳转到下一页
-                    setTimeout(() => {
-                        loadPage(btnConfig.nextPage);
-                    }, btnConfig.message ? 3000 : 0);
-                });
-                
-                buttonContainer.appendChild(button);
-            });
-            
-            // 如果是第一次加载页面，开始计时
-            if (!gameStarted && pageId === "2101") {
-                startGame();
-            }
-        }
-
-        // 开始游戏
-        function startGame() {
-            gameStarted = true;
-            startTime = Date.now();
-            
-            // 启动计时器
-            if (timeInterval) clearInterval(timeInterval);
-            timeInterval = setInterval(updateGameState, 5000); // 每5秒更新一次状态
-        }
-
-        // 结束游戏，显示总结页面
-        function showSummaryPage() {
-            // 停止计时器
-            if (timeInterval) clearInterval(timeInterval);
-            
-            // 计算游戏用时
-            const timeUsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-            const minutes = Math.floor(timeUsedSeconds / 60);
-            const seconds = timeUsedSeconds % 60;
-            
-            // 计算时间分数
-            const timeScore = Math.floor(timeUsedSeconds / 60) * 2 + (timeUsedSeconds % 60 > 0 ? 1 : 0);
-            
-            // 计算正确率
-            const correctRate = (correctAnswers / 15 * 100).toFixed(1);
-            
-            // 计算总得分
-            const totalScore = score + timeScore;
-            
-            // 更新总结页面显示
-            correctRateEl.textContent = `${correctRate}%`;
-            timeUsedEl.textContent = `${minutes}分${seconds}秒`;
-            totalScoreEl.textContent = totalScore;
-            
-            // 获取房间排名
-            database.ref(`rooms/${roomId}/players`).once('value').then(snapshot => {
-                const players = snapshot.val();
-                if (players) {
-                    // 转换为数组并按分数排序
-                    const playersArray = Object.keys(players).map(playerId => ({
-                        id: playerId,
-                        ...players[playerId]
-                    }));
-                    
-                    playersArray.sort((a, b) => b.score - a.score);
-                    
-                    // 显示前10名
-                    rankingList.innerHTML = '';
-                    playersArray.slice(0, 10).forEach((player, index) => {
-                        const playerEl = document.createElement('div');
-                        playerEl.className = 'ranking-item';
-                        playerEl.innerHTML = `
-                            <span class="rank">${index + 1}.</span>
-                            <span class="name">${player.name}</span>
-                            <span class="score">${player.score}分</span>
-                            <span class="correct-rate">${player.correctRate}%</span>
-                        `;
-                        rankingList.appendChild(playerEl);
-                    });
-                }
-            }).catch(error => {
-                console.error("获取排名失败:", error);
-            });
-            
-            // 隐藏游戏容器，显示总结页面
-            gameContainer.style.display = 'none';
-            summaryPage.style.display = 'block';
-        }
-
-        // 预加载下一张图片
-        function preloadNextImage(nextPageId) {
-            const nextImagePath = getImagePathByPageId(nextPageId);
-            if (nextImagePath) {
-                const img = new Image();
-                img.src = nextImagePath;
-            }
-        }
-
-        // 重新开始游戏
-        function restartGame() {
-            // 重置游戏状态
-            currentPageId = "2101";
-            gameStarted = false;
-            score = 0;
-            correctAnswers = 0;
-            clickedButtons.clear();
-            
-            // 隐藏总结页面，显示游戏容器
-            summaryPage.style.display = 'none';
-            gameContainer.style.display = 'block';
-            
-            // 加载初始页面
-            loadPage(currentPageId);
-        }
-
-        // 事件监听
-        restartBtn.addEventListener('click', restartGame);
-        
-        // 点击消息模态框外部关闭
-        window.addEventListener('click', (event) => {
-            if (event.target === messageModal) {
-                hideMessage();
-            }
-        });
-
-        // 初始化游戏 - 加载当前页面
-        loadPage(currentPageId);
+        // 更新当前页面状态
+        gameState.currentPage = pageId;
+        updateGameState();
         
         // 预加载下一张可能的图片
-        preloadNextImage("2102");
-    </script>
-</body>
-</html>
+        preloadNextImage(pageId);
+    }
+}
+
+// 预加载图片
+function preloadImage(imageName) {
+    if (!preloadedImages[imageName]) {
+        const img = new Image();
+        img.src = `images/${imageName}`;
+        preloadedImages[imageName] = img;
+    }
+}
+
+// 预加载下一张可能的图片
+function preloadNextImage(currentPageId) {
+    const pageFlow = {
+        '2101': '画面02.jpg',
+        '2102': '画面03.jpg',
+        '2103': '画面04.jpg',
+        '2104': '画面05.jpg',
+        '2201': '画面06.jpg',
+        '2202': '画面07.jpg',
+        '2203': '画面08.jpg',
+        '2301': '画面09.jpg',
+        '2302': '画面10.jpg',
+        '2303': '画面11.jpg',
+        '2304': '画面12.jpg',
+        '2305': '画面13.jpg',
+        '2401': '画面14.jpg',
+        '2402': '画面15.jpg',
+        '2403': '画面16.jpg',
+        '2404': '画面17.jpg',
+        '2405': '画面18.jpg',
+        '2406': '画面19.jpg',
+        '2407': '画面20.jpg',
+        '2408': '画面21.jpg',
+        '2409': null // 游戏结束，不需要预加载
+    };
+    
+    const nextImage = pageFlow[currentPageId];
+    if (nextImage) {
+        preloadImage(nextImage);
+    }
+}
+
+// 更新游戏状态到Firebase
+function updateGameState() {
+    if (!currentRoomCode || !playerId) return;
+    
+    // 计算已用时间
+    if (gameState.startTime) {
+        gameState.timeUsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+    }
+    
+    const playerRef = database.ref(`rooms/${currentRoomCode}/players/${playerId}`);
+    
+    playerRef.update({
+        score: gameState.score,
+        correctAnswers: gameState.correctAnswers,
+        timeUsed: gameState.timeUsed,
+        currentPage: gameState.currentPage
+    }).catch(error => {
+        console.error('更新游戏状态失败:', error);
+    });
+}
+
+// 计算得分
+function calculateScore(isCorrect) {
+    if (isCorrect) {
+        gameState.correctAnswers++;
+        gameState.score += 6.7; // 每道题6.7分
+    }
+    
+    // 计算时间分数 (每分钟2分，不满一分钟1分)
+    const minutes = Math.floor(gameState.timeUsed / 60);
+    const timeScore = minutes * 2 + (gameState.timeUsed % 60 > 0 ? 1 : 0);
+    
+    // 总分数 = 答题分数 + 时间分数
+    return Math.round(gameState.score) + timeScore;
+}
+
+// 显示游戏结束页面
+function showGameEndPage() {
+    // 计算最终得分
+    const finalScore = calculateScore(false); // 不增加新的正确答题
+    
+    // 计算正确率
+    const accuracy = (gameState.correctAnswers / 15 * 100).toFixed(1);
+    
+    // 格式化时间
+    const minutes = Math.floor(gameState.timeUsed / 60);
+    const seconds = gameState.timeUsed % 60;
+    const timeUsedStr = `${minutes}分${seconds}秒`;
+    
+    // 更新Firebase中的最终得分
+    if (currentRoomCode && playerId) {
+        const playerRef = database.ref(`rooms/${currentRoomCode}/players/${playerId}`);
+        
+        playerRef.update({
+            score: finalScore,
+            correctAnswers: gameState.correctAnswers,
+            timeUsed: gameState.timeUsed,
+            currentPage: '2501',
+            gameCompleted: true
+        }).catch(error => {
+            console.error('更新最终得分失败:', error);
+        });
+    }
+    
+    // 显示总结信息
+    const summaryContainer = document.getElementById('summary-container');
+    summaryContainer.innerHTML = `
+        <h2>游戏结束</h2>
+        <div class="summary-item">
+            <span class="summary-label">正确率:</span>
+            <span class="summary-value">${accuracy}%</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">用时:</span>
+            <span class="summary-value">${timeUsedStr}</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">总得分:</span>
+            <span class="summary-value">${finalScore}</span>
+        </div>
+        <div id="ranking-container">
+            <h3>房间排名</h3>
+            <div id="ranking-list"></div>
+        </div>
+    `;
+    
+    // 获取房间排名
+    if (currentRoomCode) {
+        const roomRef = database.ref(`rooms/${currentRoomCode}/players`);
+        
+        roomRef.orderByChild('score').limitToLast(10).once('value').then((snapshot) => {
+            const players = snapshot.val() || {};
+            const rankingList = document.getElementById('ranking-list');
+            
+            // 转换为数组并按分数排序
+            const playersArray = Object.entries(players).map(([id, player]) => ({
+                id,
+                ...player
+            })).sort((a, b) => b.score - a.score);
+            
+            // 显示排名
+            playersArray.forEach((player, index) => {
+                const playerElement = document.createElement('div');
+                playerElement.className = 'ranking-item';
+                
+                const accuracy = ((player.correctAnswers || 0) / 15 * 100).toFixed(1);
+                const minutes = Math.floor((player.timeUsed || 0) / 60);
+                const seconds = (player.timeUsed || 0) % 60;
+                
+                playerElement.innerHTML = `
+                    <span class="rank">${index + 1}.</span>
+                    <span class="player-name">${player.name}</span>
+                    <span class="player-score">得分: ${Math.round(player.score || 0)}</span>
+                    <span class="player-stats">正确率: ${accuracy}% 用时: ${minutes}分${seconds}秒</span>
+                `;
+                
+                if (player.id === playerId) {
+                    playerElement.classList.add('current-player');
+                }
+                
+                rankingList.appendChild(playerElement);
+            });
+        }).catch(error => {
+            console.error('获取排名失败:', error);
+        });
+    }
+    
+    showPage('2501');
+}
+
+// 处理按钮点击
+function handleButtonClick(pageId, isCorrect) {
+    // 检查是否已经回答过这道题
+    if (gameState.answeredPages[pageId]) {
+        return;
+    }
+    
+    // 记录已回答
+    gameState.answeredPages[pageId] = true;
+    
+    // 更新得分
+    calculateScore(isCorrect);
+    
+    // 根据页面ID决定下一步
+    const pageFlow = {
+        '2101': { nextPage: '2102', showAlert: !isCorrect, alertMsg: '日常行为用一般现在时' },
+        '2102': { nextPage: '2103', showAlert: !isCorrect, alertMsg: '描述昨天发生的简单行为用一般过去时' },
+        '2103': { nextPage: '2104', showAlert: false },
+        '2104': { nextPage: '2201', showAlert: !isCorrect, alertMsg: '描述未来发生的简单行为用一般将来时' },
+        '2201': { nextPage: '2202', showAlert: !isCorrect, alertMsg: '描述正在进行的行为用现在进行时' },
+        '2202': { nextPage: '2203', showAlert: !isCorrect, alertMsg: '描述过去正在进行的行为用过去进行时' },
+        '2203': { nextPage: '2301', showAlert: !isCorrect, alertMsg: '描述将来正在进行的行为用将来进行时' },
+        '2301': { nextPage: '2302', showAlert: !isCorrect, alertMsg: '描述日常行为一般现在时' },
+        '2302': { nextPage: '2304', showAlert: !isCorrect, alertMsg: '咒语未生效，Tom重新念了一条香喷喷的鱼已经被烤熟了' },
+        '2303': { nextPage: '2304', showAlert: false },
+        '2304': { nextPage: '2305', showAlert: !isCorrect, alertMsg: '描述已经完成的的行为用现在完成时' },
+        '2305': { nextPage: '2401', showAlert: !isCorrect, alertMsg: '描述将来完成的的行为用将来完成时' },
+        '2401': { nextPage: '2402', showAlert: !isCorrect, alertMsg: '描述过去的行为持续到现在用现在完成进行' },
+        '2402': { nextPage: '2403', showAlert: !isCorrect, alertMsg: '描述正在进行的行为用现在进行时' },
+        '2403': { nextPage: '2404', showAlert: !isCorrect, alertMsg: '描述正在进行的行为用现在进行时' },
+        '2404': { nextPage: '2405', showAlert: false },
+        '2405': { nextPage: '2406', showAlert: false },
+        '2406': { nextPage: '2407', showAlert: !isCorrect, alertMsg: '描述将来完成进行时' },
+        '2407': { nextPage: '2408', showAlert: false },
+        '2408': { nextPage: '2409', showAlert: !isCorrect, alertMsg: '描述过去完成' },
+        '2409': { nextPage: '2501', showAlert: false }
+    };
+    
+    const flow = pageFlow[pageId];
+    
+    if (flow.showAlert) {
+        showAlert(flow.alertMsg, 3000);
+    }
+    
+    // 延迟跳转，以便显示提示信息
+    setTimeout(() => {
+        if (flow.nextPage === '2501') {
+            showGameEndPage();
+        } else {
+            showPage(flow.nextPage);
+        }
+    }, flow.showAlert ? 3000 : 0);
+}
+
+// 初始化游戏页面
+function initGamePages() {
+    const gameContainer = document.getElementById('game-container');
+    
+    // 创建所有游戏页面
+    const pages = [
+        // 章节1
+        {
+            id: '2101',
+            image: '画面01.jpg',
+            text: '主人公Tom生活在魔法世界的魔法学校里，他每天都_____图书馆。',
+            buttons: [
+                { text: '打扫', position: 'left', isCorrect: true, pageId: '2101' },
+                { text: '正在打扫', position: 'right', isCorrect: false, pageId: '2101' }
+            ]
+        },
+        {
+            id: '2102',
+            image: '画面02.jpg',
+            text: '有一天，Tom发现他昨天_____的一个箱子今天被打开了，并且里面冒着蓝光。',
+            buttons: [
+                { text: '锁上', position: 'left', isCorrect: true, pageId: '2102' },
+                { text: '正在锁上', position: 'right', isCorrect: false, pageId: '2102' }
+            ]
+        },
+        {
+            id: '2103',
+            image: '画面03.jpg',
+            text: 'Tom好奇，走进一看，是个闪着蓝光的魔法棒，旁白有个标签，写着"时态魔法棒"。',
+            buttons: [
+                { text: '继续', position: 'center', isCorrect: true, pageId: '2103' }
+            ]
+        },
+        {
+            id: '2104',
+            image: '画面04.jpg',
+            text: 'Tom心生好奇，他把魔法棒藏在衣服里，带离了图书馆，准备明天_____户外试一下魔法棒的威力。',
+            buttons: [
+                { text: '将去', position: 'left', isCorrect: true, pageId: '2104' },
+                { text: '已经去', position: 'right', isCorrect: false, pageId: '2104' }
+            ]
+        },
+        // 章节2
+        {
+            id: '2201',
+            image: '画面05.jpg',
+            text: '时间来到第二天早上，他_____着魔法扫帚飞往学习旁边的一个森林里。',
+            buttons: [
+                { text: '正在骑', position: 'left', isCorrect: true, pageId: '2201' },
+                { text: '已经骑', position: 'right', isCorrect: false, pageId: '2201' }
+            ]
+        },
+        {
+            id: '2202',
+            image: '画面06.jpg',
+            text: '昨天这个时候，Tom正_____图书馆，但他觉得这个魔法棒会很好玩，所以决定今天不去打扫图书馆了。',
+            buttons: [
+                { text: '正在打扫', position: 'left', isCorrect: true, pageId: '2202' },
+                { text: '已经打扫', position: 'right', isCorrect: false, pageId: '2202' }
+            ]
+        },
+        {
+            id: '2203',
+            image: '画面07.jpg',
+            text: '为了防止图书馆馆长Jimmy发现Tom偷懒，Tom将很早到达将图书馆进行_____。',
+            buttons: [
+                { text: '打扫', position: 'left', isCorrect: true, pageId: '2203' },
+                { text: '已经打扫', position: 'right', isCorrect: false, pageId: '2203' }
+            ]
+        },
+        // 章节3
+        {
+            id: '2301',
+            image: '画面08.jpg',
+            text: 'Tom停在了森林里的小溪旁边，然后从衣服里拿出【一般现在】魔法棒。他想，这魔法棒叫"时态"，难道启动它的咒语和时态有关？',
+            buttons: [
+                { text: '拿出', position: 'left', isCorrect: true, pageId: '2301' },
+                { text: '已经拿出', position: 'right', isCorrect: false, pageId: '2301' }
+            ]
+        },
+        {
+            id: '2302',
+            image: '画面09.jpg',
+            text: '于是，他决定结合在魔法学校学习的咒语试一下。Tom用魔法棒指向小溪，念了一句："一条香喷喷的鱼____了【现在完成】"',
+            buttons: [
+                { text: '已经被烤熟', position: 'left', isCorrect: true, pageId: '2302' },
+                { text: '将来被烤熟', position: 'right', isCorrect: false, pageId: '2302' }
+            ]
+        },
+        {
+            id: '2303',
+            image: '画面10.jpg',
+            text: '只见念完咒语之后，突然一道蓝色闪光过后，一个用树枝做的烤架，上面有一条香喷喷的烤鱼出现在了Tom的面前。',
+            buttons: [
+                { text: '继续', position: 'center', isCorrect: true, pageId: '2303' }
+            ]
+        },
+        {
+            id: '2304',
+            image: '画面11.jpg',
+            text: 'Tom想，我来这之前，还没吃东西呢【过去完成】。正好可以包餐一顿。Tom拿起吃了起来。',
+            buttons: [
+                { text: '已经烤好的鱼', position: 'left', isCorrect: true, pageId: '2304' },
+                { text: '将要烤好', position: 'right', isCorrect: false, pageId: '2304' }
+            ]
+        },
+        {
+            id: '2305',
+            image: '画面12.jpg',
+            text: 'Tom边吃边想，当我掌握了这根魔杖，那个总是欺负我的巫师就会被打败。【将来完成】。（By the time I have mastered this magic wand, the wizard who always bullies me will have been defeated.）',
+            buttons: [
+                { text: '将会被打败', position: 'left', isCorrect: true, pageId: '2305' },
+                { text: '已经被打败', position: 'right', isCorrect: false, pageId: '2305' }
+            ]
+        },
+        // 章节4
+        {
+            id: '2401',
+            image: '画面13.jpg',
+            text: '虽然Tom已经来到魔法学校_____一年时间【现在完成进行】，但是魔法的知识还是比不过巫师Mike。',
+            buttons: [
+                { text: '学习了', position: 'left', isCorrect: true, pageId: '2401' },
+                { text: '将学习', position: 'right', isCorrect: false, pageId: '2401' }
+            ]
+        },
+        {
+            id: '2402',
+            image: '画面14.jpg',
+            text: 'Tom意识到了魔法棒的厉害之处，于是Tom来到了以前经常戏弄他的巫师Mike的家里。Tom说："Mike，现在我_____魔法打败你了，你出来接受我的挑战吧"',
+            buttons: [
+                { text: '可以用', position: 'left', isCorrect: true, pageId: '2402' },
+                { text: '正在用', position: 'right', isCorrect: false, pageId: '2402' }
+            ]
+        },
+        {
+            id: '2403',
+            image: '画面15.jpg',
+            text: '今天是个阳光明媚的日子，只见Mike带着一个大大的灰色巫师帽从房间里走了出来，说到"Tom，在过去的一年时间里，已经多次_____我了【过去完成进行时】。（You had been repeatedly losing to me over the past year.）还是不服输吗"',
+            buttons: [
+                { text: '输给', position: 'left', isCorrect: true, pageId: '2403' },
+                { text: '将输给', position: 'right', isCorrect: false, pageId: '2403' }
+            ]
+        },
+        {
+            id: '2404',
+            image: '画面16.jpg',
+            text: '只见Tom用魔法棒指向天空，用咒语说了一句："It\'s going to rain soon"，魔法棒发出来蓝光。',
+            buttons: [
+                { text: '继续', position: 'center', isCorrect: true, pageId: '2404' }
+            ]
+        },
+        {
+            id: '2405',
+            image: '画面17.jpg',
+            text: '果然，不一会儿天空出现了乌云，打起了雷，开始下起了下雨点。',
+            buttons: [
+                { text: '继续', position: 'center', isCorrect: true, pageId: '2405' }
+            ]
+        },
+        {
+            id: '2406',
+            image: '画面18.jpg',
+            text: 'Mike看见后下了一跳，说到："到明天为止，我已经学了魔法2年了【将来完成进行时】（By tomorrow, I have been studying magic for 2 years now）。却从来没看过这么厉害的魔法，我承认你已经比我厉害了"',
+            buttons: [
+                { text: '已经学了', position: 'left', isCorrect: true, pageId: '2406' },
+                { text: '将要学', position: 'right', isCorrect: false, pageId: '2406' }
+            ]
+        },
+        {
+            id: '2407',
+            image: '画面19.jpg',
+            text: 'Tom想再炫耀一下魔法棒的威力，准备念出下一个咒语时，突然一道光闪过，图书馆馆长Jimmy出现在面前。',
+            buttons: [
+                { text: '继续', position: 'center', isCorrect: true, pageId: '2407' }
+            ]
+        },
+        {
+            id: '2408',
+            image: '画面20.jpg',
+            text: '馆长说到："Tom，我找了它找了一整天，原来被你拿走了"。',
+            buttons: [
+                { text: '找了', position: 'left', isCorrect: true, pageId: '2408' },
+                { text: '将找', position: 'right', isCorrect: false, pageId: '2408' }
+            ]
+        },
+        {
+            id: '2409',
+            image: '画面21.jpg',
+            text: 'Jimmy举起手，魔法棒自动飞到Jimmy的手里。然后，Jimmy领着Tom，说道"赶紧回去给我打扫图书馆".....',
+            buttons: [
+                { text: '游戏结束', position: 'center', isCorrect: true, pageId: '2409' }
+            ]
+        },
+        // 游戏结束页面
+        {
+            id: '2501',
+            image: null,
+            text: '',
+            buttons: []
+        }
+    ];
+    
+    // 创建页面HTML
+    pages.forEach(page => {
+        const pageElement = document.createElement('div');
+        pageElement.id = `page-${page.id}`;
+        pageElement.className = 'game-page';
+        
+        // 添加图片（如果有）
+        if (page.image) {
+            const img = document.createElement('img');
+            img.src = `images/${page.image}`;
+            img.alt = page.text.substring(0, 20) + '...';
+            img.className = 'game-image';
+            pageElement.appendChild(img);
+        }
+        
+        // 添加文本
+        const textElement = document.createElement('div');
+        textElement.className = 'game-text';
+        textElement.textContent = page.text;
+        pageElement.appendChild(textElement);
+        
+        // 添加按钮容器
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
+        
+        // 添加按钮
+        page.buttons.forEach(button => {
+            const btn = document.createElement('button');
+            btn.className = `game-button ${button.position}-button`;
+            btn.textContent = button.text;
+            
+            // 添加点击事件
+            btn.addEventListener('click', () => {
+                handleButtonClick(button.pageId, button.isCorrect);
+            });
+            
+            buttonContainer.appendChild(btn);
+        });
+        
+        pageElement.appendChild(buttonContainer);
+        gameContainer.appendChild(pageElement);
+    });
+    
+    // 添加提示框
+    const alertModal = document.createElement('div');
+    alertModal.id = 'alert-modal';
+    alertModal.className = 'modal';
+    alertModal.innerHTML = `
+        <div class="modal-content">
+            <p id="alert-message"></p>
+        </div>
+    `;
+    gameContainer.appendChild(alertModal);
+    
+    // 添加总结容器（游戏结束页面）
+    const summaryContainer = document.createElement('div');
+    summaryContainer.id = 'summary-container';
+    summaryContainer.className = 'game-page';
+    document.getElementById('page-2501').appendChild(summaryContainer);
+}
+
+// 开始游戏
+function startGame() {
+    // 初始化游戏状态
+    gameState = {
+        currentPage: '2101',
+        score: 0,
+        correctAnswers: 0,
+        startTime: Date.now(),
+        timeUsed: 0,
+        answeredPages: {}
+    };
+    
+    // 显示第一页
+    showPage('2101');
+    
+    // 预加载第一张图片
+    preloadImage('画面01.jpg');
+    
+    // 开始计时
+    setInterval(() => {
+        if (gameState.startTime) {
+            gameState.timeUsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            updateGameState();
+        }
+    }, 1000);
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', () => {
+    initGamePages();
+    
+    // 如果有房间和玩家信息，开始游戏
+    if (currentRoomCode && playerId) {
+        // 检查游戏是否已开始
+        const roomRef = database.ref(`rooms/${currentRoomCode}`);
+        
+        roomRef.once('
