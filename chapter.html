@@ -1,35 +1,29 @@
 <!DOCTYPE html>
-<html lang="zh-CN"> 
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>时态魔法棒 - 游戏进行中</title>
+    <title>英语时态魔法冒险 - 章节</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
-        <div id="image-container">
-            <img src="" alt="游戏画面" id="current-image">
-        </div>
-        <div id="text-container">
-            <p id="game-text"></p>
-        </div>
-        <div id="button-container">
-            <!-- 按钮将通过JavaScript动态生成 -->
-        </div>
+    <!-- 所有场景容器 -->
+    <div id="scenes-container">
+        <!-- 场景将通过JavaScript动态加载 -->
     </div>
 
     <script>
         // 游戏状态管理
         const gameState = {
             score: 0,
-            correctAnswers: 0,
             startTime: null,
-            usedButtons: new Set() // 用于跟踪已点击的按钮
+            correctAnswers: 0,
+            totalQuestions: 15,
+            answeredQuestions: new Set()
         };
 
-        // 游戏数据 - 所有章节的画面配置
-        const gameData = {
+        // 所有场景数据
+        const scenes = {
             // 章节1
             '2101': {
                 image: 'images/画面01.jpg',
@@ -38,15 +32,16 @@
                     {
                         text: '打扫',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2102'
+                        correct: true,
+                        nextScene: '2102',
+                        feedback: null
                     },
                     {
                         text: '正在打扫',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2102',
-                        hint: '日常行为用一般现在时'
+                        feedback: '日常行为用一般现在时'
                     }
                 ]
             },
@@ -57,15 +52,16 @@
                     {
                         text: '锁上',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2103'
+                        correct: true,
+                        nextScene: '2103',
+                        feedback: null
                     },
                     {
                         text: '正在锁上',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2103',
-                        hint: '描述昨天发生的简单行为用一般过去时'
+                        feedback: '描述昨天发生的简单行为用一般过去时'
                     }
                 ]
             },
@@ -76,8 +72,9 @@
                     {
                         text: '继续',
                         position: 'center',
-                        isCorrect: null,
-                        nextScene: '2104'
+                        correct: null,
+                        nextScene: '2104',
+                        feedback: null
                     }
                 ]
             },
@@ -88,15 +85,16 @@
                     {
                         text: '将去',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2201'
+                        correct: true,
+                        nextScene: '2201',
+                        feedback: null
                     },
                     {
                         text: '已经去',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2201',
-                        hint: '描述未来发生的简单行为用一般将来时'
+                        feedback: '描述未来发生的简单行为用一般将来时'
                     }
                 ]
             },
@@ -108,15 +106,16 @@
                     {
                         text: '正在骑',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2202'
+                        correct: true,
+                        nextScene: '2202',
+                        feedback: null
                     },
                     {
                         text: '已经骑',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2203',
-                        hint: '描述正在进行的行为用现在进行时'
+                        feedback: '描述正在进行的行为用现在进行时'
                     }
                 ]
             },
@@ -127,15 +126,16 @@
                     {
                         text: '正在打扫',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2203'
+                        correct: true,
+                        nextScene: '2203',
+                        feedback: null
                     },
                     {
                         text: '已经打扫',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2202',
-                        hint: '描述过去正在进行的行为用过去进行时'
+                        feedback: '描述过去正在进行的行为用过去进行时'
                     }
                 ]
             },
@@ -146,15 +146,16 @@
                     {
                         text: '打扫',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2301'
+                        correct: true,
+                        nextScene: '2301',
+                        feedback: null
                     },
                     {
                         text: '已经打扫',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2301',
-                        hint: '描述将来正在进行的行为用将来进行时'
+                        feedback: '描述将来正在进行的行为用将来进行时'
                     }
                 ]
             },
@@ -166,15 +167,16 @@
                     {
                         text: '拿出',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2302'
+                        correct: true,
+                        nextScene: '2302',
+                        feedback: null
                     },
                     {
                         text: '已经拿出',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2302',
-                        hint: '描述日常行为一般现在时'
+                        feedback: '描述日常行为一般现在时'
                     }
                 ]
             },
@@ -185,15 +187,16 @@
                     {
                         text: '已经被烤熟',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2303'
+                        correct: true,
+                        nextScene: '2303',
+                        feedback: null
                     },
                     {
                         text: '将来被烤熟',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2302',
-                        hint: '咒语未生效，请重新试'
+                        feedback: '咒语未生效，请重新试'
                     }
                 ]
             },
@@ -204,8 +207,9 @@
                     {
                         text: '继续',
                         position: 'center',
-                        isCorrect: null,
-                        nextScene: '2304'
+                        correct: null,
+                        nextScene: '2304',
+                        feedback: null
                     }
                 ]
             },
@@ -216,15 +220,16 @@
                     {
                         text: '已经烤好的鱼',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2305'
+                        correct: true,
+                        nextScene: '2305',
+                        feedback: null
                     },
                     {
                         text: '将要烤好',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2305',
-                        hint: '描述已经完成的的行为用现在完成时'
+                        feedback: '描述已经完成的的行为用现在完成时'
                     }
                 ]
             },
@@ -235,15 +240,16 @@
                     {
                         text: '将会被打败',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2401'
+                        correct: true,
+                        nextScene: '2401',
+                        feedback: null
                     },
                     {
                         text: '已经被打败',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2401',
-                        hint: '描述将来完成的的行为用将来完成时'
+                        feedback: '描述将来完成的的行为用将来完成时'
                     }
                 ]
             },
@@ -255,15 +261,16 @@
                     {
                         text: '学习了',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2402'
+                        correct: true,
+                        nextScene: '2402',
+                        feedback: null
                     },
                     {
                         text: '将学习',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2402',
-                        hint: '描述过去的行为持续到现在用现在完成进行'
+                        feedback: '描述过去的行为持续到现在用现在完成进行'
                     }
                 ]
             },
@@ -274,15 +281,16 @@
                     {
                         text: '可以用',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2403'
+                        correct: true,
+                        nextScene: '2403',
+                        feedback: null
                     },
                     {
                         text: '正在用',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2403',
-                        hint: '描述正在进行的行为用现在进行时'
+                        feedback: '描述正在进行的行为用现在进行时'
                     }
                 ]
             },
@@ -293,15 +301,16 @@
                     {
                         text: '输给',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2404'
+                        correct: true,
+                        nextScene: '2404',
+                        feedback: null
                     },
                     {
                         text: '将输给',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2404',
-                        hint: '描述正在进行的行为用现在进行时'
+                        feedback: '描述正在进行的行为用现在进行时'
                     }
                 ]
             },
@@ -312,8 +321,9 @@
                     {
                         text: '继续',
                         position: 'center',
-                        isCorrect: null,
-                        nextScene: '2405'
+                        correct: null,
+                        nextScene: '2405',
+                        feedback: null
                     }
                 ]
             },
@@ -324,8 +334,9 @@
                     {
                         text: '继续',
                         position: 'center',
-                        isCorrect: null,
-                        nextScene: '2406'
+                        correct: null,
+                        nextScene: '2406',
+                        feedback: null
                     }
                 ]
             },
@@ -336,15 +347,16 @@
                     {
                         text: '已经学了',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2407'
+                        correct: true,
+                        nextScene: '2407',
+                        feedback: null
                     },
                     {
                         text: '将要学',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2407',
-                        hint: '描述将来完成进行时'
+                        feedback: '描述将来完成进行时'
                     }
                 ]
             },
@@ -355,8 +367,9 @@
                     {
                         text: '继续',
                         position: 'center',
-                        isCorrect: null,
-                        nextScene: '2408'
+                        correct: null,
+                        nextScene: '2408',
+                        feedback: null
                     }
                 ]
             },
@@ -367,15 +380,16 @@
                     {
                         text: '找了',
                         position: 'left',
-                        isCorrect: true,
-                        nextScene: '2409'
+                        correct: true,
+                        nextScene: '2409',
+                        feedback: null
                     },
                     {
                         text: '将找',
                         position: 'right',
-                        isCorrect: false,
+                        correct: false,
                         nextScene: '2409',
-                        hint: '描述过去完成'
+                        feedback: '描述过去完成'
                     }
                 ]
             },
@@ -386,178 +400,267 @@
                     {
                         text: '继续',
                         position: 'center',
-                        isCorrect: null,
-                        nextScene: '2410'
+                        correct: null,
+                        nextScene: '2410',
+                        feedback: null
                     }
                 ]
             },
             '2410': {
-                image: '',
+                image: null,
                 text: '',
                 buttons: []
             }
         };
 
+        // 保存游戏状态到sessionStorage
+        function saveGameState() {
+            sessionStorage.setItem('gameState', JSON.stringify(gameState));
+        }
+
+        // 加载游戏状态
+        function loadGameState() {
+            const savedState = sessionStorage.getItem('gameState');
+            if (savedState) {
+                Object.assign(gameState, JSON.parse(savedState));
+            }
+            
+            // 如果没有开始时间，设置为当前时间
+            if (!gameState.startTime) {
+                gameState.startTime = new Date();
+                saveGameState();
+            }
+        }
+
+        // 显示反馈信息
+        function showFeedback(message) {
+            const feedbackElement = document.createElement('div');
+            feedbackElement.className = 'feedback-box';
+            feedbackElement.textContent = message;
+            document.body.appendChild(feedbackElement);
+            
+            // 3秒后移除反馈信息
+            setTimeout(() => {
+                feedbackElement.remove();
+            }, 3000);
+        }
+
+        // 计算得分
+        function calculateScore() {
+            // 答题得分 (每题6.7分)
+            const answerScore = gameState.correctAnswers * 6.7;
+            
+            // 计算用时 (分钟)
+            const endTime = new Date();
+            const timeDiff = (endTime - new Date(gameState.startTime)) / 1000; // 秒
+            const minutes = Math.floor(timeDiff / 60);
+            const seconds = timeDiff % 60;
+            
+            // 时间分数 (每分钟2分，不满1分钟按1分)
+            const timeScore = minutes * 2 + (seconds > 0 ? 1 : 0);
+            
+            // 总得分 = 答题得分 - 时间分数
+            const totalScore = Math.max(0, answerScore - timeScore);
+            
+            // 正确率
+            const accuracy = (gameState.correctAnswers / gameState.totalQuestions * 100).toFixed(1);
+            
+            return {
+                answerScore,
+                timeScore,
+                totalScore,
+                accuracy,
+                timeSpent: `${minutes}分${Math.floor(seconds)}秒`
+            };
+        }
+
+        // 显示结果页面
+        function showResults() {
+            const results = calculateScore();
+            
+            const resultsHTML = `
+                <div class="results-screen">
+                    <h1>游戏结束</h1>
+                    <div class="results-container">
+                        <div class="result-item">
+                            <span class="result-label">正确率:</span>
+                            <span class="result-value">${results.accuracy}%</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">用时:</span>
+                            <span class="result-value">${results.timeSpent}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">答题得分:</span>
+                            <span class="result-value">${results.answerScore.toFixed(1)}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">时间分数:</span>
+                            <span class="result-value">${results.timeScore}</span>
+                        </div>
+                        <div class="result-item total-score">
+                            <span class="result-label">总得分:</span>
+                            <span class="result-value">${results.totalScore.toFixed(1)}</span>
+                        </div>
+                    </div>
+                    <div class="button-container single-button">
+                        <button id="restart-button" class="game-button">重新开始</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('scenes-container').innerHTML = resultsHTML;
+            
+            // 重新开始按钮事件
+            document.getElementById('restart-button').addEventListener('click', function() {
+                sessionStorage.removeItem('gameState');
+                window.location.href = 'index.html';
+            });
+        }
+
         // 预加载图片
-        function preloadImages(nextScenes) {
-            if (!nextScenes) return;
-            
-            // 将nextScenes转换为数组（如果是单个场景）
-            const scenes = Array.isArray(nextScenes) ? nextScenes : [nextScenes];
-            
-            scenes.forEach(sceneId => {
-                if (gameData[sceneId] && gameData[sceneId].image) {
+        function preloadImages(sceneIds) {
+            sceneIds.forEach(sceneId => {
+                const scene = scenes[sceneId];
+                if (scene && scene.image) {
                     const img = new Image();
-                    img.src = gameData[sceneId].image;
+                    img.src = scene.image;
                 }
             });
         }
 
-        // 显示提示信息
-        function showHint(message) {
-            const hintElement = document.createElement('div');
-            hintElement.className = 'hint-box';
-            hintElement.textContent = message;
-            document.getElementById('game-container').appendChild(hintElement);
-            
-            // 3秒后移除提示
-            setTimeout(() => {
-                hintElement.remove();
-            }, 3000);
-        }
-
-        // 计算并显示游戏结果
-        function showResults() {
-            // 计算游戏用时（分钟）
-            const endTime = new Date();
-            const timeDiff = (endTime - gameState.startTime) / 1000; // 秒
-            const minutes = Math.floor(timeDiff / 60);
-            const seconds = Math.floor(timeDiff % 60);
-            
-            // 计算时间分数（每满一分钟2分，不满1分）
-            const timeScore = minutes * 2 + (seconds > 0 ? 1 : 0);
-            
-            // 计算总分数
-            const totalScore = gameState.score - timeScore;
-            
-            // 计算正确率（保留一位小数）
-            const accuracy = ((gameState.correctAnswers / 15) * 100).toFixed(1);
-            
-            // 显示结果
-            const textContainer = document.getElementById('text-container');
-            textContainer.innerHTML = `
-                <h2>游戏结束！</h2>
-                <p>正确率: ${accuracy}%</p>
-                <p>用时: ${minutes}分${seconds}秒</p>
-                <p>答题得分: ${gameState.score.toFixed(1)}</p>
-                <p>时间分数: ${timeScore}</p>
-                <p>总得分: ${totalScore.toFixed(1)}</p>
-            `;
-            
-            // 隐藏图片和按钮
-            document.getElementById('image-container').style.display = 'none';
-            document.getElementById('button-container').style.display = 'none';
-        }
-
-        // 加载场景
-        function loadScene(sceneId) {
-            // 清除已使用的按钮记录
-            gameState.usedButtons.clear();
-            
-            const scene = gameData[sceneId];
+        // 渲染场景
+        function renderScene(sceneId) {
+            const scene = scenes[sceneId];
             if (!scene) {
-                // 如果是结果画面
-                if (sceneId === '2410') {
-                    showResults();
-                }
+                console.error('场景不存在:', sceneId);
                 return;
             }
             
-            // 更新图片
-            const imageElement = document.getElementById('current-image');
-            if (scene.image) {
-                imageElement.src = scene.image;
-                imageElement.style.display = 'block';
-                
-                // 添加淡入效果
-                imageElement.style.opacity = 0;
-                setTimeout(() => {
-                    imageElement.style.opacity = 1;
-                }, 100);
-            } else {
-                imageElement.style.display = 'none';
+            // 如果是结果场景
+            if (sceneId === '2410') {
+                showResults();
+                return;
             }
             
-            // 更新文本
-            document.getElementById('game-text').textContent = scene.text;
+            // 创建场景HTML
+            let sceneHTML = `<div id="scene-${sceneId}" class="scene fade-in">`;
             
-            // 更新按钮
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.innerHTML = '';
+            // 添加图片
+            if (scene.image) {
+                sceneHTML += `<img src="${scene.image}" alt="场景${sceneId}" class="full-screen-image">`;
+            }
             
-            scene.buttons.forEach(buttonData => {
-                const button = document.createElement('button');
-                button.textContent = buttonData.text;
+            // 添加内容容器
+            sceneHTML += `<div class="content-container">`;
+            
+            // 添加文本框
+            sceneHTML += `<div class="text-box">${scene.text}</div>`;
+            
+            // 添加按钮容器
+            const hasMultipleButtons = scene.buttons.length > 1;
+            const buttonContainerClass = hasMultipleButtons ? 'button-container multiple-buttons' : 'button-container single-button';
+            
+            sceneHTML += `<div class="${buttonContainerClass}">`;
+            
+            // 添加按钮
+            scene.buttons.forEach((button, index) => {
+                const buttonClass = button.correct === true ? 'correct-button' : 
+                                  button.correct === false ? 'wrong-button' : 'game-button';
                 
-                // 设置按钮类名
-                if (buttonData.position === 'left') {
-                    button.className = 'left-button';
-                } else if (buttonData.position === 'right') {
-                    button.className = 'right-button';
-                } else {
-                    button.className = 'center-button';
+                sceneHTML += `
+                    <button class="${buttonClass}" 
+                            data-scene="${sceneId}" 
+                            data-button-index="${index}" 
+                            data-next="${button.nextScene}"
+                            data-correct="${button.correct}">
+                        ${button.text}
+                    </button>
+                `;
+            });
+            
+            sceneHTML += `</div></div></div>`;
+            
+            // 更新场景容器
+            document.getElementById('scenes-container').innerHTML = sceneHTML;
+            
+            // 添加按钮事件
+            scene.buttons.forEach((button, index) => {
+                const buttonElement = document.querySelector(`button[data-scene="${sceneId}"][data-button-index="${index}"]`);
+                if (buttonElement) {
+                    buttonElement.addEventListener('click', function() {
+                        const sceneId = this.getAttribute('data-scene');
+                        const buttonIndex = this.getAttribute('data-button-index');
+                        const isCorrect = this.getAttribute('data-correct') === 'true';
+                        const nextScene = this.getAttribute('data-next');
+                        const feedback = scene.buttons[buttonIndex].feedback;
+                        
+                        // 禁用所有按钮防止重复点击
+                        document.querySelectorAll(`button[data-scene="${sceneId}"]`).forEach(btn => {
+                            btn.disabled = true;
+                        });
+                        
+                        // 如果是答题场景且未回答过
+                        if (isCorrect !== null && !gameState.answeredQuestions.has(sceneId)) {
+                            gameState.answeredQuestions.add(sceneId);
+                            
+                            if (isCorrect) {
+                                gameState.correctAnswers++;
+                            }
+                            
+                            saveGameState();
+                        }
+                        
+                        // 显示反馈信息
+                        if (feedback) {
+                            showFeedback(feedback);
+                        }
+                        
+                        // 预加载下两个场景的图片
+                        const nextScenes = [];
+                        if (scenes[nextScene]) {
+                            nextScenes.push(nextScene);
+                            if (scenes[nextScene].buttons) {
+                                scenes[nextScene].buttons.forEach(btn => {
+                                    if (scenes[btn.nextScene]) {
+                                        nextScenes.push(btn.nextScene);
+                                    }
+                                });
+                            }
+                        }
+                        preloadImages(nextScenes.slice(0, 2));
+                        
+                        // 延迟跳转以显示反馈
+                        setTimeout(() => {
+                            renderScene(nextScene);
+                        }, feedback ? 3000 : 0);
+                    });
                 }
-                
-                // 设置按钮点击事件
-                button.addEventListener('click', () => {
-                    // 防止重复点击
-                    if (gameState.usedButtons.has(button.textContent)) return;
-                    gameState.usedButtons.add(button.textContent);
-                    
-                    // 更新分数（如果是正确答案）
-                    if (buttonData.isCorrect === true) {
-                        gameState.score += 6.7;
-                        gameState.correctAnswers++;
-                    }
-                    
-                    // 显示提示（如果是错误答案）
-                    if (buttonData.isCorrect === false && buttonData.hint) {
-                        showHint(buttonData.hint);
-                    }
-                    
-                    // 预加载下一场景的图片
-                    preloadImages(buttonData.nextScene);
-                    
-                    // 延迟跳转（如果有提示需要显示）
-                    setTimeout(() => {
-                        loadScene(buttonData.nextScene);
-                    }, buttonData.hint ? 3000 : 0);
-                });
-                
-                buttonContainer.appendChild(button);
             });
         }
 
         // 初始化游戏
-        document.addEventListener('DOMContentLoaded', () => {
-            // 从URL获取当前场景ID
-            const hash = window.location.hash.substring(1) || '2101';
+        function initGame() {
+            loadGameState();
             
-            // 如果是从开始画面跳转过来，初始化游戏状态
-            if (!gameState.startTime) {
-                gameState.startTime = new Date();
-            }
+            // 获取当前场景ID
+            const hash = window.location.hash.substring(1);
+            const initialSceneId = hash && scenes[hash] ? hash : '2101';
             
-            // 加载场景
-            loadScene(hash);
+            // 渲染初始场景
+            renderScene(initialSceneId);
             
-            // 预加载下一场景的图片（如果有多个可能的下一场景）
-            const currentScene = gameData[hash];
-            if (currentScene) {
-                const nextScenes = currentScene.buttons.map(btn => btn.nextScene);
-                preloadImages(nextScenes);
-            }
-        });
+            // 监听hash变化
+            window.addEventListener('hashchange', function() {
+                const newSceneId = window.location.hash.substring(1);
+                if (scenes[newSceneId]) {
+                    renderScene(newSceneId);
+                }
+            });
+        }
+
+        // 页面加载完成后初始化游戏
+        window.addEventListener('DOMContentLoaded', initGame);
     </script>
 </body>
 </html>
