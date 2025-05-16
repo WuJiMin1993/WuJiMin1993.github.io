@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>时态魔法棒 - 开始</title>
+    <title>英语时态魔法棒</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
         <!-- 开始画面 -->
-        <div id="scene-1001" class="scene active">
+        <div id="start-screen" class="screen active">
             <div class="image-container">
-                <img src="images/开始画面.jpg" alt="开始画面" class="scene-image">
+                <img src="images/开始画面.jpg" alt="开始画面" id="start-image" class="game-image">
             </div>
             <div class="text-container">
-                <h1>时态魔法棒</h1>
-                <p>准备好开始你的魔法时态学习之旅了吗？</p>
+                <h1>英语时态魔法棒</h1>
+                <p>帮助Tom掌握英语时态，解锁魔法棒的威力！</p>
             </div>
-            <div class="button-container center-bottom">
+            <div class="button-container">
                 <button id="start-button" class="main-button">游戏开始</button>
             </div>
         </div>
@@ -29,28 +29,33 @@
             score: 0,
             correctAnswers: 0,
             startTime: null,
-            clickedButtons: new Set() // 记录已点击的按钮
+            endTime: null,
+            // 记录每个按钮的点击状态，防止重复点击
+            buttonStates: {}
         };
-
-        // 预加载章节页面
-        function preloadChapter() {
-            const link = document.createElement('link');
-            link.rel = 'preload';
-            link.href = 'chapter.html';
-            link.as = 'document';
-            document.head.appendChild(link);
-        }
 
         // 初始化游戏
         document.addEventListener('DOMContentLoaded', function() {
-            preloadChapter();
-            
-            // 开始游戏按钮点击事件
+            // 开始按钮点击事件
             document.getElementById('start-button').addEventListener('click', function() {
-                gameState.startTime = new Date(); // 记录开始时间
-                window.location.href = 'chapter.html?scene=2101'; // 跳转到第一个场景
+                // 记录开始时间
+                gameState.startTime = new Date();
+                
+                // 跳转到第一个章节画面
+                window.location.href = 'chapter.html#2101';
             });
+            
+            // 预加载章节1的第一张图片
+            preloadImages(['images/画面01.jpg', 'images/画面02.jpg']);
         });
+
+        // 图片预加载函数
+        function preloadImages(imageUrls) {
+            imageUrls.forEach(url => {
+                const img = new Image();
+                img.src = url;
+            });
+        }
     </script>
 </body>
 </html>
