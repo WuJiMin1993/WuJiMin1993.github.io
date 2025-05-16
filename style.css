@@ -1,19 +1,19 @@
-/* 基础样式重置 */
+/* 全局样式 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Microsoft YaHei", sans-serif;
 }
 
 body {
-    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
     background-color: #000;
     color: #fff;
     height: 100vh;
     overflow: hidden;
+    touch-action: manipulation;
 }
 
-/* 游戏容器 */
 #game-container {
     position: relative;
     width: 100%;
@@ -23,128 +23,145 @@ body {
 /* 场景样式 */
 .scene {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .scene.active {
-    display: flex;
     opacity: 1;
 }
 
-/* 场景图片 */
 .scene-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 70%;
+    height: auto;
+    aspect-ratio: 3/2;
     background-size: cover;
     background-position: top center;
     background-repeat: no-repeat;
-    transition: background-image 0.5s ease-in-out;
 }
 
-/* 文字框 */
-.text-box {
-    width: 90%;
-    max-width: 800px;
-    background-color: #000;
-    color: #fff;
-    padding: 20px;
-    margin: 10px 0;
-    border-radius: 5px;
+.scene-content {
+    position: absolute;
+    top: calc(100% * 2 / 3);
+    left: 0;
+    width: 100%;
+    height: calc(100% * 1 / 3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+}
+
+.scene-text {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     font-size: 18px;
     line-height: 1.5;
+    padding: 10px;
+    overflow-y: auto;
 }
 
-/* 按钮容器 */
-.button-container {
-    width: 90%;
-    max-width: 800px;
+.scene-buttons {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 10px 0;
 }
 
-/* 游戏按钮 */
-.game-button {
+.scene-button {
+    min-width: 120px;
+    padding: 12px 20px;
     background-color: #1a73e8;
     color: white;
     border: none;
-    padding: 12px 24px;
+    border-radius: 25px;
     font-size: 16px;
-    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
-    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
-    min-width: 120px;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.game-button:hover {
-    background-color: #0d5bbc;
-    transform: translateY(-2px);
+.scene-button:active {
+    transform: scale(0.95);
 }
 
-.game-button:active {
-    transform: translateY(0);
+.scene-button.left {
+    margin-right: auto;
 }
 
-.game-button:disabled {
-    background-color: #666;
-    cursor: not-allowed;
+.scene-button.right {
+    margin-left: auto;
 }
 
-/* 按钮位置 */
-.left {
-    align-self: flex-start;
+.scene-button.center {
+    margin: 0 auto;
 }
 
-.right {
-    align-self: flex-end;
-}
-
-.center {
-    align-self: center;
-}
-
-/* 提示框 */
-.hint-box {
+/* 错误提示样式 */
+.error-tip {
     position: fixed;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    border: 2px solid #1a73e8;
-    border-radius: 8px;
-    padding: 20px;
-    max-width: 80%;
-    text-align: center;
-    display: none;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     z-index: 100;
-}
-
-.hint-box p {
-    font-size: 18px;
-    color: #fff;
-}
-
-/* 结果样式 */
-#results {
-    margin-top: 20px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    max-width: 70%;
     text-align: center;
 }
 
-#results p {
-    margin: 10px 0;
-    font-size: 20px;
+.error-content {
+    font-size: 16px;
+    font-weight: bold;
 }
 
-#results span {
+/* 游戏结束样式 */
+#game-summary {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#game-summary p {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+#game-summary span {
     font-weight: bold;
     color: #1a73e8;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    .scene-text {
+        font-size: 16px;
+    }
+    
+    .scene-button {
+        min-width: 100px;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .error-content {
+        font-size: 14px;
+    }
 }
