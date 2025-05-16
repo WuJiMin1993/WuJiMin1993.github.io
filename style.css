@@ -1,12 +1,12 @@
-/* 全局样式 */ 
+/* 基础样式重置 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
 }
 
 body {
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
     background-color: #000;
     color: #fff;
     height: 100vh;
@@ -15,16 +15,17 @@ body {
 
 /* 游戏容器 */
 #game-container {
+    position: relative;
     width: 100%;
     height: 100%;
-    position: relative;
 }
 
-/* 游戏画面 */
-.screen {
+/* 场景样式 */
+.scene {
+    position: absolute;
     width: 100%;
     height: 100%;
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
@@ -32,132 +33,118 @@ body {
     transition: opacity 0.5s ease-in-out;
 }
 
-/* 图片样式 */
-.full-width-img {
-    width: 100%;
-    max-height: 70vh;
-    object-fit: cover;
-    object-position: top;
+.scene.active {
+    display: flex;
+    opacity: 1;
 }
 
-/* 文本框样式 */
+/* 场景图片 */
+.scene-image {
+    width: 100%;
+    height: 70%;
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
+    transition: background-image 0.5s ease-in-out;
+}
+
+/* 文字框 */
 .text-box {
+    width: 90%;
+    max-width: 800px;
     background-color: #000;
     color: #fff;
     padding: 20px;
-    margin: 10px;
+    margin: 10px 0;
     border-radius: 5px;
-    width: 90%;
-    max-width: 800px;
     text-align: center;
     font-size: 18px;
     line-height: 1.5;
 }
 
 /* 按钮容器 */
-.buttons-container {
-    width: 100%;
+.button-container {
+    width: 90%;
+    max-width: 800px;
     display: flex;
-    justify-content: center;
-    padding: 20px;
-    gap: 20px;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-/* 按钮基础样式 */
-.btn {
-    padding: 12px 24px;
-    background-color: #1E90FF;
+/* 游戏按钮 */
+.game-button {
+    background-color: #1a73e8;
     color: white;
     border: none;
-    border-radius: 5px;
+    padding: 12px 24px;
     font-size: 16px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s, transform 0.2s;
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
     min-width: 120px;
 }
 
-.btn:hover {
-    background-color: #0066CC;
+.game-button:hover {
+    background-color: #0d5bbc;
     transform: translateY(-2px);
 }
 
-.btn:active {
+.game-button:active {
     transform: translateY(0);
 }
 
-/* 单个按钮居中 */
-.single-btn {
-    margin: 20px auto;
-    display: block;
+.game-button:disabled {
+    background-color: #666;
+    cursor: not-allowed;
 }
 
-/* 左侧按钮 */
-.left-btn {
-    margin-right: auto;
-    margin-left: 10%;
+/* 按钮位置 */
+.left {
+    align-self: flex-start;
 }
 
-/* 右侧按钮 */
-.right-btn {
-    margin-left: auto;
-    margin-right: 10%;
+.right {
+    align-self: flex-end;
 }
 
-/* 提示框样式 */
+.center {
+    align-self: center;
+}
+
+/* 提示框 */
 .hint-box {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
-    padding: 15px 30px;
-    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 2px solid #1a73e8;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 80%;
+    text-align: center;
+    display: none;
     z-index: 100;
-    animation: fade-in 0.5s ease-in-out;
 }
 
-.hint-box.fade-out {
-    animation: fade-out 0.5s ease-in-out;
+.hint-box p {
+    font-size: 18px;
+    color: #fff;
 }
 
-/* 动画效果 */
-@keyframes fade-in {
-    from { opacity: 0; transform: translate(-50%, -40%); }
-    to { opacity: 1; transform: translate(-50%, -50%); }
+/* 结果样式 */
+#results {
+    margin-top: 20px;
+    text-align: center;
 }
 
-@keyframes fade-out {
-    from { opacity: 1; transform: translate(-50%, -50%); }
-    to { opacity: 0; transform: translate(-50%, -60%); }
+#results p {
+    margin: 10px 0;
+    font-size: 20px;
 }
 
-/* 游戏结束样式 */
-#restart-btn {
-    margin-top: 30px;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-    .text-box {
-        font-size: 16px;
-        padding: 15px;
-    }
-    
-    .btn {
-        padding: 10px 20px;
-        font-size: 14px;
-        min-width: 100px;
-    }
-    
-    .buttons-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .left-btn, .right-btn {
-        margin: 0;
-        width: 80%;
-    }
+#results span {
+    font-weight: bold;
+    color: #1a73e8;
 }
