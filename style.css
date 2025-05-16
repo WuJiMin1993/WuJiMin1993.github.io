@@ -1,4 +1,4 @@
-/* 全局样式重置和基础设置 */
+/* 全局样式重置 */
 * {
     margin: 0;
     padding: 0;
@@ -7,7 +7,7 @@
     -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
 }
 
-/* HTML和Body设置 */
+/* 基础布局 */
 html, body {
     width: 100%;
     height: 100%;
@@ -17,36 +17,42 @@ html, body {
     touch-action: manipulation; /* 改善移动端触摸体验 */
 }
 
-/* 屏幕容器基础样式 */
+/* 游戏容器 */
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* 通用屏幕样式 */
 .screen {
     display: none;
-    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 100vh;
-    position: relative;
-    overflow: hidden;
+    height: 100%;
+    flex-direction: column;
+    background-color: #000;
 }
 
 .screen.active {
     display: flex;
 }
 
-/* 游戏图片样式 */
-.game-image {
+/* 图片容器 */
+.image-container {
     width: 100%;
-    height: auto;
-    max-height: 60vh;
-    object-fit: contain;
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in forwards;
-    user-select: none;
-    -webkit-user-drag: none;
+    position: relative;
 }
 
-/* 图片淡入动画 */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+/* 全宽图片样式 */
+.full-width-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 3/2; /* 保持3:2宽高比 */
+    object-fit: cover;
 }
 
 /* 文字内容区域 */
@@ -59,8 +65,6 @@ html, body {
     text-align: center;
     border-top: 1px solid #333;
     flex-shrink: 0;
-    overflow-y: auto;
-    max-height: 20vh;
 }
 
 /* 按钮容器 */
@@ -71,58 +75,54 @@ html, body {
     margin-top: auto;
     flex-wrap: wrap;
     gap: 10px;
-    flex-shrink: 0;
 }
 
 /* 基础按钮样式 */
-.game-button {
-    background-color: #1a73e8;
+.blue-btn {
+    background-color: #1E90FF;
     color: white;
     border: none;
     border-radius: 8px;
     padding: 12px 20px;
     font-size: 16px;
-    margin: 0;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    flex: 1;
     min-width: 120px;
     text-align: center;
-    flex-grow: 1;
-    outline: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* 按钮悬停和活动状态 */
-.game-button:hover {
-    background-color: #0d5bba;
+.blue-btn:hover {
+    background-color: #0066CC;
+    transform: translateY(-2px);
 }
 
-.game-button:active {
-    transform: scale(0.95);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+.blue-btn:active {
+    transform: translateY(0);
 }
 
-.game-button:disabled {
-    opacity: 0.6;
+.blue-btn:disabled {
+    background-color: #666;
     cursor: not-allowed;
     transform: none;
 }
 
-/* 按钮位置调整 */
-.left-button {
+/* 按钮位置变体 */
+.left-btn {
     margin-right: auto;
     margin-left: 0;
 }
 
-.right-button {
+.right-btn {
     margin-left: auto;
     margin-right: 0;
 }
 
-.center-button {
+.center-btn {
     margin-left: auto;
     margin-right: auto;
-    flex-basis: 100%;
+    max-width: 80%;
 }
 
 /* 模态框基础样式 */
@@ -137,212 +137,257 @@ html, body {
     z-index: 1000;
     justify-content: center;
     align-items: center;
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.3s;
 }
 
 .modal-content {
-    background-color: #333;
-    padding: 25px;
-    border-radius: 12px;
-    width: 85%;
+    background-color: #222;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
     max-width: 400px;
     text-align: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.3s;
 }
 
-.modal-content p {
-    margin-bottom: 20px;
-    font-size: 18px;
-    line-height: 1.4;
-    color: #fff;
+/* 模态框标题 */
+.modal-content h3 {
+    margin-bottom: 15px;
+    color: #1E90FF;
+    font-size: 20px;
 }
 
 /* 输入框样式 */
 .modal-content input {
     width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #555;
-    background-color: #222;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #333;
     color: white;
+    font-size: 16px;
     outline: none;
 }
 
 .modal-content input:focus {
-    border-color: #1a73e8;
+    border-color: #1E90FF;
 }
 
 /* 模态框按钮容器 */
 .modal-buttons {
     display: flex;
-    justify-content: space-around;
-    gap: 15px;
+    justify-content: space-between;
+    margin-top: 15px;
+    gap: 10px;
 }
 
-.modal-button {
-    background-color: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
+.modal-buttons .blue-btn {
     flex: 1;
-    transition: all 0.2s;
+    margin: 0;
 }
 
-.modal-button:active {
-    transform: scale(0.95);
+/* 提示框特殊样式 */
+#hint-modal .modal-content {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid #FFD700;
 }
 
-/* 结果界面样式 */
-.result-container {
-    padding: 20px;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.result-container h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #1a73e8;
-    font-size: 24px;
-}
-
-#result-content {
-    background-color: #111;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-#result-content p {
-    margin: 12px 0;
+#hint-text {
     font-size: 16px;
-}
-
-#ranking-content {
-    background-color: #111;
+    color: #FFD700;
     padding: 15px;
-    border-radius: 10px;
-}
-
-#ranking-content h3 {
-    margin-bottom: 15px;
-    color: #1a73e8;
-    text-align: center;
-}
-
-#ranking-content ol {
-    padding-left: 25px;
-}
-
-#ranking-content li {
-    margin: 12px 0;
-    font-size: 15px;
     line-height: 1.5;
-    color: #ddd;
 }
 
-/* 高亮提示框样式 */
-.highlight-message {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
-    padding: 15px 25px;
-    border-radius: 8px;
-    z-index: 1001;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    font-size: 16px;
+/* 排名画面特殊样式 */
+#ranking-screen {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.ranking-container {
+    background-color: #111;
+    padding: 20px;
+    border-radius: 10px;
+    width: 95%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.ranking-container h2 {
+    color: #1E90FF;
     text-align: center;
-    max-width: 80%;
-    animation: fadeIn 0.3s ease-out;
+    margin-bottom: 15px;
+    font-size: 22px;
 }
 
-/* 响应式设计 - 小屏幕设备 */
-@media (max-width: 480px) {
+.room-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+    font-size: 16px;
+}
+
+.player-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.player-stats p {
+    flex: 1;
+    min-width: 120px;
+    font-size: 15px;
+    color: #AAA;
+}
+
+.player-stats span {
+    color: #FFF;
+    font-weight: bold;
+}
+
+/* 排名列表样式 */
+.ranking-list {
+    margin: 20px 0;
+}
+
+.ranking-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background-color: #222;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.ranking-item.current-player {
+    background-color: #1E3A8A;
+    border-left: 3px solid #1E90FF;
+}
+
+.rank {
+    width: 30px;
+    text-align: center;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.name {
+    flex: 2;
+    text-align: left;
+    padding-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.score {
+    flex: 1;
+    text-align: right;
+    color: #1E90FF;
+    font-weight: bold;
+}
+
+.accuracy, .time, .progress {
+    display: none; /* 移动端隐藏部分信息 */
+}
+
+/* 关闭排名按钮 */
+#close-ranking-btn {
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 响应式设计 - 平板及以上 */
+@media (min-width: 768px) {
     .text-container {
-        font-size: 16px;
-        padding: 12px;
-    }
-    
-    .game-button {
-        padding: 10px 15px;
-        font-size: 15px;
-        min-width: 100px;
-    }
-    
-    .modal-content {
-        width: 90%;
+        font-size: 20px;
         padding: 20px;
     }
     
-    .modal-content p {
-        font-size: 16px;
+    .blue-btn {
+        font-size: 18px;
+        padding: 14px 24px;
     }
     
-    .modal-content input {
-        padding: 10px 12px;
+    .accuracy, .time, .progress {
+        display: block;
+        flex: 1;
+        text-align: center;
+    }
+    
+    .ranking-item {
         font-size: 15px;
-    }
-    
-    .result-container h2 {
-        font-size: 22px;
-    }
-    
-    #result-content p, #ranking-content li {
-        font-size: 14px;
     }
 }
 
-/* 响应式设计 - 超小屏幕设备 */
-@media (max-width: 360px) {
-    .text-container {
-        font-size: 15px;
-    }
-    
-    .game-button {
-        padding: 8px 12px;
-        font-size: 14px;
-        min-width: 90px;
-    }
-    
-    .modal-button {
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-}
-
-/* 横屏设备适配 */
-@media (orientation: landscape) {
-    .game-image {
-        max-height: 50vh;
-    }
-    
-    .text-container {
-        max-height: 15vh;
-        font-size: 16px;
-        padding: 10px;
+/* 响应式设计 - 桌面端 */
+@media (min-width: 1024px) {
+    .full-width-image {
+        max-height: 70vh;
     }
     
     .button-container {
-        padding: 10px;
+        padding: 20px 10%;
+    }
+    
+    .blue-btn {
+        max-width: 300px;
     }
 }
 
-/* 防止长按菜单出现 */
-.no-context-menu {
+/* 防止长按出现系统菜单 */
+button, a {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* 禁用文本选择 */
+body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+/* 防止iOS缩放 */
+textarea, input {
+    font-size: 16px !important;
+}
+
+/* 移动设备特定优化 */
+@media (hover: none) {
+    .blue-btn:hover {
+        background-color: #1E90FF;
+        transform: none;
+    }
 }
