@@ -3,61 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>时态魔法棒 - 开始画面</title>
+    <title>时态魔法棒 - 开始</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* 开始页面特有样式 */
+        #start-screen {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #000;
+        }
+        
+        #start-image {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        
+        #start-button {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            background-color: #1E90FF;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-family: "Microsoft YaHei", sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+        }
+        
+        #start-button:hover {
+            background-color: #0066CC;
+            transform: translateX(-50%) scale(1.05);
+        }
+    </style>
 </head>
 <body>
-    <div id="game-container">
-        <!-- 开始画面 -->
-        <div id="scene-1001" class="scene active">
-            <div class="scene-image" style="background-image: url('images/开始画面.jpg');"></div>
-            <div class="scene-content">
-                <div class="scene-text"></div>
-                <div class="scene-buttons">
-                    <button class="scene-button" onclick="startGame()">游戏开始</button>
-                </div>
-            </div>
-        </div>
+    <div id="start-screen">
+        <img id="start-image" src="images/开始画面.jpg" alt="游戏开始画面">
+        <button id="start-button">游戏开始</button>
     </div>
 
     <script>
-        // 游戏状态变量
-        let gameState = {
+        // 游戏状态管理
+        const gameState = {
             score: 0,
             startTime: null,
-            correctAnswers: 0,
-            answeredQuestions: new Set() // 用于记录已回答的问题
+            correctAnswers: 0
         };
 
-        // 开始游戏函数
-        function startGame() {
-            // 记录游戏开始时间
+        // 预加载章节页面和第一张图片
+        function preloadResources() {
+            // 预加载章节页面
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.href = 'chapter.html';
+            link.as = 'document';
+            document.head.appendChild(link);
+            
+            // 预加载第一章节的第一张图片
+            const img = new Image();
+            img.src = 'images/画面01.jpg';
+        }
+
+        // 开始游戏按钮点击事件
+        document.getElementById('start-button').addEventListener('click', function() {
+            // 初始化游戏状态
+            gameState.score = 0;
             gameState.startTime = new Date();
+            gameState.correctAnswers = 0;
             
-            // 跳转到第一个章节画面
-            window.location.href = "chapter.html?scene=2101";
-        }
-
-        // 预加载章节页面的图片
-        function preloadChapterImages() {
-            const images = [
-                'images/画面01.jpg', 'images/画面02.jpg', 'images/画面03.jpg',
-                'images/画面04.jpg', 'images/画面05.jpg', 'images/画面06.jpg',
-                'images/画面07.jpg', 'images/画面08.jpg', 'images/画面09.jpg',
-                'images/画面10.jpg', 'images/画面11.jpg', 'images/画面12.jpg',
-                'images/画面13.jpg', 'images/画面14.jpg', 'images/画面15.jpg',
-                'images/画面16.jpg', 'images/画面17.jpg', 'images/画面18.jpg',
-                'images/画面19.jpg', 'images/画面20.jpg', 'images/画面21.jpg'
-            ];
+            // 保存游戏状态到sessionStorage
+            sessionStorage.setItem('gameState', JSON.stringify(gameState));
             
-            images.forEach(imgSrc => {
-                const img = new Image();
-                img.src = imgSrc;
-            });
-        }
+            // 跳转到章节页面
+            window.location.href = 'chapter.html?scene=2101';
+            
+            // 预加载下一张图片
+            const img = new Image();
+            img.src = 'images/画面01.jpg';
+        });
 
-        // 页面加载完成后预加载图片
-        window.addEventListener('load', preloadChapterImages);
+        // 页面加载时预加载资源
+        window.addEventListener('load', preloadResources);
     </script>
 </body>
 </html>
