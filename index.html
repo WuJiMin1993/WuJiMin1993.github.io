@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>时态魔法棒</title>
+    <title>时态魔法冒险</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
-        <!-- 开始画面 -->
-        <div id="start-screen" class="screen active">
-            <img src="images/开始画面.jpg" alt="开始画面" class="background-image">
-            <div class="content">
-                <button id="start-button" class="full-width-button">游戏开始</button>
-            </div>
+    <!-- 开始画面 -->
+    <div id="start-screen" class="screen">
+        <img src="images/开始画面.jpg" alt="开始画面" class="full-width-img">
+        <div class="text-box">
+            <h1>时态魔法冒险</h1>
+            <p>帮助Tom掌握英语时态，成为强大的魔法师！</p>
         </div>
+        <button id="start-btn" class="single-btn">游戏开始</button>
     </div>
 
     <script>
@@ -23,30 +23,26 @@
             score: 0,
             startTime: null,
             correctAnswers: 0,
-            totalQuestions: 15,
             answeredQuestions: new Set() // 记录已回答的问题
         };
 
-        // 预加载图片
-        function preloadImages(imagePaths) {
-            imagePaths.forEach(path => {
-                const img = new Image();
-                img.src = path;
-            });
+        // 预加载章节页面
+        function preloadChapter() {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.href = 'chapter.html';
+            link.as = 'document';
+            document.head.appendChild(link);
         }
 
         // 初始化游戏
-        document.addEventListener('DOMContentLoaded', function() {
-            // 预加载前几张图片
-            preloadImages([
-                'images/画面01.jpg',
-                'images/画面02.jpg'
-            ]);
-
-            // 开始游戏按钮点击事件
-            document.getElementById('start-button').addEventListener('click', function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            preloadChapter();
+            
+            // 开始按钮点击事件
+            document.getElementById('start-btn').addEventListener('click', () => {
                 gameState.startTime = new Date(); // 记录开始时间
-                window.location.href = 'chapter.html?chapter=1&scene=1';
+                window.location.href = 'chapter.html#2101'; // 跳转到第一章第一画面
             });
         });
     </script>
