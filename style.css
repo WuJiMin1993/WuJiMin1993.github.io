@@ -1,111 +1,96 @@
-/* General Reset and Base Styles */
+/* General Styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-family: "Microsoft YaHei", sans-serif;
 }
 
 body {
-    background-color: #000;
-    color: #fff;
+    background-color: black;
+    color: white;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-    position: fixed; /* Prevent scrolling on mobile */
-    -webkit-text-size-adjust: none; /* Prevent font scaling in landscape */
-    touch-action: manipulation; /* Improve touch responsiveness */
+    touch-action: manipulation;
 }
 
-/* Screen Container */
 #game-container {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-/* Game Screens */
 .screen {
-    position: absolute;
-    width: 100%;
-    height: 100%;
     display: none;
     flex-direction: column;
     align-items: center;
-    background-color: #000;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
-.screen.active {
-    display: flex;
-    opacity: 1;
-}
-
-/* Images */
+/* Image Styles */
 .full-width-image {
     width: 100%;
     height: auto;
-    max-height: 60vh; /* Limit image height to leave space for text and buttons */
     object-fit: contain;
+    opacity: 1;
+    transition: opacity 0.5s ease;
 }
 
-/* Text Box */
+/* Text Box Styles */
 .text-box {
-    width: 90%;
-    background-color: #000;
-    color: #fff;
+    background-color: black;
+    color: white;
     padding: 15px;
-    margin: 10px 0;
-    border: 1px solid #333;
-    border-radius: 5px;
+    width: 100%;
     text-align: center;
-    font-size: 1.1rem;
-    line-height: 1.4;
+    font-size: 18px;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
 }
 
-/* Button Container */
+/* Button Styles */
 .button-container {
+    position: fixed;
+    bottom: 70px; /* Safe distance from browser UI */
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     padding: 10px;
-    position: absolute;
-    bottom: 20px; /* Safe distance from bottom */
-    gap: 10px;
 }
 
-/* Game Buttons */
-.game-btn {
-    background-color: #0066cc;
-    color: #fff;
+.blue-btn {
+    background-color: #1a73e8;
+    color: white;
     border: none;
     border-radius: 5px;
     padding: 12px 20px;
-    font-size: 1rem;
+    font-size: 16px;
     cursor: pointer;
     min-width: 120px;
-    transition: background-color 0.3s, transform 0.1s;
-    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    margin: 5px;
+    transition: background-color 0.3s;
 }
 
-.game-btn:active {
-    transform: scale(0.98);
+.blue-btn:active {
+    background-color: #0d5bbc;
 }
 
-.game-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+.left-btn {
+    margin-right: auto;
+    margin-left: 20px;
 }
 
-/* Single Button Centering */
-.button-container:has(> .game-btn:only-child) {
-    justify-content: center;
+.right-btn {
+    margin-left: auto;
+    margin-right: 20px;
 }
 
-/* Dual Button Layout */
-.button-container:has(> .game-btn:nth-child(2):last-child) {
-    justify-content: space-around;
+.center-btn {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Modal Styles */
@@ -116,8 +101,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
     justify-content: center;
     align-items: center;
 }
@@ -131,177 +116,95 @@ body {
     text-align: center;
 }
 
-.modal-content p {
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-}
-
 .modal-content input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin: 15px 0;
     border-radius: 5px;
-    border: 1px solid #444;
-    font-size: 1rem;
+    border: none;
+    font-size: 16px;
 }
 
-.modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-/* Message Boxes (Hints and Errors) */
-.message-box {
+/* Hint Box Styles */
+.hint-box {
+    display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    padding: 15px 20px;
+    background-color: #333;
+    color: white;
+    padding: 15px;
     border-radius: 5px;
+    z-index: 1001;
+    max-width: 80%;
     text-align: center;
-    z-index: 50;
-    display: none;
-    max-width: 90%;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
-.message-box p {
-    font-size: 1rem;
-    line-height: 1.4;
-}
-
-/* Leaderboard Styles */
-#screen-2501 {
+/* Ranking Screen Styles */
+.ranking-screen {
     display: flex;
     flex-direction: column;
     padding: 20px;
 }
 
 .room-info {
-    background-color: #222;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
     text-align: center;
+    margin-bottom: 20px;
 }
 
-.room-info h2 {
-    font-size: 1.3rem;
-    margin-bottom: 5px;
-}
-
-.room-info p {
-    font-size: 1rem;
-}
-
-.leaderboard-container {
+.ranking-table-container {
     width: 100%;
-    flex-grow: 1;
-    overflow-y: auto;
+    overflow-x: auto;
 }
 
-.leaderboard-container h2 {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-}
-
-#leaderboard-table {
+.ranking-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #111;
-    border-radius: 8px;
-    overflow: hidden;
+    margin-top: 10px;
 }
 
-#leaderboard-table th, 
-#leaderboard-table td {
+.ranking-table th, .ranking-table td {
     padding: 10px;
     text-align: center;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #444;
 }
 
-#leaderboard-table th {
-    background-color: #0066cc;
-    color: #fff;
-    font-weight: normal;
-}
-
-#leaderboard-table tr:last-child td {
-    border-bottom: none;
+.ranking-table th {
+    background-color: #333;
+    position: sticky;
+    top: 0;
 }
 
 .highlight-player {
-    background-color: rgba(0, 102, 204, 0.3) !important;
+    background-color: #1a73e8;
     font-weight: bold;
 }
 
-/* Responsive Adjustments */
+/* Responsive adjustments */
 @media (max-height: 700px) {
-    .full-width-image {
-        max-height: 50vh;
+    .button-container {
+        bottom: 60px;
     }
     
     .text-box {
+        font-size: 16px;
         padding: 10px;
-        font-size: 1rem;
     }
     
-    .game-btn {
+    .blue-btn {
         padding: 10px 15px;
-        font-size: 0.9rem;
+        font-size: 14px;
+        min-width: 100px;
     }
 }
 
-@media (max-height: 600px) {
-    .full-width-image {
-        max-height: 45vh;
-    }
-    
-    .button-container {
-        bottom: 10px;
-    }
-}
-
-/* Prevent landscape mode */
-@media (orientation: landscape) {
-    body::before {
-        content: "Please rotate your device to portrait mode";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #000;
-        color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.5rem;
-        z-index: 1000;
-    }
-    
-    #game-container {
-        display: none;
-    }
-}
-
-/* Animation for image transitions */
+/* Animation for screen transitions */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-.full-width-image {
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-/* Safe area for mobile devices with notches */
-@supports (padding: max(0px)) {
-    .button-container {
-        padding-bottom: max(10px, env(safe-area-inset-bottom));
-    }
+.screen {
+    animation: fadeIn 0.5s ease;
 }
