@@ -1,4 +1,4 @@
-/* 通用样式 */
+/* 全局样式 */
 * {
     margin: 0;
     padding: 0;
@@ -7,39 +7,36 @@
 }
 
 body {
-    background-color: black;
-    color: white;
+    background-color: #000;
+    color: #fff;
     height: 100vh;
     overflow: hidden;
     touch-action: manipulation;
 }
 
-#app-container {
+#game-container {
+    width: 100%;
+    height: 100%;
     position: relative;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
 }
 
-/* 游戏页面样式 */
-.game-page {
-    display: none;
+/* 屏幕样式 */
+.screen {
+    width: 100%;
+    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    background-color: #000;
 }
 
-.game-page.active {
+.screen.active {
     display: flex;
-    opacity: 1;
 }
 
 /* 图片样式 */
@@ -48,64 +45,134 @@ body {
     height: auto;
     max-height: 60vh;
     object-fit: contain;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in forwards;
 }
 
-/* 文字显示框 */
-.text-display {
-    background-color: black;
-    color: white;
-    padding: 15px;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 文本框样式 */
+.text-box {
     width: 100%;
-    text-align: center;
-    font-size: 18px;
-    margin: 10px 0;
+    background-color: #000;
+    color: #fff;
+    padding: 15px;
     border-top: 1px solid #333;
-    border-bottom: 1px solid #333;
+    margin-top: -5px; /* 与图片底部对齐 */
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center;
 }
 
-/* 按钮容器 */
+/* 按钮容器样式 */
 .button-container {
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 0 10px;
-}
-
-.button-container.single-btn {
     justify-content: center;
+    padding: 15px 10px;
+    gap: 10px;
+    margin-bottom: 20px; /* 防止被浏览器底部栏遮挡 */
 }
 
-/* 游戏按钮样式 */
+/* 按钮样式 */
 .game-btn {
     background-color: #1a73e8;
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 5px;
     padding: 12px 20px;
     font-size: 16px;
     cursor: pointer;
-    min-width: 45%;
-    max-width: 45%;
+    min-width: 120px;
     text-align: center;
     transition: background-color 0.3s;
-    margin: 0 5px;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.button-container.single-btn .game-btn {
-    min-width: 60%;
-    max-width: 60%;
+.game-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .game-btn:hover {
-    background-color: #0d5bba;
+    background-color: #1765cc;
 }
 
-.game-btn:active {
-    background-color: #0a4ea3;
+/* 单个按钮居中 */
+.button-container:has(> button:only-child) {
+    justify-content: center;
 }
 
-/* 模态框样式 */
+/* 两个按钮左右分布 */
+.button-container:has(> button:nth-child(2):last-child) {
+    justify-content: space-between;
+}
+
+/* 排行榜样式 */
+#screen-2501 {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.room-info {
+    width: 100%;
+    background-color: #1a1a1a;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.room-info h2 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.leaderboard-container {
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.leaderboard-container h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+#leaderboard {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1a1a1a;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#leaderboard th, #leaderboard td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+}
+
+#leaderboard th {
+    background-color: #1a73e8;
+    color: #fff;
+}
+
+#leaderboard tr:last-child td {
+    border-bottom: none;
+}
+
+.current-player {
+    background-color: #0d47a1;
+    font-weight: bold;
+}
+
+/* 弹窗样式 */
 .modal {
     display: none;
     position: fixed;
@@ -120,17 +187,16 @@ body {
 }
 
 .modal-content {
-    background-color: #222;
+    background-color: #1a1a1a;
     padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 400px;
+    border-radius: 5px;
+    max-width: 80%;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in;
 }
 
 .modal-content p {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 16px;
 }
 
@@ -138,113 +204,30 @@ body {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
+    border: 1px solid #333;
     border-radius: 5px;
-    border: 1px solid #444;
-    background-color: #333;
-    color: white;
+    background-color: #000;
+    color: #fff;
+    font-size: 16px;
 }
 
 .modal-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 10px;
 }
 
-.modal-buttons button {
-    flex: 1;
-    padding: 10px;
-    margin: 0 5px;
+.modal-btn {
+    background-color: #1a73e8;
+    color: #fff;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.modal-buttons button:first-child {
-    background-color: #1a73e8;
-    color: white;
-}
-
-.modal-buttons button:last-child {
-    background-color: #444;
-    color: white;
-}
-
-/* 排行榜样式 */
-.room-info {
-    text-align: center;
-    padding: 15px;
-    background-color: #111;
-    margin-bottom: 10px;
-}
-
-.room-info h2 {
-    font-size: 20px;
-    margin-bottom: 5px;
-}
-
-.room-info p {
+    padding: 10px 15px;
     font-size: 16px;
-    color: #aaa;
+    cursor: pointer;
+    min-width: 100px;
 }
 
-.leaderboard-container {
-    width: 100%;
-    overflow-y: auto;
-    max-height: calc(100vh - 100px);
-    padding: 0 10px;
-}
-
-#leaderboard-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-#leaderboard-table th, #leaderboard-table td {
-    padding: 10px;
-    text-align: center;
-    border-bottom: 1px solid #333;
-}
-
-#leaderboard-table th {
-    background-color: #1a73e8;
-    color: white;
-    position: sticky;
-    top: 0;
-}
-
-#leaderboard-table tr:nth-child(even) {
-    background-color: #222;
-}
-
-#leaderboard-table tr.highlight-player {
-    background-color: #0d5bba;
-    font-weight: bold;
-}
-
-/* 响应式调整 */
-@media (max-height: 700px) {
-    .game-image {
-        max-height: 50vh;
-    }
-    
-    .text-display {
-        font-size: 16px;
-        padding: 10px;
-    }
-    
-    .game-btn {
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-}
-
-/* 淡入淡出动画 */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
+.modal-btn:hover {
+    background-color: #1765cc;
 }
