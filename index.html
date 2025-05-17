@@ -10,52 +10,49 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-    <!-- Game Start Screen (Page ID: 2001) -->
-    <div id="start-screen" class="screen active">
-        <img src="images/开始画面.jpg" alt="Start Screen" class="full-width-image">
-        <div class="button-container">
-            <button id="join-room-btn" class="game-btn">Join a Room</button>
-            <button id="create-room-btn" class="game-btn">Create a Room</button>
+    <div id="game-container">
+        <!-- Initial Screen (Page ID: 2001) -->
+        <div id="start-screen" class="screen" data-page-id="2001">
+            <img src="images/开始画面.jpg" alt="Start Screen" class="full-width-image">
+            <div class="button-container">
+                <button id="join-room-btn" class="blue-btn">Join a Room</button>
+                <button id="create-room-btn" class="blue-btn">Create a Room</button>
+            </div>
         </div>
-    </div>
 
-    <!-- Room Join Input -->
-    <div id="room-input-modal" class="modal">
-        <div class="modal-content">
-            <p>Please enter a 6-digit room number</p>
-            <input type="text" id="room-number-input" maxlength="6" pattern="\d{6}" placeholder="123456">
-            <div class="modal-buttons">
-                <button id="confirm-room-btn" class="game-btn">Confirm</button>
-                <button id="cancel-room-btn" class="game-btn">Cancel</button>
+        <!-- Room Number Input Modal -->
+        <div id="room-number-modal" class="modal">
+            <div class="modal-content">
+                <p>Please enter a 6-digit room number</p>
+                <input type="text" id="room-number-input" maxlength="6" pattern="\d{6}" placeholder="123456">
+                <button id="submit-room-btn" class="blue-btn">Submit</button>
+            </div>
+        </div>
+
+        <!-- Nickname Input Modal -->
+        <div id="nickname-modal" class="modal">
+            <div class="modal-content">
+                <p>Please enter your English nickname</p>
+                <input type="text" id="nickname-input" maxlength="12" placeholder="Nickname">
+                <button id="submit-nickname-btn" class="blue-btn">Submit</button>
+            </div>
+        </div>
+
+        <!-- Error Message Modal -->
+        <div id="error-modal" class="modal">
+            <div class="modal-content">
+                <p id="error-message"></p>
             </div>
         </div>
     </div>
 
-    <!-- Nickname Input -->
-    <div id="nickname-input-modal" class="modal">
-        <div class="modal-content">
-            <p>Please enter your English nickname</p>
-            <input type="text" id="nickname-input" maxlength="12" placeholder="Nickname (max 12 chars)">
-            <div class="modal-buttons">
-                <button id="confirm-nickname-btn" class="game-btn">Confirm</button>
-                <button id="cancel-nickname-btn" class="game-btn">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Error Message -->
-    <div id="error-message" class="message-box">
-        <p id="error-text"></p>
-    </div>
-
-    <!-- Firebase configuration and game initialization -->
     <script>
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDHRYTBU74r31MPYVAAnRMwKM76c_-BduQ",
             authDomain: "tetrisonline-ca400.firebaseapp.com",
             projectId: "tetrisonline-ca400",
-            storageBucket: "tetrisonline-ca400.appspot.com",
+            storageBucket: "tetrisonline-ca400.firebasestorage.app",
             messagingSenderId: "58207939196",
             appId: "1:58207939196:web:b34f403204096084ee37f9",
             measurementId: "G-GG7GNEQ718"
@@ -67,104 +64,72 @@
 
         // Game state variables
         let currentRoom = null;
-        let isTeacher = false;
         let playerId = null;
         let playerNickname = null;
+        let isTeacher = false;
 
         // DOM elements
-        const startScreen = document.getElementById('start-screen');
         const joinRoomBtn = document.getElementById('join-room-btn');
         const createRoomBtn = document.getElementById('create-room-btn');
-        const roomInputModal = document.getElementById('room-input-modal');
+        const roomNumberModal = document.getElementById('room-number-modal');
         const roomNumberInput = document.getElementById('room-number-input');
-        const confirmRoomBtn = document.getElementById('confirm-room-btn');
-        const cancelRoomBtn = document.getElementById('cancel-room-btn');
-        const nicknameInputModal = document.getElementById('nickname-input-modal');
+        const submitRoomBtn = document.getElementById('submit-room-btn');
+        const nicknameModal = document.getElementById('nickname-modal');
         const nicknameInput = document.getElementById('nickname-input');
-        const confirmNicknameBtn = document.getElementById('confirm-nickname-btn');
-        const cancelNicknameBtn = document.getElementById('cancel-nickname-btn');
+        const submitNicknameBtn = document.getElementById('submit-nickname-btn');
+        const errorModal = document.getElementById('error-modal');
         const errorMessage = document.getElementById('error-message');
-        const errorText = document.getElementById('error-text');
 
         // Event listeners
-        joinRoomBtn.addEventListener('click', showRoomInputModal);
+        joinRoomBtn.addEventListener('click', showRoomNumberModal);
         createRoomBtn.addEventListener('click', createNewRoom);
-        confirmRoomBtn.addEventListener('click', joinExistingRoom);
-        cancelRoomBtn.addEventListener('click', hideRoomInputModal);
-        confirmNicknameBtn.addEventListener('click', confirmNickname);
-        cancelNicknameBtn.addEventListener('click', hideNicknameInputModal);
+        submitRoomBtn.addEventListener('click', joinExistingRoom);
+        submitNicknameBtn.addEventListener('click', submitNickname);
 
-        // Show room input modal
-        function showRoomInputModal() {
-            roomInputModal.style.display = 'flex';
+        // Show room number input modal
+        function showRoomNumberModal() {
+            roomNumberModal.style.display = 'flex';
             roomNumberInput.focus();
         }
 
-        // Hide room input modal
-        function hideRoomInputModal() {
-            roomInputModal.style.display = 'none';
-            roomNumberInput.value = '';
-        }
-
-        // Show nickname input modal
-        function showNicknameInputModal() {
-            nicknameInputModal.style.display = 'flex';
-            nicknameInput.focus();
-        }
-
-        // Hide nickname input modal
-        function hideNicknameInputModal() {
-            nicknameInputModal.style.display = 'none';
-            nicknameInput.value = '';
-        }
-
-        // Show error message
-        function showError(message, duration = 3000) {
-            errorText.textContent = message;
-            errorMessage.style.display = 'block';
-            
-            if (duration > 0) {
-                setTimeout(() => {
-                    errorMessage.style.display = 'none';
-                }, duration);
-            }
-        }
-
-        // Hide error message
-        function hideError() {
-            errorMessage.style.display = 'none';
-        }
-
-        // Create a new room (teacher)
+        // Create a new room
         function createNewRoom() {
-            isTeacher = true;
+            const roomNumber = generateRoomNumber();
             
-            // Generate a random 6-digit room number
-            const roomNumber = Math.floor(100000 + Math.random() * 900000).toString();
-            currentRoom = roomNumber;
-            
-            // Create room in Firebase
-            const roomRef = database.ref('rooms/' + roomNumber);
-            
-            roomRef.set({
-                createdAt: firebase.database.ServerValue.TIMESTAMP,
-                players: {},
-                status: 'waiting'
-            }).then(() => {
-                // Set automatic deletion after 24 hours
-                setTimeout(() => {
-                    roomRef.remove();
-                }, 24 * 60 * 60 * 1000);
+            // Check if room already exists (unlikely with random 6-digit number)
+            database.ref('rooms/' + roomNumber).once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    // Extremely rare case of collision, try again
+                    createNewRoom();
+                    return;
+                }
                 
-                // Redirect to leaderboard
-                window.location.href = `chapter.html?room=${roomNumber}&teacher=true`;
-            }).catch((error) => {
-                showError('Failed to create room. Please try again.');
-                console.error('Error creating room:', error);
+                // Create new room
+                const roomData = {
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    teacher: true,
+                    players: {}
+                };
+                
+                database.ref('rooms/' + roomNumber).set(roomData)
+                    .then(() => {
+                        currentRoom = roomNumber;
+                        isTeacher = true;
+                        // Teacher goes directly to ranking screen
+                        window.location.href = 'chapter.html?room=' + roomNumber + '&teacher=true';
+                    })
+                    .catch((error) => {
+                        showError('Failed to create room: ' + error.message);
+                    });
             });
         }
 
-        // Join an existing room
+        // Generate random 6-digit room number
+        function generateRoomNumber() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        // Join existing room
         function joinExistingRoom() {
             const roomNumber = roomNumberInput.value.trim();
             
@@ -173,62 +138,94 @@
                 return;
             }
             
-            // Check if room exists in Firebase
-            const roomRef = database.ref('rooms/' + roomNumber);
-            
-            roomRef.once('value').then((snapshot) => {
-                if (snapshot.exists()) {
-                    currentRoom = roomNumber;
-                    hideRoomInputModal();
-                    showNicknameInputModal();
-                } else {
+            // Check if room exists
+            database.ref('rooms/' + roomNumber).once('value').then((snapshot) => {
+                if (!snapshot.exists()) {
                     showError('Room number does not exist');
+                    setTimeout(() => {
+                        errorModal.style.display = 'none';
+                    }, 3000);
+                    return;
                 }
+                
+                // Room exists, show nickname input
+                roomNumberModal.style.display = 'none';
+                nicknameModal.style.display = 'flex';
+                nicknameInput.focus();
+                currentRoom = roomNumber;
             }).catch((error) => {
-                showError('Error checking room. Please try again.');
-                console.error('Error checking room:', error);
+                showError('Error checking room: ' + error.message);
             });
         }
 
-        // Confirm nickname and start game
-        function confirmNickname() {
+        // Submit nickname and join game
+        function submitNickname() {
             const nickname = nicknameInput.value.trim();
             
-            if (nickname.length === 0) {
-                showError('Please enter your nickname');
+            if (!nickname || nickname.length > 12) {
+                showError('Please enter a nickname (max 12 characters)');
                 return;
             }
             
-            if (nickname.length > 12) {
-                showError('Nickname must be 12 characters or less');
+            if (!/^[a-zA-Z]+$/.test(nickname)) {
+                showError('Nickname should contain only English letters');
                 return;
             }
             
             playerNickname = nickname;
-            hideNicknameInputModal();
+            nicknameModal.style.display = 'none';
             
-            // Generate unique player ID
-            playerId = Date.now().toString();
+            // Generate player ID and add to room
+            playerId = generatePlayerId();
             
-            // Add player to room in Firebase
-            const playerRef = database.ref(`rooms/${currentRoom}/players/${playerId}`);
-            
-            playerRef.set({
+            const playerData = {
                 nickname: playerNickname,
                 joinedAt: firebase.database.ServerValue.TIMESTAMP,
                 score: 0,
                 correctAnswers: 0,
                 progress: 0,
-                timeSpent: 0,
-                status: 'playing'
-            }).then(() => {
-                // Redirect to game with room and player info
-                window.location.href = `chapter.html?room=${currentRoom}&player=${playerId}`;
-            }).catch((error) => {
-                showError('Failed to join room. Please try again.');
-                console.error('Error joining room:', error);
-            });
+                timeSpent: 0
+            };
+            
+            database.ref('rooms/' + currentRoom + '/players/' + playerId).set(playerData)
+                .then(() => {
+                    // Start game
+                    window.location.href = 'chapter.html?room=' + currentRoom + '&player=' + playerId;
+                })
+                .catch((error) => {
+                    showError('Failed to join room: ' + error.message);
+                });
         }
+
+        // Generate unique player ID
+        function generatePlayerId() {
+            return 'player_' + Date.now();
+        }
+
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorModal.style.display = 'flex';
+            
+            // Auto-hide after 3 seconds if not a critical error
+            if (!message.includes('Failed') && !message.includes('Error')) {
+                setTimeout(() => {
+                    errorModal.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Preload chapter.html resources
+        function preloadResources() {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.href = 'chapter.html';
+            link.as = 'document';
+            document.head.appendChild(link);
+        }
+
+        // Initialize preloading
+        window.addEventListener('load', preloadResources);
     </script>
 </body>
 </html>
