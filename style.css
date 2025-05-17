@@ -1,110 +1,139 @@
-/* General Styles */
+/* General Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Microsoft YaHei", sans-serif;
 }
 
-body {
-    background-color: black;
-    color: white;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    touch-action: manipulation;
-}
-
-#game-container {
-    position: relative;
+html, body {
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    background-color: #000;
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    color: #fff;
+    touch-action: manipulation; /* Prevent zooming on mobile */
+    -webkit-text-size-adjust: none; /* Prevent font scaling on iOS */
 }
 
+/* Screen Container - All screens are hidden by default */
 .screen {
     display: none;
-    flex-direction: column;
-    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    position: relative;
+    background-color: #000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px; /* Safe area at bottom */
 }
 
-/* Image Styles */
+/* Show active screen */
+.screen:not(.hidden) {
+    display: flex;
+}
+
+/* Image Styles - Full width, maintain aspect ratio */
 .full-width-image {
     width: 100%;
     height: auto;
+    max-height: 60vh; /* Limit height to leave space for text and buttons */
     object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* Fade effect */
+}
+
+/* Fade in loaded images */
+.full-width-image.loaded {
     opacity: 1;
-    transition: opacity 0.5s ease;
 }
 
 /* Text Box Styles */
 .text-box {
-    background-color: black;
-    color: white;
+    width: 90%;
+    background-color: #000;
+    color: #fff;
     padding: 15px;
-    width: 100%;
+    border-radius: 5px;
+    margin: 10px 0;
     text-align: center;
-    font-size: 18px;
-    border-top: 1px solid #333;
-    border-bottom: 1px solid #333;
+    font-size: 1.2rem;
+    line-height: 1.5;
 }
 
-/* Button Styles */
+/* Button Container Styles */
 .button-container {
-    position: fixed;
-    bottom: 70px; /* Safe distance from browser UI */
-    width: 100%;
+    width: 90%;
     display: flex;
-    justify-content: space-around;
-    padding: 10px;
+    justify-content: space-between;
+    margin-top: 10px;
 }
 
+/* Single button container (centered) */
+.button-container.single-btn {
+    justify-content: center;
+}
+
+/* Blue Button Styles */
 .blue-btn {
-    background-color: #1a73e8;
-    color: white;
+    background-color: #0066cc;
+    color: #fff;
     border: none;
     border-radius: 5px;
     padding: 12px 20px;
-    font-size: 16px;
+    font-size: 1.1rem;
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
     cursor: pointer;
     min-width: 120px;
-    margin: 5px;
-    transition: background-color 0.3s;
+    text-align: center;
+    transition: background-color 0.2s;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
 }
 
+/* Button hover/active states */
 .blue-btn:active {
-    background-color: #0d5bbc;
+    background-color: #0055aa;
 }
 
-.left-btn {
-    margin-right: auto;
-    margin-left: 20px;
+/* Correct answer button */
+.correct-btn {
+    /* Additional styles if needed */
 }
 
-.right-btn {
-    margin-left: auto;
-    margin-right: 20px;
+/* Wrong answer button */
+.wrong-btn {
+    /* Additional styles if needed */
 }
 
-.center-btn {
-    margin-left: auto;
-    margin-right: auto;
+/* Left button in pair */
+.button-container > .blue-btn:first-child {
+    margin-right: 10px;
+}
+
+/* Right button in pair */
+.button-container > .blue-btn:last-child {
+    margin-left: 10px;
 }
 
 /* Modal Styles */
 .modal {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
 }
 
 .modal-content {
@@ -116,86 +145,138 @@ body {
     text-align: center;
 }
 
+.modal-content p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
 .modal-content input {
     width: 100%;
     padding: 10px;
-    margin: 15px 0;
+    margin-bottom: 20px;
     border-radius: 5px;
-    border: none;
-    font-size: 16px;
+    border: 1px solid #444;
+    font-size: 1rem;
+    background-color: #333;
+    color: #fff;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-buttons > .blue-btn {
+    flex: 1;
+    margin: 0 5px;
 }
 
 /* Hint Box Styles */
 .hint-box {
-    display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #333;
-    color: white;
-    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #000;
+    padding: 15px 20px;
     border-radius: 5px;
-    z-index: 1001;
+    z-index: 100;
     max-width: 80%;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Ranking Screen Styles */
-.ranking-screen {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
+.hint-box.hidden {
+    display: none;
 }
 
+.hint-box p {
+    font-size: 1rem;
+}
+
+/* Leaderboard Styles */
 .room-info {
+    width: 90%;
+    background-color: #111;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 10px 0;
     text-align: center;
+}
+
+.room-info h2 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+
+.room-info p {
+    font-size: 1.1rem;
+}
+
+.leaderboard {
+    width: 90%;
+    background-color: #111;
+    border-radius: 5px;
+    padding: 10px;
     margin-bottom: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
-.ranking-table-container {
-    width: 100%;
-    overflow-x: auto;
+.leaderboard h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
 }
 
-.ranking-table {
+#leaderboard-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
 }
 
-.ranking-table th, .ranking-table td {
-    padding: 10px;
+#leaderboard-table th, #leaderboard-table td {
+    padding: 8px 5px;
     text-align: center;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #333;
 }
 
-.ranking-table th {
-    background-color: #333;
+#leaderboard-table th {
+    background-color: #222;
     position: sticky;
     top: 0;
 }
 
-.highlight-player {
-    background-color: #1a73e8;
-    font-weight: bold;
+#leaderboard-table tr.highlight-player {
+    background-color: #0066cc;
+    color: #fff;
 }
 
-/* Responsive adjustments */
-@media (max-height: 700px) {
-    .button-container {
-        bottom: 60px;
+/* Responsive Adjustments */
+@media (max-height: 600px) {
+    /* Adjustments for smaller screens */
+    .full-width-image {
+        max-height: 50vh;
     }
     
     .text-box {
-        font-size: 16px;
         padding: 10px;
+        font-size: 1rem;
     }
     
     .blue-btn {
         padding: 10px 15px;
-        font-size: 14px;
-        min-width: 100px;
+        font-size: 1rem;
+    }
+}
+
+/* Prevent Safari address bar from covering buttons */
+@supports (-webkit-touch-callout: none) {
+    body {
+        /* iOS 11+ */
+        padding-bottom: env(safe-area-inset-bottom);
+        /* iOS < 11 */
+        padding-bottom: constant(safe-area-inset-bottom);
     }
 }
 
@@ -206,5 +287,11 @@ body {
 }
 
 .screen {
-    animation: fadeIn 0.5s ease;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Disabled button state */
+.blue-btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
 }
