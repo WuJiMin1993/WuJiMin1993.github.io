@@ -3,57 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>英语时态魔法游戏</title>
+    <title>English Tense Game</title>
     <link rel="stylesheet" href="style.css">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-    <div id="game-container">
-        <!-- 初始界面 -->
-        <div id="start-screen" class="screen active">
-            <img src="images/开始画面.jpg" alt="游戏开始画面" class="game-image">
-            <div class="button-container">
-                <button id="join-room-btn" class="game-btn">Join a Room</button>
-                <button id="create-room-btn" class="game-btn">Create a Room</button>
-            </div>
+    <!-- Initial Game Screen -->
+    <div id="start-screen" class="screen active">
+        <img src="images/开始画面.jpg" alt="Start Screen" class="game-image">
+        <div class="button-container">
+            <button id="join-room-btn" class="game-btn">Join a Room</button>
+            <button id="create-room-btn" class="game-btn">Create a Room</button>
         </div>
+    </div>
 
-        <!-- 输入房间号弹窗 -->
-        <div id="room-input-modal" class="modal">
-            <div class="modal-content">
-                <p>Please enter a 6-digit room number</p>
-                <input type="text" id="room-number-input" maxlength="6" pattern="\d{6}" placeholder="123456">
-                <div class="modal-buttons">
-                    <button id="confirm-room-btn" class="modal-btn">Confirm</button>
-                    <button id="cancel-room-btn" class="modal-btn">Cancel</button>
-                </div>
-            </div>
+    <!-- Room Number Input Modal -->
+    <div id="room-input-modal" class="modal">
+        <div class="modal-content">
+            <p>Please enter a 6-digit room number</p>
+            <input type="text" id="room-number-input" maxlength="6" pattern="\d{6}" placeholder="123456">
+            <button id="submit-room-btn" class="modal-btn">Submit</button>
         </div>
+    </div>
 
-        <!-- 输入昵称弹窗 -->
-        <div id="nickname-input-modal" class="modal">
-            <div class="modal-content">
-                <p>Please enter your English nickname</p>
-                <input type="text" id="nickname-input" maxlength="12" placeholder="Your nickname">
-                <div class="modal-buttons">
-                    <button id="confirm-nickname-btn" class="modal-btn">Confirm</button>
-                    <button id="cancel-nickname-btn" class="modal-btn">Cancel</button>
-                </div>
-            </div>
+    <!-- Nickname Input Modal -->
+    <div id="nickname-modal" class="modal">
+        <div class="modal-content">
+            <p>Please enter your English nickname</p>
+            <input type="text" id="nickname-input" maxlength="12" placeholder="Nickname (max 12 chars)">
+            <button id="submit-nickname-btn" class="modal-btn">Start Game</button>
         </div>
+    </div>
 
-        <!-- 提示信息弹窗 -->
-        <div id="message-modal" class="modal">
-            <div class="modal-content">
-                <p id="message-text"></p>
-            </div>
+    <!-- Error Message Modal -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <p id="error-message"></p>
         </div>
     </div>
 
     <script>
-        // 初始化Firebase
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDHRYTBU74r31MPYVAAnRMwKM76c_-BduQ",
             authDomain: "tetrisonline-ca400.firebaseapp.com",
@@ -64,181 +56,147 @@
             measurementId: "G-GG7GNEQ718"
         };
 
-        // 初始化Firebase应用
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 游戏状态变量
-        let currentRoomId = null;
-        let isTeacher = false;
-        let playerId = null;
-        let playerNickname = null;
-
-        // DOM元素
+        // DOM Elements
         const startScreen = document.getElementById('start-screen');
         const joinRoomBtn = document.getElementById('join-room-btn');
         const createRoomBtn = document.getElementById('create-room-btn');
         const roomInputModal = document.getElementById('room-input-modal');
         const roomNumberInput = document.getElementById('room-number-input');
-        const confirmRoomBtn = document.getElementById('confirm-room-btn');
-        const cancelRoomBtn = document.getElementById('cancel-room-btn');
-        const nicknameInputModal = document.getElementById('nickname-input-modal');
+        const submitRoomBtn = document.getElementById('submit-room-btn');
+        const nicknameModal = document.getElementById('nickname-modal');
         const nicknameInput = document.getElementById('nickname-input');
-        const confirmNicknameBtn = document.getElementById('confirm-nickname-btn');
-        const cancelNicknameBtn = document.getElementById('cancel-nickname-btn');
-        const messageModal = document.getElementById('message-modal');
-        const messageText = document.getElementById('message-text');
+        const submitNicknameBtn = document.getElementById('submit-nickname-btn');
+        const errorModal = document.getElementById('error-modal');
+        const errorMessage = document.getElementById('error-message');
 
-        // 显示消息弹窗
-        function showMessage(message, duration = 3000) {
-            messageText.textContent = message;
-            messageModal.style.display = 'flex';
-            
-            if (duration > 0) {
-                setTimeout(() => {
-                    messageModal.style.display = 'none';
-                }, duration);
-            }
-        }
+        // Game state variables
+        let currentRoom = null;
+        let isTeacher = false;
+        let playerId = null;
 
-        // 隐藏消息弹窗
-        function hideMessage() {
-            messageModal.style.display = 'none';
-        }
+        // Event Listeners
+        joinRoomBtn.addEventListener('click', showRoomInputModal);
+        createRoomBtn.addEventListener('click', createNewRoom);
+        submitRoomBtn.addEventListener('click', joinExistingRoom);
+        submitNicknameBtn.addEventListener('click', startGameWithNickname);
 
-        // 加入房间按钮点击事件
-        joinRoomBtn.addEventListener('click', () => {
+        // Show room input modal
+        function showRoomInputModal() {
             roomInputModal.style.display = 'flex';
-            roomNumberInput.focus();
-        });
+        }
 
-        // 创建房间按钮点击事件
-        createRoomBtn.addEventListener('click', () => {
-            // 生成6位随机房间号
-            const roomId = Math.floor(100000 + Math.random() * 900000).toString();
+        // Create a new room (teacher)
+        function createNewRoom() {
+            isTeacher = true;
+            // Generate random 6-digit room number
+            const roomNumber = Math.floor(100000 + Math.random() * 900000).toString();
+            currentRoom = roomNumber;
             
-            // 创建房间数据
-            const roomData = {
+            // Create room in Firebase
+            const roomRef = database.ref('rooms/' + roomNumber);
+            roomRef.set({
                 createdAt: firebase.database.ServerValue.TIMESTAMP,
-                teacher: true,
-                players: {}
-            };
-            
-            // 写入数据库
-            database.ref('rooms/' + roomId).set(roomData)
-                .then(() => {
-                    currentRoomId = roomId;
-                    isTeacher = true;
-                    
-                    // 跳转到排行榜页面
-                    window.location.href = `chapter.html?room=${roomId}&teacher=true`;
-                })
-                .catch((error) => {
-                    showMessage('创建房间失败: ' + error.message);
-                });
-        });
+                players: {},
+                status: 'waiting'
+            }).then(() => {
+                // Set automatic deletion after 24 hours
+                setTimeout(() => {
+                    roomRef.remove();
+                }, 24 * 60 * 60 * 1000);
+                
+                // Redirect to ranking page
+                window.location.href = `chapter.html?room=${roomNumber}&teacher=true`;
+            }).catch(error => {
+                showError("Failed to create room. Please try again.");
+                console.error("Error creating room:", error);
+            });
+        }
 
-        // 确认房间号按钮点击事件
-        confirmRoomBtn.addEventListener('click', () => {
-            const roomId = roomNumberInput.value.trim();
+        // Join existing room
+        function joinExistingRoom() {
+            const roomNumber = roomNumberInput.value.trim();
             
-            if (!/^\d{6}$/.test(roomId)) {
-                showMessage('请输入6位数字的房间号');
+            // Validate room number
+            if (!/^\d{6}$/.test(roomNumber)) {
+                showError("Please enter a valid 6-digit room number.");
                 return;
             }
             
-            // 检查房间是否存在
-            database.ref('rooms/' + roomId).once('value')
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        currentRoomId = roomId;
-                        roomInputModal.style.display = 'none';
-                        nicknameInputModal.style.display = 'flex';
-                        nicknameInput.focus();
-                    } else {
-                        showMessage('Room number does not exist');
-                    }
-                })
-                .catch((error) => {
-                    showMessage('检查房间失败: ' + error.message);
-                });
-        });
+            // Check if room exists in Firebase
+            const roomRef = database.ref('rooms/' + roomNumber);
+            roomRef.once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    currentRoom = roomNumber;
+                    roomInputModal.style.display = 'none';
+                    nicknameModal.style.display = 'flex';
+                } else {
+                    showError("Room number does not exist");
+                    setTimeout(() => {
+                        errorModal.style.display = 'none';
+                    }, 3000);
+                }
+            }).catch(error => {
+                showError("Error checking room. Please try again.");
+                console.error("Error checking room:", error);
+            });
+        }
 
-        // 取消房间号输入
-        cancelRoomBtn.addEventListener('click', () => {
-            roomInputModal.style.display = 'none';
-            roomNumberInput.value = '';
-        });
-
-        // 确认昵称按钮点击事件
-        confirmNicknameBtn.addEventListener('click', () => {
+        // Start game with entered nickname
+        function startGameWithNickname() {
             const nickname = nicknameInput.value.trim();
             
-            if (nickname.length === 0) {
-                showMessage('请输入昵称');
+            // Validate nickname
+            if (!nickname || nickname.length > 12) {
+                showError("Please enter a valid nickname (max 12 characters).");
                 return;
             }
             
-            if (nickname.length > 12) {
-                showMessage('昵称不能超过12个字符');
-                return;
-            }
+            // Generate player ID
+            playerId = generatePlayerId();
             
-            playerNickname = nickname;
-            
-            // 生成玩家ID
-            playerId = 'player_' + Date.now();
-            
-            // 添加玩家到房间
-            const playerData = {
-                nickname: playerNickname,
-                joinedAt: firebase.database.ServerValue.TIMESTAMP,
+            // Add player to room in Firebase
+            const playerRef = database.ref(`rooms/${currentRoom}/players/${playerId}`);
+            playerRef.set({
+                nickname: nickname,
                 score: 0,
                 correctAnswers: 0,
-                progress: 0,
-                timeSpent: 0,
-                finished: false
-            };
-            
-            database.ref('rooms/' + currentRoomId + '/players/' + playerId).set(playerData)
-                .then(() => {
-                    nicknameInputModal.style.display = 'none';
-                    nicknameInput.value = '';
-                    
-                    // 跳转到游戏页面
-                    window.location.href = `chapter.html?room=${currentRoomId}&player=${playerId}`;
-                })
-                .catch((error) => {
-                    showMessage('加入房间失败: ' + error.message);
-                });
-        });
+                startTime: firebase.database.ServerValue.TIMESTAMP,
+                currentProgress: 0,
+                currentScreen: '2101'
+            }).then(() => {
+                // Redirect to game page
+                window.location.href = `chapter.html?room=${currentRoom}&player=${playerId}&nickname=${encodeURIComponent(nickname)}`;
+            }).catch(error => {
+                showError("Failed to join room. Please try again.");
+                console.error("Error joining room:", error);
+            });
+        }
 
-        // 取消昵称输入
-        cancelNicknameBtn.addEventListener('click', () => {
-            nicknameInputModal.style.display = 'none';
-            nicknameInput.value = '';
-        });
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorModal.style.display = 'flex';
+        }
 
-        // 处理键盘事件
-        document.addEventListener('keydown', (e) => {
-            // 在输入框中按Enter键确认
-            if (e.key === 'Enter') {
-                if (roomInputModal.style.display === 'flex') {
-                    confirmRoomBtn.click();
-                } else if (nicknameInputModal.style.display === 'flex') {
-                    confirmNicknameBtn.click();
-                }
+        // Generate unique player ID
+        function generatePlayerId() {
+            return 'player-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === roomInputModal) {
+                roomInputModal.style.display = 'none';
             }
-            
-            // 按ESC键取消
-            if (e.key === 'Escape') {
-                if (roomInputModal.style.display === 'flex') {
-                    cancelRoomBtn.click();
-                } else if (nicknameInputModal.style.display === 'flex') {
-                    cancelNicknameBtn.click();
-                } else if (messageModal.style.display === 'flex') {
-                    hideMessage();
-                }
+            if (event.target === nicknameModal) {
+                nicknameModal.style.display = 'none';
+            }
+            if (event.target === errorModal) {
+                errorModal.style.display = 'none';
             }
         });
     </script>
