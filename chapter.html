@@ -3,30 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English Tense Adventure - Game</title>
+    <title>英语时态魔法游戏 - 章节</title>
     <link rel="stylesheet" href="style.css">
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
 </head>
 <body>
-    <!-- Game screens container -->
+    <!-- 游戏章节容器 -->
     <div id="game-container">
-        <!-- Screens will be dynamically loaded here -->
+        <!-- 所有章节画面将通过JavaScript动态加载 -->
     </div>
 
-    <!-- Hint Modal -->
+    <!-- 提示框 -->
     <div id="hint-modal" class="modal">
         <div class="modal-content">
             <p id="hint-message"></p>
         </div>
     </div>
 
-    <!-- Preloader for images -->
-    <div id="preloader" style="display: none;"></div>
+    <!-- 加载指示器 -->
+    <div id="loading-indicator" class="loading">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+    </div>
 
     <script>
-        // Firebase configuration
+        // Firebase 配置
         const firebaseConfig = {
             apiKey: "AIzaSyDHRYTBU74r31MPYVAAnRMwKM76c_-BduQ",
             authDomain: "tetrisonline-ca400.firebaseapp.com",
@@ -37,34 +40,35 @@
             measurementId: "G-GG7GNEQ718"
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+        // 初始化 Firebase
+        const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Get URL parameters
+        // 解析URL参数
         const urlParams = new URLSearchParams(window.location.search);
         const roomId = urlParams.get('room');
-        const playerId = urlParams.get('player');
         const isTeacher = urlParams.get('teacher') === 'true';
+        const playerId = urlParams.get('player');
 
-        // Game state variables
-        let currentScreenId = null;
+        // 游戏状态变量
+        let currentScreenId = '2101'; // 默认从第一个画面开始
         let score = 0;
         let correctAnswers = 0;
         let startTime = null;
-        let endTime = null;
-        let gameCompleted = false;
-        let buttonsClicked = new Set();
+        let timeSpent = 0; // 单位:秒
+        let updateInterval = null;
+        let hasFinished = false;
+        let clickedButtons = new Set(); // 记录已点击的按钮
 
-        // DOM Elements
+        // DOM 元素
         const gameContainer = document.getElementById('game-container');
         const hintModal = document.getElementById('hint-modal');
         const hintMessage = document.getElementById('hint-message');
-        const preloader = document.getElementById('preloader');
+        const loadingIndicator = document.getElementById('loading-indicator');
 
-        // Game screens data
+        // 游戏画面数据
         const screens = {
-            // Chapter 1
+            // 章节1
             '2101': {
                 image: 'images/画面01.jpg',
                 text: 'Tom lives in a magical world and ____ the school library every day.',
@@ -99,7 +103,7 @@
                       hint: 'Describe simple behaviors that will occur in the future using general future tense', nextScreen: '2201' }
                 ]
             },
-            // Chapter 2
+            // 章节2
             '2201': {
                 image: 'images/画面05.jpg',
                 text: 'The next morning, he ____ a magic broom towards a forest next to the school.',
@@ -127,7 +131,7 @@
                       hint: 'Describe the ongoing behavior in the future using future continuous tense', nextScreen: '2301' }
                 ]
             },
-            // Chapter 3
+            // 章节3
             '2301': {
                 image: 'images/画面08.jpg',
                 text: 'Tom stops by the stream in the forest and ____ the magic wand from his clothes. He thought that the magic wand is called a tense magic wand. Is the spell that activates it related to tense?',
@@ -171,7 +175,7 @@
                       hint: 'Describe the behavior to be completed in the future using the future perfect tense', nextScreen: '2401' }
                 ]
             },
-            // Chapter 4
+            // 章节4
             '2401': {
                 image: 'images/画面13.jpg',
                 text: 'Although Tom ____ magic at the school for a year, his knowledge of magic is still inferior to that of wizard Mike.',
@@ -245,337 +249,394 @@
                     { text: 'Game over', position: 'center', correct: null, nextScreen: '2501' }
                 ]
             },
-            // Ranking screen
+            // 排行榜
             '2501': {
-                isRanking: true,
-                text: 'Ranking'
+                isLeaderboard: true
             }
         };
 
-        // Initialize game
-        document.addEventListener('DOMContentLoaded', () => {
-            if (isTeacher) {
-                // Teacher goes directly to ranking screen
-                loadScreen('2501');
-            } else {
-                // Player starts game
-                startTime = new Date().getTime();
-                loadScreen('2101'); // Start with first screen
-                
-                // Set up Firebase listener for player data
-                if (playerId && roomId) {
-                    setupPlayerDataListener();
-                }
-            }
-        });
-
-        // Set up Firebase listener for player data
-        function setupPlayerDataListener() {
-            const playerRef = database.ref('rooms/' + roomId + '/players/' + playerId);
-            
-            playerRef.on('value', (snapshot) => {
-                const playerData = snapshot.val();
-                if (playerData && playerData.completed) {
-                    // If game is completed, go to ranking screen
-                    if (!gameCompleted) {
-                        gameCompleted = true;
-                        loadScreen('2501');
-                    }
-                }
-            });
-        }
-
-        // Load a game screen
-        function loadScreen(screenId) {
-            currentScreenId = screenId;
-            buttonsClicked.clear();
-            
-            // Clear previous screen
-            gameContainer.innerHTML = '';
-            
-            const screen = screens[screenId];
-            if (!screen) {
-                console.error('Screen not found:', screenId);
-                return;
-            }
-            
-            if (screen.isRanking) {
-                // Load ranking screen
-                loadRankingScreen();
-                return;
-            }
-            
-            // Create screen elements
-            const screenElement = document.createElement('div');
-            screenElement.className = 'screen active';
-            screenElement.id = 'screen-' + screenId;
-            
-            // Add image
-            const img = document.createElement('img');
-            img.src = screen.image;
-            img.alt = 'Game Screen ' + screenId;
-            img.className = 'full-width-image';
-            screenElement.appendChild(img);
-            
-            // Add text container
-            const textContainer = document.createElement('div');
-            textContainer.className = 'text-container';
-            textContainer.textContent = screen.text;
-            screenElement.appendChild(textContainer);
-            
-            // Add buttons container
-            const buttonsContainer = document.createElement('div');
-            buttonsContainer.className = 'button-container';
-            
-            // Add buttons
-            screen.buttons.forEach(buttonData => {
-                const button = document.createElement('button');
-                button.className = 'game-btn';
-                button.textContent = buttonData.text;
-                
-                // Position class
-                if (buttonData.position === 'left') {
-                    button.classList.add('left-btn');
-                } else if (buttonData.position === 'right') {
-                    button.classList.add('right-btn');
-                } else {
-                    button.classList.add('center-btn');
-                }
-                
-                // Button click handler
-                button.addEventListener('click', () => {
-                    if (buttonsClicked.has(buttonData.text)) return;
-                    buttonsClicked.add(buttonData.text);
-                    
-                    // Handle correct answer
-                    if (buttonData.correct === true) {
-                        correctAnswers++;
-                        score += 6.7;
-                        updatePlayerProgress();
-                    }
-                    
-                    // Show hint if incorrect
-                    if (buttonData.correct === false && buttonData.hint) {
-                        showHint(buttonData.hint);
-                    }
-                    
-                    // Preload next screen image
-                    if (screen.buttons[0].nextScreen && screen.buttons[0].nextScreen !== '2501') {
-                        preloadImage(screens[screen.buttons[0].nextScreen].image);
-                    }
-                    
-                    // Move to next screen after delay if there's a hint
-                    if (buttonData.hint) {
-                        setTimeout(() => {
-                            loadScreen(buttonData.nextScreen);
-                        }, 3000);
-                    } else {
-                        loadScreen(buttonData.nextScreen);
-                    }
-                });
-                
-                buttonsContainer.appendChild(button);
-            });
-            
-            screenElement.appendChild(buttonsContainer);
-            gameContainer.appendChild(screenElement);
-            
-            // Update player progress
-            updatePlayerProgress();
-        }
-
-        // Load ranking screen
-        function loadRankingScreen() {
-            if (!roomId) return;
-            
-            // Mark game as completed for player
-            if (playerId && !isTeacher && !gameCompleted) {
-                endTime = new Date().getTime();
-                gameCompleted = true;
-                
-                // Calculate time spent in minutes
-                const timeSpent = Math.max(1, Math.min(60, Math.ceil((endTime - startTime) / 60000)));
-                
-                // Calculate time score (2 points per minute, max 120)
-                const timeScore = Math.min(120, timeSpent * 2);
-                
-                // Calculate total score (max 100)
-                const totalScore = Math.min(100, Math.round(score + timeScore));
-                
-                // Calculate accuracy
-                const accuracy = (correctAnswers / 15 * 100).toFixed(1);
-                
-                // Update player data
-                const updates = {
-                    score: totalScore,
-                    correctAnswers: correctAnswers,
-                    progress: 100,
-                    timeSpent: timeSpent,
-                    completed: true,
-                    accuracy: accuracy,
-                    completedAt: firebase.database.ServerValue.TIMESTAMP
-                };
-                
-                database.ref('rooms/' + roomId + '/players/' + playerId).update(updates)
-                    .catch(error => {
-                        console.error('Error updating player data:', error);
-                    });
-            }
-            
-            // Create ranking screen
-            const screenElement = document.createElement('div');
-            screenElement.className = 'screen active';
-            screenElement.id = 'ranking-screen';
-            
-            // Room info
-            const roomInfo = document.createElement('div');
-            roomInfo.className = 'room-info';
-            roomInfo.innerHTML = `<h2>Room: ${roomId}</h2>`;
-            
-            // Player count will be updated by the listener
-            const playerCount = document.createElement('p');
-            playerCount.id = 'player-count';
-            playerCount.textContent = 'Players: 0';
-            roomInfo.appendChild(playerCount);
-            
-            screenElement.appendChild(roomInfo);
-            
-            // Ranking table
-            const rankingTable = document.createElement('table');
-            rankingTable.id = 'ranking-table';
-            rankingTable.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
-                        <th>Score</th>
-                        <th>Accuracy</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody id="ranking-body">
-                    <!-- Rows will be added here -->
-                </tbody>
-            `;
-            screenElement.appendChild(rankingTable);
-            
-            gameContainer.appendChild(screenElement);
-            
-            // Set up Firebase listener for room data
-            setupRoomDataListener();
-        }
-
-        // Set up Firebase listener for room data
-        function setupRoomDataListener() {
-            if (!roomId) return;
-            
-            const roomRef = database.ref('rooms/' + roomId);
-            
-            roomRef.on('value', (snapshot) => {
-                const roomData = snapshot.val();
-                if (!roomData) return;
-                
-                // Update player count (excluding teacher)
-                const players = roomData.players || {};
-                const playerCount = Object.keys(players).length;
-                document.getElementById('player-count').textContent = `Players: ${playerCount}`;
-                
-                // Prepare ranking data
-                const rankingData = [];
-                for (const playerId in players) {
-                    const player = players[playerId];
-                    if (player.completed) {
-                        rankingData.push({
-                            nickname: player.nickname || 'Anonymous',
-                            score: player.score || 0,
-                            accuracy: player.accuracy || '0.0',
-                            timeSpent: player.timeSpent || 0
-                        });
-                    }
-                }
-                
-                // Sort by score (descending)
-                rankingData.sort((a, b) => b.score - a.score);
-                
-                // Update ranking table
-                const rankingBody = document.getElementById('ranking-body');
-                rankingBody.innerHTML = '';
-                
-                rankingData.slice(0, 10).forEach((player, index) => {
-                    const row = document.createElement('tr');
-                    
-                    // Highlight current player's row
-                    if (player.nickname === document.getElementById('nickname-input')?.value) {
-                        row.classList.add('highlight-player');
-                    }
-                    
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${escapeHtml(player.nickname)}</td>
-                        <td>${player.score}</td>
-                        <td>${player.accuracy}%</td>
-                        <td>${player.timeSpent}m</td>
-                    `;
-                    rankingBody.appendChild(row);
-                });
-            });
-        }
-
-        // Show hint message
+        // 显示提示消息
         function showHint(message) {
             hintMessage.textContent = message;
             hintModal.style.display = 'flex';
             
+            // 3秒后自动隐藏
             setTimeout(() => {
                 hintModal.style.display = 'none';
             }, 3000);
         }
 
-        // Preload image
-        function preloadImage(src) {
-            const img = new Image();
-            img.src = src;
-            preloader.appendChild(img);
+        // 显示加载指示器
+        function showLoading() {
+            loadingIndicator.style.display = 'flex';
         }
 
-        // Update player progress in Firebase
-        function updatePlayerProgress() {
-            if (!playerId || !roomId || isTeacher) return;
+        // 隐藏加载指示器
+        function hideLoading() {
+            loadingIndicator.style.display = 'none';
+        }
+
+        // 计算进度百分比
+        function calculateProgress(screenId) {
+            const screenNum = parseInt(screenId.replace(/^2[1-4]/, ''));
+            return Math.round((screenNum / 21) * 100);
+        }
+
+        // 计算时间分数
+        function calculateTimeScore(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
             
-            // Calculate progress (current screen number / total screens * 100)
-            const screenNumber = parseInt(currentScreenId.substring(1));
-            const progress = Math.round((screenNumber - 2100) / 21 * 100);
+            // 每满一分钟得2分，不满一分钟得1分
+            return minutes * 2 + (remainingSeconds > 0 ? 1 : 0);
+        }
+
+        // 计算总分
+        function calculateTotalScore(correctCount, timeScore) {
+            // 每题6.7分
+            const questionScore = correctCount * 6.7;
+            // 总分 = 问题分数 - 时间分数
+            let totalScore = Math.round(questionScore - timeScore);
             
-            // Calculate time spent in minutes
-            const currentTime = new Date().getTime();
-            const timeSpent = Math.ceil((currentTime - startTime) / 60000);
+            // 确保分数在0-100之间
+            totalScore = Math.max(0, Math.min(100, totalScore));
             
-            // Calculate accuracy
-            const accuracy = (correctAnswers / 15 * 100).toFixed(1);
+            return totalScore;
+        }
+
+        // 计算正确率
+        function calculateAccuracy(correctCount) {
+            return ((correctCount / 15) * 100).toFixed(1);
+        }
+
+        // 格式化时间显示
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 更新玩家数据到Firebase
+        async function updatePlayerData() {
+            if (!roomId || !playerId || isTeacher) return;
             
-            const updates = {
-                score: Math.round(score),
-                correctAnswers: correctAnswers,
-                progress: progress,
-                timeSpent: timeSpent,
-                accuracy: accuracy
-            };
-            
-            database.ref('rooms/' + roomId + '/players/' + playerId).update(updates)
-                .catch(error => {
-                    console.error('Error updating player progress:', error);
+            try {
+                const progress = calculateProgress(currentScreenId);
+                const timeScore = calculateTimeScore(timeSpent);
+                const totalScore = calculateTotalScore(correctAnswers, timeScore);
+                const accuracy = calculateAccuracy(correctAnswers);
+                
+                await database.ref(`rooms/${roomId}/players/${playerId}`).update({
+                    score: totalScore,
+                    correctAnswers: correctAnswers,
+                    progress: progress,
+                    timeSpent: timeSpent,
+                    finished: hasFinished,
+                    lastUpdated: firebase.database.ServerValue.TIMESTAMP
                 });
+            } catch (error) {
+                console.error('更新玩家数据时出错:', error);
+            }
         }
 
-        // Escape HTML to prevent XSS
-        function escapeHtml(unsafe) {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+        // 加载排行榜
+        async function loadLeaderboard() {
+            showLoading();
+            
+            try {
+                // 获取房间信息
+                const roomSnapshot = await database.ref(`rooms/${roomId}`).once('value');
+                const roomData = roomSnapshot.val();
+                
+                if (!roomData) {
+                    showHint('房间不存在或已被删除');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 3000);
+                    return;
+                }
+                
+                // 获取玩家数据
+                const players = roomData.players || {};
+                const playersArray = Object.entries(players)
+                    .filter(([id, player]) => !id.startsWith('teacher') && player.finished)
+                    .map(([id, player]) => ({
+                        id,
+                        nickname: player.nickname,
+                        score: player.score || 0,
+                        correctAnswers: player.correctAnswers || 0,
+                        timeSpent: player.timeSpent || 0
+                    }));
+                
+                // 按分数排序
+                playersArray.sort((a, b) => b.score - a.score);
+                
+                // 只显示前10名
+                const topPlayers = playersArray.slice(0, 10);
+                
+                // 创建排行榜HTML
+                const leaderboardHTML = `
+                    <div class="leaderboard-container">
+                        <div class="room-info">
+                            <p>房间号: ${roomId}</p>
+                            <p>玩家人数: ${Object.keys(players).length - (roomData.teacherId ? 1 : 0)}</p>
+                        </div>
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>名称</th>
+                                    <th>总分数</th>
+                                    <th>正确率</th>
+                                    <th>用时</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${topPlayers.map((player, index) => `
+                                    <tr class="${player.id === playerId ? 'highlight' : ''}">
+                                        <td>${index + 1}</td>
+                                        <td>${player.nickname}</td>
+                                        <td>${player.score}</td>
+                                        <td>${calculateAccuracy(player.correctAnswers)}%</td>
+                                        <td>${formatTime(player.timeSpent)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                // 显示排行榜
+                gameContainer.innerHTML = leaderboardHTML;
+                
+                // 如果是玩家而不是老师，标记为已完成
+                if (playerId && !isTeacher && !hasFinished) {
+                    hasFinished = true;
+                    await database.ref(`rooms/${roomId}/players/${playerId}`).update({
+                        finished: true
+                    });
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('加载排行榜时出错:', error);
+                showHint('加载排行榜失败，请重试');
+                hideLoading();
+            }
         }
+
+        // 加载游戏画面
+        function loadScreen(screenId) {
+            // 清除已点击按钮记录
+            clickedButtons.clear();
+            
+            const screen = screens[screenId];
+            if (!screen) {
+                console.error('无效的画面ID:', screenId);
+                return;
+            }
+            
+            // 如果是排行榜，特殊处理
+            if (screen.isLeaderboard) {
+                loadLeaderboard();
+                return;
+            }
+            
+            // 更新当前画面ID
+            currentScreenId = screenId;
+            
+            // 计算进度
+            const progress = calculateProgress(screenId);
+            
+            // 更新玩家数据 (每3秒更新一次)
+            if (playerId && !isTeacher) {
+                updatePlayerData();
+            }
+            
+            // 创建画面HTML
+            const buttonsHTML = screen.buttons.map(button => {
+                const positionClass = button.position === 'left' ? 'left-btn' : 
+                                      button.position === 'right' ? 'right-btn' : 'center-btn';
+                return `
+                    <button class="game-btn ${positionClass}" 
+                            data-correct="${button.correct}" 
+                            data-next="${button.nextScreen}"
+                            data-hint="${button.hint || ''}">
+                        ${button.text}
+                    </button>
+                `;
+            }).join('');
+            
+            const screenHTML = `
+                <div class="screen active" id="screen-${screenId}">
+                    <img src="${screen.image}" alt="游戏画面 ${screenId}" class="game-image">
+                    <div class="text-box">
+                        <p>${screen.text}</p>
+                    </div>
+                    <div class="button-container">
+                        ${buttonsHTML}
+                    </div>
+                </div>
+            `;
+            
+            // 添加到游戏容器
+            gameContainer.innerHTML = screenHTML;
+            
+            // 添加按钮事件监听器
+            document.querySelectorAll('.game-btn').forEach(btn => {
+                btn.addEventListener('click', handleButtonClick);
+            });
+            
+            // 预加载下一张图片
+            preloadNextImage(screenId);
+        }
+
+        // 处理按钮点击
+        function handleButtonClick(event) {
+            const button = event.target;
+            const buttonId = `${currentScreenId}-${button.textContent}`;
+            
+            // 防止重复点击
+            if (clickedButtons.has(buttonId)) {
+                return;
+            }
+            clickedButtons.add(buttonId);
+            
+            const isCorrect = button.getAttribute('data-correct') === 'true';
+            const nextScreen = button.getAttribute('data-next');
+            const hint = button.getAttribute('data-hint');
+            
+            // 更新分数和正确率
+            if (isCorrect && !isTeacher) {
+                score += 6.7;
+                correctAnswers++;
+            }
+            
+            // 显示提示 (如果有)
+            if (hint && !isCorrect) {
+                showHint(hint);
+            }
+            
+            // 延迟跳转到下一个画面 (如果有提示则等提示消失后跳转)
+            const delay = hint ? 3000 : 0;
+            
+            setTimeout(() => {
+                loadScreen(nextScreen);
+            }, delay);
+        }
+
+        // 预加载下一张图片
+        function preloadNextImage(currentScreenId) {
+            const screenIds = Object.keys(screens);
+            const currentIndex = screenIds.indexOf(currentScreenId);
+            
+            if (currentIndex < screenIds.length - 1) {
+                const nextScreenId = screenIds[currentIndex + 1];
+                const nextScreen = screens[nextScreenId];
+                
+                if (nextScreen && nextScreen.image) {
+                    const img = new Image();
+                    img.src = nextScreen.image;
+                }
+            }
+        }
+
+        // 初始化游戏
+        async function initGame() {
+            // 如果是老师，直接显示排行榜
+            if (isTeacher) {
+                loadScreen('2501');
+                return;
+            }
+            
+            // 检查URL参数
+            if (!roomId || !playerId) {
+                showHint('无效的房间或玩家ID');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+                return;
+            }
+            
+            // 检查房间是否存在
+            try {
+                const roomSnapshot = await database.ref(`rooms/${roomId}`).once('value');
+                if (!roomSnapshot.exists()) {
+                    showHint('房间不存在或已被删除');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 3000);
+                    return;
+                }
+                
+                // 检查玩家是否存在
+                const playerSnapshot = await database.ref(`rooms/${roomId}/players/${playerId}`).once('value');
+                if (!playerSnapshot.exists()) {
+                    showHint('玩家不存在或已被移除');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 3000);
+                    return;
+                }
+                
+                // 设置开始时间
+                startTime = Date.now();
+                
+                // 每3秒更新一次玩家数据
+                updateInterval = setInterval(() => {
+                    if (!hasFinished) {
+                        timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                        // 最大60分钟
+                        if (timeSpent > 3600) {
+                            timeSpent = 3600;
+                        }
+                        updatePlayerData();
+                    }
+                }, 3000);
+                
+                // 加载第一个画面
+                loadScreen(currentScreenId);
+            } catch (error) {
+                console.error('初始化游戏时出错:', error);
+                showHint('初始化游戏失败，请重试');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+            }
+        }
+
+        // 页面加载完成后初始化游戏
+        window.addEventListener('load', initGame);
+
+        // 页面卸载前清除定时器
+        window.addEventListener('beforeunload', () => {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+            
+            // 更新最终数据
+            if (!hasFinished && playerId && !isTeacher) {
+                timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                if (timeSpent > 3600) {
+                    timeSpent = 3600;
+                }
+                
+                const progress = calculateProgress(currentScreenId);
+                const timeScore = calculateTimeScore(timeSpent);
+                const totalScore = calculateTotalScore(correctAnswers, timeScore);
+                const accuracy = calculateAccuracy(correctAnswers);
+                
+                // 同步更新最终数据
+                database.ref(`rooms/${roomId}/players/${playerId}`).update({
+                    score: totalScore,
+                    correctAnswers: correctAnswers,
+                    progress: progress,
+                    timeSpent: timeSpent,
+                    finished: true,
+                    lastUpdated: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
+        });
     </script>
 </body>
 </html>
