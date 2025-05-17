@@ -10,19 +10,269 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-    <!-- Game Container for all screens -->
+    <!-- Game screens container -->
     <div id="game-container">
-        <!-- Screens will be dynamically loaded here -->
+        <!-- Chapter 1 Screens -->
+        <div id="screen-2101" class="screen">
+            <img src="images/画面01.jpg" alt="Scene 1" class="full-width-image">
+            <div class="text-box">
+                <p>Tom lives in a magical world and ____ the school library every day.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2102" class="game-btn">cleans</button>
+                <button data-correct="false" data-next="2102" class="game-btn">cleaning</button>
+            </div>
+        </div>
+
+        <div id="screen-2102" class="screen">
+            <img src="images/画面02.jpg" alt="Scene 2" class="full-width-image">
+            <div class="text-box">
+                <p>Tom found that a box he _____ yesterday has been opened today, and there is blue light coming from inside.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2103" class="game-btn">locked</button>
+                <button data-correct="false" data-next="2103" class="game-btn">locks</button>
+            </div>
+        </div>
+
+        <div id="screen-2103" class="screen">
+            <img src="images/画面03.jpg" alt="Scene 3" class="full-width-image">
+            <div class="text-box">
+                <p>Tom walked over curiously and saw a magic wand with a flashing blue light, with a label next to it that read: Tense Magic wand.</p>
+            </div>
+            <div class="button-container">
+                <button data-next="2104" class="game-btn">continue</button>
+            </div>
+        </div>
+
+        <div id="screen-2104" class="screen">
+            <img src="images/画面04.jpg" alt="Scene 4" class="full-width-image">
+            <div class="text-box">
+                <p>Tom became curious and hid his magic wand in his clothes before taking it away from the library He ____ outdoors tomorrow to test the power of the magic wand.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2201" class="game-btn">will go</button>
+                <button data-correct="false" data-next="2201" class="game-btn">is going</button>
+            </div>
+        </div>
+
+        <!-- Chapter 2 Screens -->
+        <div id="screen-2201" class="screen">
+            <img src="images/画面05.jpg" alt="Scene 5" class="full-width-image">
+            <div class="text-box">
+                <p>The next morning, he ____ a magic broom towards a forest next to the school.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2202" class="game-btn">is riding</button>
+                <button data-correct="false" data-next="2202" class="game-btn">has ridden</button>
+            </div>
+        </div>
+
+        <div id="screen-2202" class="screen">
+            <img src="images/画面06.jpg" alt="Scene 6" class="full-width-image">
+            <div class="text-box">
+                <p>At this time yesterday, Tom was cleaning the library. He was supposed to be organizing books in the library today, but he thought this magic wand would be fun. So I decided to slack off and not go to the library anymore.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2203" class="game-btn">was cleaning</button>
+                <button data-correct="false" data-next="2203" class="game-btn">is cleaning</button>
+            </div>
+        </div>
+
+        <div id="screen-2203" class="screen">
+            <img src="images/画面07.jpg" alt="Scene 7" class="full-width-image">
+            <div class="text-box">
+                <p>Tom will be tidying up the library early tomorrow to prevent library director Jimmy from discovering his laziness.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2301" class="game-btn">will be tidying up</button>
+                <button data-correct="false" data-next="2301" class="game-btn">is tidying up</button>
+            </div>
+        </div>
+
+        <!-- Chapter 3 Screens -->
+        <div id="screen-2301" class="screen">
+            <img src="images/画面08.jpg" alt="Scene 8" class="full-width-image">
+            <div class="text-box">
+                <p>Tom stops by the stream in the forest and ____ the magic wand from his clothes. He thought that the magic wand is called a tense magic wand. Is the spell that activates it related to tense?</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2302" class="game-btn">takes out</button>
+                <button data-correct="false" data-next="2302" class="game-btn">will take out</button>
+            </div>
+        </div>
+
+        <div id="screen-2302" class="screen">
+            <img src="images/画面09.jpg" alt="Scene 9" class="full-width-image">
+            <div class="text-box">
+                <p>So he decided to try combining the spells he learned at the magic school. Tom pointed his magic wand at the stream and said, 'A delicious fish ____.'</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2304" class="game-btn">has been grilled</button>
+                <button data-correct="false" data-next="2304" class="game-btn">will be grilled</button>
+            </div>
+        </div>
+
+        <div id="screen-2303" class="screen">
+            <img src="images/画面10.jpg" alt="Scene 10" class="full-width-image">
+            <div class="text-box">
+                <p>After reciting the spell, a sudden blue flash appeared. Then a grill made of tree branches appeared in front of Tom, with a fragrant grilled fish on top.</p>
+            </div>
+            <div class="button-container">
+                <button data-next="2304" class="game-btn">Continue</button>
+            </div>
+        </div>
+
+        <div id="screen-2304" class="screen">
+            <img src="images/画面11.jpg" alt="Scene 11" class="full-width-image">
+            <div class="text-box">
+                <p>Tom hadn't had breakfast before coming here, and his stomach was growling. Tom ____ the grilled fish and begins eating.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2305" class="game-btn">has taken</button>
+                <button data-correct="false" data-next="2305" class="game-btn">will take</button>
+            </div>
+        </div>
+
+        <div id="screen-2305" class="screen">
+            <img src="images/画面12.jpg" alt="Scene 12" class="full-width-image">
+            <div class="text-box">
+                <p>Tom thinks that now he has the powerful wand.And the wizard who always bullies me ____ by him.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2401" class="game-btn">will have been defeated</button>
+                <button data-correct="false" data-next="2401" class="game-btn">has been defeated</button>
+            </div>
+        </div>
+
+        <!-- Chapter 4 Screens -->
+        <div id="screen-2401" class="screen">
+            <img src="images/画面13.jpg" alt="Scene 13" class="full-width-image">
+            <div class="text-box">
+                <p>Although Tom ____ magic at the school for a year, his knowledge of magic is still inferior to that of wizard Mike.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2402" class="game-btn">has been studying</button>
+                <button data-correct="false" data-next="2402" class="game-btn">will studying</button>
+            </div>
+        </div>
+
+        <div id="screen-2402" class="screen">
+            <img src="images/画面14.jpg" alt="Scene 14" class="full-width-image">
+            <div class="text-box">
+                <p>So Tom came to the house of the wizard Mike who used to tease him. Tom shouted at Mike, 'I ____ magic to defeat you. Come out and accept my challenge.'</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2403" class="game-btn">will use</button>
+                <button data-correct="false" data-next="2403" class="game-btn">am using</button>
+            </div>
+        </div>
+
+        <div id="screen-2403" class="screen">
+            <img src="images/画面15.jpg" alt="Scene 15" class="full-width-image">
+            <div class="text-box">
+                <p>Mike walked out of the room and said, 'Tom, you ____ to me over the past year. Are you still not willing to give up?'</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2404" class="game-btn">had been repeatedly losing</button>
+                <button data-correct="false" data-next="2404" class="game-btn">was losing</button>
+            </div>
+        </div>
+
+        <div id="screen-2404" class="screen">
+            <img src="images/画面16.jpg" alt="Scene 16" class="full-width-image">
+            <div class="text-box">
+                <p>Tom pointed his magic wand at the sky and cursed 'It's going to rain soon,' and the wand emitted blue light.</p>
+            </div>
+            <div class="button-container">
+                <button data-next="2405" class="game-btn">Continue</button>
+            </div>
+        </div>
+
+        <div id="screen-2405" class="screen">
+            <img src="images/画面17.jpg" alt="Scene 17" class="full-width-image">
+            <div class="text-box">
+                <p>Before long, dark clouds appeared in the sky, thunder started to strike, and raindrops began to fall.</p>
+            </div>
+            <div class="button-container">
+                <button data-next="2406" class="game-btn">Continue</button>
+            </div>
+        </div>
+
+        <div id="screen-2406" class="screen">
+            <img src="images/画面18.jpg" alt="Scene 18" class="full-width-image">
+            <div class="text-box">
+                <p>By tomorrow, Mike ____ magic for 2 years now. But Mike was still stunned when he saw Tom's magic. Mike had never seen such a powerful magic before and said to Tom, 'I admit you're already better than me.'</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2407" class="game-btn">will have been studying</button>
+                <button data-correct="false" data-next="2407" class="game-btn">will be studying</button>
+            </div>
+        </div>
+
+        <div id="screen-2407" class="screen">
+            <img src="images/画面19.jpg" alt="Scene 19" class="full-width-image">
+            <div class="text-box">
+                <p>Tom wants to show off the power of his magic wand again and is ready to recite the next spell. But suddenly a beam of light flashed and the library director Jimmy appeared in front of him.</p>
+            </div>
+            <div class="button-container">
+                <button data-next="2408" class="game-btn">Continue</button>
+            </div>
+        </div>
+
+        <div id="screen-2408" class="screen">
+            <img src="images/画面20.jpg" alt="Scene 20" class="full-width-image">
+            <div class="text-box">
+                <p>Library director Jimmy said to Tom, 'I ____ for it all day, but you took it away.'.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2409" class="game-btn">have been looking</button>
+                <button data-correct="false" data-next="2409" class="game-btn">am looking</button>
+            </div>
+        </div>
+
+        <div id="screen-2409" class="screen">
+            <img src="images/画面21.jpg" alt="Scene 21" class="full-width-image">
+            <div class="text-box">
+                <p>Jimmy raised his hand, and the magic wand automatically flew into Jimmy's hand. Then Jimmy shouted at Tom, 'Hurry back and clean the library for me.'</p>
+            </div>
+            <div class="button-container">
+                <button id="game-over-btn" class="game-btn">Game over</button>
+            </div>
+        </div>
+
+        <!-- Leaderboard Screen (Page ID: 2501) -->
+        <div id="screen-2501" class="screen">
+            <div class="room-info">
+                <h2 id="room-number-display">Room: Loading...</h2>
+                <p id="player-count">Players: 0</p>
+            </div>
+            <div class="leaderboard-container">
+                <h2>Leaderboard</h2>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                            <th>Accuracy</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Leaderboard rows will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <!-- Hint Box -->
-    <div id="hint-box" class="hint-box">
+    <!-- Hint Message -->
+    <div id="hint-message" class="message-box">
         <p id="hint-text"></p>
     </div>
 
-    <!-- Preloader for images -->
-    <div id="preloader" style="display:none;"></div>
-
+    <!-- Game logic and Firebase integration -->
     <script>
         // Firebase configuration
         const firebaseConfig = {
@@ -39,560 +289,420 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Get URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const roomNumber = urlParams.get('room');
-        const isTeacher = urlParams.get('teacher') === 'true';
-        const playerId = urlParams.get('player');
-        const nickname = decodeURIComponent(urlParams.get('nickname') || '');
-
         // Game state variables
-        let currentScreen = '2101'; // Start with screen 2101
-        let score = 0;
+        let currentScreenId = null;
+        let isTeacher = false;
+        let roomNumber = null;
+        let playerId = null;
+        let playerNickname = null;
+        let gameStartTime = null;
         let correctAnswers = 0;
-        let startTime = null;
-        let clickedButtons = new Set(); // Track clicked buttons to prevent multiple clicks
-        let nextImagePreloaded = false;
+        let totalQuestions = 15; // Total questions in the game
+        let currentQuestion = 0;
+        let playerRef = null;
+        let roomRef = null;
+        let leaderboardUpdateInterval = null;
 
-        // DOM Elements
+        // DOM elements
         const gameContainer = document.getElementById('game-container');
-        const hintBox = document.getElementById('hint-box');
+        const hintMessage = document.getElementById('hint-message');
         const hintText = document.getElementById('hint-text');
-        const preloader = document.getElementById('preloader');
+        const gameOverBtn = document.getElementById('game-over-btn');
+        const roomNumberDisplay = document.getElementById('room-number-display');
+        const playerCountDisplay = document.getElementById('player-count');
+        const leaderboardBody = document.getElementById('leaderboard-body');
 
-        // Screen definitions
-        const screens = {
-            // Chapter 1
-            '2101': {
-                image: '画面01.jpg',
-                text: 'Tom lives in a magical world and ____ the school library every day.',
-                buttons: [
-                    { text: 'cleans', position: 'left', correct: true, nextScreen: '2102' },
-                    { text: 'cleaning', position: 'right', correct: false, 
-                      hint: 'Daily behavior is expressed in the present tense', nextScreen: '2102' }
-                ]
-            },
-            '2102': {
-                image: '画面02.jpg',
-                text: 'Tom found that a box he _____ yesterday has been opened today, and there is blue light coming from inside.',
-                buttons: [
-                    { text: 'locked', position: 'left', correct: true, nextScreen: '2103' },
-                    { text: 'locks', position: 'right', correct: false, 
-                      hint: 'Describe the simple behavior that occurred yesterday in the past simple tense', nextScreen: '2103' }
-                ]
-            },
-            '2103': {
-                image: '画面03.jpg',
-                text: 'Tom walked over curiously and saw a magic wand with a flashing blue light, with a label next to it that read: Tense Magic wand.',
-                buttons: [
-                    { text: 'continue', position: 'center', correct: null, nextScreen: '2104' }
-                ]
-            },
-            '2104': {
-                image: '画面04.jpg',
-                text: 'Tom became curious and hid his magic wand in his clothes before taking it away from the library He ____ outdoors tomorrow to test the power of the magic wand.',
-                buttons: [
-                    { text: 'will go', position: 'left', correct: true, nextScreen: '2201' },
-                    { text: 'is going', position: 'right', correct: false, 
-                      hint: 'Describe simple behaviors that will occur in the future using general future tense', nextScreen: '2201' }
-                ]
-            },
-            // Chapter 2
-            '2201': {
-                image: '画面05.jpg',
-                text: 'The next morning, he ____ a magic broom towards a forest next to the school.',
-                buttons: [
-                    { text: 'is riding', position: 'left', correct: true, nextScreen: '2202' },
-                    { text: 'has ridden', position: 'right', correct: false, 
-                      hint: 'Describe the ongoing behavior in present continuous tense', nextScreen: '2202' }
-                ]
-            },
-            '2202': {
-                image: '画面06.jpg',
-                text: 'At this time yesterday, Tom was cleaning the library. He was supposed to be organizing books in the library today, but he thought this magic wand would be fun. So I decided to slack off and not go to the library anymore.',
-                buttons: [
-                    { text: 'was cleaning', position: 'left', correct: true, nextScreen: '2203' },
-                    { text: 'is cleaning', position: 'right', correct: false, 
-                      hint: '描述过去正在进行的行为用过去进行时', nextScreen: '2203' }
-                ]
-            },
-            '2203': {
-                image: '画面07.jpg',
-                text: 'Tom will be tidying up the library early tomorrow to prevent library director Jimmy from discovering his laziness.',
-                buttons: [
-                    { text: 'will be tidying up', position: 'left', correct: true, nextScreen: '2301' },
-                    { text: 'is tidying up', position: 'right', correct: false, 
-                      hint: 'Describe the ongoing behavior in the future using future continuous tense', nextScreen: '2301' }
-                ]
-            },
-            // Chapter 3
-            '2301': {
-                image: '画面08.jpg',
-                text: 'Tom stops by the stream in the forest and ____ the magic wand from his clothes. He thought that the magic wand is called a tense magic wand. Is the spell that activates it related to tense?',
-                buttons: [
-                    { text: 'takes out', position: 'left', correct: true, nextScreen: '2302' },
-                    { text: 'will take out', position: 'right', correct: false, 
-                      hint: 'Describe daily behavior in the present tense', nextScreen: '2302' }
-                ]
-            },
-            '2302': {
-                image: '画面09.jpg',
-                text: 'So he decided to try combining the spells he learned at the magic school. Tom pointed his magic wand at the stream and said, "A delicious fish ____."',
-                buttons: [
-                    { text: 'has been grilled', position: 'left', correct: true, nextScreen: '2304' },
-                    { text: 'will be grilled', position: 'right', correct: false, 
-                      hint: 'The spell didn\'t take effect, Tom recited a delicious fish that had already been grilled', nextScreen: '2304' }
-                ]
-            },
-            '2303': {
-                image: '画面10.jpg',
-                text: 'After reciting the spell, a sudden blue flash appeared. Then a grill made of tree branches appeared in front of Tom, with a fragrant grilled fish on top.',
-                buttons: [
-                    { text: 'Continue', position: 'center', correct: null, nextScreen: '2304' }
-                ]
-            },
-            '2304': {
-                image: '画面11.jpg',
-                text: 'Tom hadn\'t had breakfast before coming here, and his stomach was growling. Tom ____ the grilled fish and begins eating.',
-                buttons: [
-                    { text: 'has taken', position: 'left', correct: true, nextScreen: '2305' },
-                    { text: 'will take', position: 'right', correct: false, 
-                      hint: 'Describe completed actions in present perfect tense', nextScreen: '2305' }
-                ]
-            },
-            '2305': {
-                image: '画面12.jpg',
-                text: 'Tom thinks that now he has the powerful wand. And the wizard who always bullies me ____ by him.',
-                buttons: [
-                    { text: 'will have been defeated', position: 'left', correct: true, nextScreen: '2401' },
-                    { text: 'has been defeated', position: 'right', correct: false, 
-                      hint: 'Describe the behavior to be completed in the future using the future perfect tense', nextScreen: '2401' }
-                ]
-            },
-            // Chapter 4
-            '2401': {
-                image: '画面13.jpg',
-                text: 'Although Tom ____ magic at the school for a year, his knowledge of magic is still inferior to that of wizard Mike.',
-                buttons: [
-                    { text: 'has been studying', position: 'left', correct: true, nextScreen: '2402' },
-                    { text: 'will studying', position: 'right', correct: false, 
-                      hint: 'The action has been ongoing from the past to the present, and may have just ended or is still ongoing, using the present to complete the ongoing tense', nextScreen: '2402' }
-                ]
-            },
-            '2402': {
-                image: '画面14.jpg',
-                text: 'So Tom came to the house of the wizard Mike who used to tease him. Tom shouted at Mike, "I ____ magic to defeat you. Come out and accept my challenge."',
-                buttons: [
-                    { text: 'will use', position: 'left', correct: true, nextScreen: '2403' },
-                    { text: 'am using', position: 'right', correct: false, 
-                      hint: 'Describe future actions using future continuous tense', nextScreen: '2403' }
-                ]
-            },
-            '2403': {
-                image: '画面15.jpg',
-                text: 'Mike walked out of the room and said, "Tom, you ____ to me over the past year. Are you still not willing to give up?"',
-                buttons: [
-                    { text: 'had been repeatedly losing', position: 'left', correct: true, nextScreen: '2404' },
-                    { text: 'was losing', position: 'right', correct: false, 
-                      hint: 'A certain past action started earlier in the past and continued until a certain point in time, possibly still continuing or just stopped', nextScreen: '2404' }
-                ]
-            },
-            '2404': {
-                image: '画面16.jpg',
-                text: 'Tom pointed his magic wand at the sky and cursed "It\'s going to rain soon," and the wand emitted blue light.',
-                buttons: [
-                    { text: 'Continue', position: 'center', correct: null, nextScreen: '2405' }
-                ]
-            },
-            '2405': {
-                image: '画面17.jpg',
-                text: 'Before long, dark clouds appeared in the sky, thunder started to strike, and raindrops began to fall.',
-                buttons: [
-                    { text: 'Continue', position: 'center', correct: null, nextScreen: '2406' }
-                ]
-            },
-            '2406': {
-                image: '画面18.jpg',
-                text: 'By tomorrow, Mike ____ magic for 2 years now. But Mike was still stunned when he saw Tom\'s magic. Mike had never seen such a powerful magic before and said to Tom, "I admit you\'re already better than me."',
-                buttons: [
-                    { text: 'will have been studying', position: 'left', correct: true, nextScreen: '2407' },
-                    { text: 'will be studying', position: 'right', correct: false, 
-                      hint: 'Emphasize how long a certain action has been ongoing until a certain point in the future, using the future completion continuous time', nextScreen: '2407' }
-                ]
-            },
-            '2407': {
-                image: '画面19.jpg',
-                text: 'Tom wants to show off the power of his magic wand again and is ready to recite the next spell. But suddenly a beam of light flashed and the library director Jimmy appeared in front of him.',
-                buttons: [
-                    { text: 'Continue', position: 'center', correct: null, nextScreen: '2408' }
-                ]
-            },
-            '2408': {
-                image: '画面20.jpg',
-                text: 'Library director Jimmy said to Tom, "I ____ for it all day, but you took it away."',
-                buttons: [
-                    { text: 'have been looking', position: 'left', correct: true, nextScreen: '2409' },
-                    { text: 'am looking', position: 'right', correct: false, 
-                      hint: 'Describe actions that have been completed in the past and use them to complete them', nextScreen: '2409' }
-                ]
-            },
-            '2409': {
-                image: '画面21.jpg',
-                text: 'Jimmy raised his hand, and the magic wand automatically flew into Jimmy\'s hand. Then Jimmy shouted at Tom, "Hurry back and clean the library for me."',
-                buttons: [
-                    { text: 'Game over', position: 'center', correct: null, nextScreen: '2501' }
-                ]
-            },
-            // Ranking Screen
-            '2501': {
-                isRankingScreen: true
-            }
-        };
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        roomNumber = urlParams.get('room');
+        playerId = urlParams.get('player');
+        isTeacher = urlParams.get('teacher') === 'true';
 
-        // Initialize the game
+        // Initialize game
         function initGame() {
+            // Hide all screens initially
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Set up button click handlers
+            setupButtonHandlers();
+
+            // If teacher, go directly to leaderboard
             if (isTeacher) {
-                // Teacher goes directly to ranking screen
-                currentScreen = '2501';
-                loadRankingScreen();
-                startRoomMonitoring();
-            } else {
-                // Player starts the game
-                startTime = Date.now();
-                loadScreen(currentScreen);
-                startPlayerUpdates();
+                showScreen('2501');
+                setupLeaderboardUpdates();
+                return;
+            }
+
+            // If player, initialize game state
+            if (playerId && roomNumber) {
+                playerRef = database.ref(`rooms/${roomNumber}/players/${playerId}`);
+                roomRef = database.ref(`rooms/${roomNumber}`);
                 
-                // Preload next image
-                preloadNextImage();
+                // Get player data
+                playerRef.once('value').then((snapshot) => {
+                    const playerData = snapshot.val();
+                    if (playerData) {
+                        playerNickname = playerData.nickname;
+                        correctAnswers = playerData.correctAnswers || 0;
+                        
+                        // Start game timer
+                        gameStartTime = Date.now();
+                        startGameTimer();
+                        
+                        // Show first screen
+                        showScreen('2101');
+                        
+                        // Setup leaderboard updates (for future use)
+                        setupLeaderboardUpdates();
+                    } else {
+                        console.error('Player data not found');
+                        // Handle error - maybe redirect to start
+                    }
+                }).catch((error) => {
+                    console.error('Error loading player data:', error);
+                });
+            } else {
+                console.error('Missing room or player ID');
+                // Handle error - maybe redirect to start
             }
         }
 
-        // Load a game screen
-        function loadScreen(screenId) {
-            clickedButtons.clear(); // Reset clicked buttons for new screen
-            
-            const screen = screens[screenId];
-            if (!screen) {
-                console.error('Screen not found:', screenId);
-                return;
-            }
-            
-            // Update current screen in game state
-            currentScreen = screenId;
-            
-            // Calculate progress (1-21)
-            const progress = Math.floor((parseInt(screenId.substring(1)) - 2100) / 100 * 21);
-            
-            // Update player data in Firebase
-            if (playerId) {
-                updatePlayerData(progress);
-            }
-            
-            // Clear previous screen
-            gameContainer.innerHTML = '';
-            
-            if (screen.isRankingScreen) {
-                loadRankingScreen();
-                return;
-            }
-            
-            // Create screen elements
-            const screenDiv = document.createElement('div');
-            screenDiv.className = 'screen active';
-            
-            // Add image
-            const img = document.createElement('img');
-            img.src = `images/${screen.image}`;
-            img.alt = `Scene ${screenId}`;
-            img.className = 'game-image fade-in';
-            screenDiv.appendChild(img);
-            
-            // Add text box
-            const textBox = document.createElement('div');
-            textBox.className = 'text-box';
-            textBox.textContent = screen.text;
-            screenDiv.appendChild(textBox);
-            
-            // Add buttons container
-            const buttonContainer = document.createElement('div');
-            buttonContainer.className = 'button-container';
-            
-            // Add buttons
-            screen.buttons.forEach(button => {
-                const btn = document.createElement('button');
-                btn.className = `game-btn ${button.position}`;
-                btn.textContent = button.text;
-                
-                // Store button data as attributes
-                btn.dataset.correct = button.correct;
-                btn.dataset.nextScreen = button.nextScreen;
-                if (button.hint) {
-                    btn.dataset.hint = button.hint;
-                }
-                
-                btn.addEventListener('click', handleButtonClick);
-                buttonContainer.appendChild(btn);
+        // Set up button click handlers
+        function setupButtonHandlers() {
+            // Game buttons
+            const buttons = document.querySelectorAll('.game-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Disable button to prevent multiple clicks
+                    this.disabled = true;
+                    
+                    // Check if it's an answer button
+                    const isCorrect = this.getAttribute('data-correct') === 'true';
+                    const nextScreen = this.getAttribute('data-next');
+                    
+                    if (isCorrect !== null) {
+                        // It's an answer button
+                        currentQuestion++;
+                        
+                        // Update correct answers if correct
+                        if (isCorrect) {
+                            correctAnswers++;
+                            updatePlayerScore();
+                        } else {
+                            // Show hint for wrong answer
+                            showHintForButton(this);
+                        }
+                        
+                        // Update player progress
+                        updatePlayerProgress(currentQuestion);
+                    }
+                    
+                    // If there's a next screen, go there
+                    if (nextScreen) {
+                        setTimeout(() => {
+                            hideHint();
+                            showScreen(nextScreen);
+                        }, isCorrect ? 0 : 3000); // Delay for hint display if wrong answer
+                    }
+                });
             });
             
-            screenDiv.appendChild(buttonContainer);
-            gameContainer.appendChild(screenDiv);
+            // Special handler for game over button
+            if (gameOverBtn) {
+                gameOverBtn.addEventListener('click', endGame);
+            }
         }
 
-        // Handle button clicks
-        function handleButtonClick(event) {
-            const button = event.target;
-            const buttonId = `${currentScreen}-${button.textContent}`;
-            
-            // Prevent multiple clicks on the same button
-            if (clickedButtons.has(buttonId)) {
-                return;
-            }
-            clickedButtons.add(buttonId);
-            
-            // Check if button is correct
-            const isCorrect = button.dataset.correct === 'true';
-            const nextScreen = button.dataset.nextScreen;
-            const hint = button.dataset.hint;
-            
-            // Update score if answer is correct
-            if (isCorrect) {
-                score += 6.7;
-                correctAnswers++;
-                
-                // Update player data in Firebase
-                if (playerId) {
-                    updatePlayerData(null, true);
+        // Show a screen
+        function showScreen(screenId) {
+            // Hide current screen
+            if (currentScreenId) {
+                const currentScreen = document.getElementById(`screen-${currentScreenId}`);
+                if (currentScreen) {
+                    currentScreen.classList.remove('active');
                 }
             }
             
-            // Show hint if answer is wrong
-            if (hint && !isCorrect) {
-                showHint(hint);
-            }
-            
-            // Preload next image if not already done
-            if (!nextImagePreloaded && nextScreen !== '2501') {
-                preloadImage(`images/${screens[nextScreen].image}`);
-                nextImagePreloaded = true;
-            }
-            
-            // Proceed to next screen after delay if there's a hint
-            if (hint) {
-                setTimeout(() => {
-                    proceedToNextScreen(nextScreen);
-                }, 3000);
-            } else {
-                proceedToNextScreen(nextScreen);
-            }
-        }
-
-        // Proceed to next screen
-        function proceedToNextScreen(nextScreen) {
-            if (nextScreen === '2501') {
-                // Game over, go to ranking screen
-                endGame();
-            } else {
-                // Load next game screen
-                loadScreen(nextScreen);
-                nextImagePreloaded = false;
+            // Show new screen
+            const newScreen = document.getElementById(`screen-${screenId}`);
+            if (newScreen) {
+                newScreen.classList.add('active');
+                currentScreenId = screenId;
                 
-                // Preload next next image
-                preloadNextImage();
+                // If this is the leaderboard screen, update it
+                if (screenId === '2501') {
+                    updateLeaderboard();
+                }
+                
+                // Preload next image if available
+                preloadNextImage(screenId);
             }
         }
 
-        // Show hint message
-        function showHint(message) {
-            hintText.textContent = message;
-            hintBox.style.display = 'block';
+        // Preload next image for smoother transitions
+        function preloadNextImage(currentScreenId) {
+            const screenOrder = [
+                '2101', '2102', '2103', '2104',
+                '2201', '2202', '2203',
+                '2301', '2302', '2303', '2304', '2305',
+                '2401', '2402', '2403', '2404', '2405', '2406', '2407', '2408', '2409',
+                '2501'
+            ];
             
-            setTimeout(() => {
-                hintBox.style.display = 'none';
-            }, 3000);
-        }
-
-        // Preload next image
-        function preloadNextImage() {
-            const nextScreenId = screens[currentScreen].buttons[0].nextScreen;
-            if (nextScreenId && nextScreenId !== '2501') {
-                preloadImage(`images/${screens[nextScreenId].image}`);
+            const currentIndex = screenOrder.indexOf(currentScreenId);
+            if (currentIndex !== -1 && currentIndex < screenOrder.length - 1) {
+                const nextScreenId = screenOrder[currentIndex + 1];
+                const nextImage = new Image();
+                nextImage.src = `images/画面${nextScreenId.substring(1)}.jpg`;
             }
         }
 
-        // Preload an image
-        function preloadImage(src) {
-            const img = new Image();
-            img.src = src;
-            preloader.appendChild(img);
-        }
-
-        // Update player data in Firebase
-        function updatePlayerData(progress, updateScore = false) {
-            if (!playerId || !roomNumber) return;
+        // Show hint for wrong answer
+        function showHintForButton(button) {
+            let hint = '';
             
-            const updates = {};
-            if (progress !== null) {
-                updates.currentProgress = progress;
-                updates.currentScreen = currentScreen;
-            }
-            if (updateScore) {
-                updates.score = score;
-                updates.correctAnswers = correctAnswers;
+            // Determine hint based on button text
+            switch(button.textContent.trim()) {
+                case 'cleaning':
+                    hint = 'Daily behavior is expressed in the present tense';
+                    break;
+                case 'locks':
+                    hint = 'Describe the simple behavior that occurred yesterday in the past simple tense';
+                    break;
+                case 'is going':
+                    hint = 'Describe simple behaviors that will occur in the future using general future tense';
+                    break;
+                case 'has ridden':
+                    hint = 'Describe the ongoing behavior in present continuous tense';
+                    break;
+                case 'is cleaning':
+                    hint = '描述过去正在进行的行为用过去进行时';
+                    break;
+                case 'is tidying up':
+                    hint = 'Describe the ongoing behavior in the future using future continuous tense';
+                    break;
+                case 'will take out':
+                    hint = 'Describe daily behavior in the present tense';
+                    break;
+                case 'will be grilled':
+                    hint = 'The spell didn\'t take effect, Tom recited a delicious fish that had already been grilled';
+                    break;
+                case 'will take':
+                    hint = 'Describe completed actions in present perfect tense';
+                    break;
+                case 'has been defeated':
+                    hint = 'Describe the behavior to be completed in the future using the future perfect tense';
+                    break;
+                case 'will studying':
+                    hint = 'The action has been ongoing from the past to the present, and may have just ended or is still ongoing, using the present to complete the ongoing tense';
+                    break;
+                case 'am using':
+                    hint = 'Describe future actions using future continuous tense';
+                    break;
+                case 'was losing':
+                    hint = 'A certain past action started earlier in the past and continued until a certain point in time, possibly still continuing or just stopped';
+                    break;
+                case 'am looking':
+                    hint = 'Describe actions that have been completed in the past and use them to complete them';
+                    break;
+                case 'will be studying':
+                    hint = 'Emphasize how long a certain action has been ongoing until a certain point in the future, using the future completion continuous time';
+                    break;
+                default:
+                    hint = 'Incorrect answer';
             }
             
-            database.ref(`rooms/${roomNumber}/players/${playerId}`).update(updates)
-                .catch(error => {
+            hintText.textContent = hint;
+            hintMessage.style.display = 'block';
+        }
+
+        // Hide hint
+        function hideHint() {
+            hintMessage.style.display = 'none';
+        }
+
+        // Start game timer
+        function startGameTimer() {
+            // Update time spent every second
+            setInterval(() => {
+                if (gameStartTime && playerRef) {
+                    const timeSpent = Math.floor((Date.now() - gameStartTime) / 1000); // in seconds
+                    playerRef.update({
+                        timeSpent: timeSpent
+                    });
+                }
+            }, 1000);
+        }
+
+        // Update player score
+        function updatePlayerScore() {
+            if (playerRef) {
+                playerRef.update({
+                    correctAnswers: correctAnswers
+                });
+            }
+        }
+
+        // Update player progress
+        function updatePlayerProgress(currentQuestion) {
+            if (playerRef) {
+                const progress = Math.floor((currentQuestion / 21) * 100);
+                playerRef.update({
+                    progress: progress
+                });
+            }
+        }
+
+        // Calculate player score
+        function calculateScore(correctCount, timeSpentSeconds) {
+            // Question score: 6.7 points per correct answer
+            const questionScore = correctCount * 6.7;
+            
+            // Time score: 2 points per full minute, 1 point for partial minute
+            const timeScore = Math.floor(timeSpentSeconds / 60) * 2 + 
+                             (timeSpentSeconds % 60 > 0 ? 1 : 0);
+            
+            // Total score is question score minus time score
+            let totalScore = Math.max(0, questionScore - timeScore);
+            
+            // Cap at 100
+            totalScore = Math.min(100, Math.round(totalScore));
+            
+            // Calculate accuracy
+            const accuracy = (correctCount / totalQuestions) * 100;
+            
+            return {
+                score: totalScore,
+                accuracy: accuracy.toFixed(1),
+                timeSpent: formatTime(timeSpentSeconds)
+            };
+        }
+
+        // Format time from seconds to MM:SS
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // End game and go to leaderboard
+        function endGame() {
+            if (playerRef) {
+                const timeSpent = Math.floor((Date.now() - gameStartTime) / 1000);
+                
+                // Calculate final score
+                const scoreData = calculateScore(correctAnswers, timeSpent);
+                
+                // Update player data
+                playerRef.update({
+                    status: 'completed',
+                    score: scoreData.score,
+                    accuracy: scoreData.accuracy,
+                    timeSpent: timeSpent,
+                    progress: 100
+                }).then(() => {
+                    // Show leaderboard
+                    showScreen('2501');
+                    
+                    // Stop game timer updates
+                    clearInterval(leaderboardUpdateInterval);
+                }).catch((error) => {
                     console.error('Error updating player data:', error);
                 });
+            }
         }
 
-        // Start periodic player updates
-        function startPlayerUpdates() {
-            setInterval(() => {
-                if (playerId && roomNumber && currentScreen !== '2501') {
-                    updatePlayerData(null, false);
-                }
-            }, 3000); // Update every 3 seconds
-        }
-
-        // End game and go to ranking screen
-        function endGame() {
-            // Calculate final score
-            const gameTime = Math.min(Math.floor((Date.now() - startTime) / 1000 / 60), 60); // in minutes, max 60
-            const timeScore = gameTime * 2;
-            const finalScore = Math.min(Math.floor(score + timeScore), 100);
-            const accuracy = (correctAnswers / 15 * 100).toFixed(1);
-            
-            // Update final player data
-            database.ref(`rooms/${roomNumber}/players/${playerId}`).update({
-                score: finalScore,
-                correctAnswers: correctAnswers,
-                accuracy: accuracy,
-                gameTime: gameTime,
-                finished: true,
-                finishTime: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => {
-                loadRankingScreen();
-            }).catch(error => {
-                console.error('Error updating final player data:', error);
-                loadRankingScreen();
-            });
-        }
-
-        // Load ranking screen
-        function loadRankingScreen() {
-            gameContainer.innerHTML = '';
-            
-            const rankingDiv = document.createElement('div');
-            rankingDiv.className = 'ranking-screen';
-            
-            // Room info box
-            const roomInfoBox = document.createElement('div');
-            roomInfoBox.className = 'room-info';
-            
-            const roomNumberEl = document.createElement('p');
-            roomNumberEl.textContent = `Room: ${roomNumber}`;
-            roomInfoBox.appendChild(roomNumberEl);
-            
-            const playerCountEl = document.createElement('p');
-            playerCountEl.textContent = 'Players: Loading...';
-            roomInfoBox.appendChild(playerCountEl);
-            
-            rankingDiv.appendChild(roomInfoBox);
-            
-            // Ranking table
-            const rankingTable = document.createElement('table');
-            rankingTable.className = 'ranking-table';
-            
-            const headerRow = document.createElement('tr');
-            ['Rank', 'Name', 'Score', 'Accuracy', 'Time'].forEach(text => {
-                const th = document.createElement('th');
-                th.textContent = text;
-                headerRow.appendChild(th);
-            });
-            rankingTable.appendChild(headerRow);
-            
-            const tableBody = document.createElement('tbody');
-            tableBody.id = 'ranking-body';
-            rankingTable.appendChild(tableBody);
-            
-            rankingDiv.appendChild(rankingTable);
-            gameContainer.appendChild(rankingDiv);
-            
-            // Start room monitoring
-            startRoomMonitoring(playerCountEl);
-        }
-
-        // Start monitoring room data for ranking
-        function startRoomMonitoring(playerCountEl) {
-            if (!roomNumber) return;
-            
-            const roomRef = database.ref(`rooms/${roomNumber}/players`);
-            roomRef.on('value', snapshot => {
-                const players = snapshot.val() || {};
-                
-                // Update player count
-                if (playerCountEl) {
-                    const playerCount = Object.keys(players).length;
-                    playerCountEl.textContent = `Players: ${playerCount}`;
-                }
-                
-                // Prepare player data for ranking
-                const playerArray = [];
-                Object.keys(players).forEach(id => {
-                    if (players[id].finished) {
-                        playerArray.push({
-                            id: id,
-                            nickname: players[id].nickname || 'Anonymous',
-                            score: players[id].score || 0,
-                            accuracy: players[id].accuracy || '0.0',
-                            time: players[id].gameTime || 0
-                        });
+        // Set up leaderboard updates
+        function setupLeaderboardUpdates() {
+            if (roomRef) {
+                // Update room info
+                roomRef.on('value', (snapshot) => {
+                    const roomData = snapshot.val();
+                    if (roomData) {
+                        // Update room number display
+                        roomNumberDisplay.textContent = `Room: ${roomNumber}`;
+                        
+                        // Count active players (excluding teacher and completed players)
+                        const players = roomData.players || {};
+                        let playerCount = 0;
+                        
+                        for (const playerId in players) {
+                            if (players[playerId].status === 'playing') {
+                                playerCount++;
+                            }
+                        }
+                        
+                        playerCountDisplay.textContent = `Players: ${playerCount}`;
                     }
                 });
                 
-                // Sort by score (descending)
-                playerArray.sort((a, b) => b.score - a.score);
-                
-                // Update ranking table
-                const rankingBody = document.getElementById('ranking-body');
-                if (rankingBody) {
-                    rankingBody.innerHTML = '';
-                    
-                    // Show top 10 players
-                    playerArray.slice(0, 10).forEach((player, index) => {
-                        const row = document.createElement('tr');
+                // Update leaderboard every 3 seconds
+                leaderboardUpdateInterval = setInterval(updateLeaderboard, 3000);
+            }
+        }
+
+        // Update leaderboard
+        function updateLeaderboard() {
+            if (roomRef) {
+                roomRef.once('value').then((snapshot) => {
+                    const roomData = snapshot.val();
+                    if (roomData && roomData.players) {
+                        const players = roomData.players;
+                        const playerArray = [];
                         
-                        // Highlight current player
-                        if (player.id === playerId) {
-                            row.className = 'highlight-player';
+                        // Convert players object to array and calculate scores
+                        for (const playerId in players) {
+                            const player = players[playerId];
+                            if (player.status === 'completed') {
+                                const scoreData = calculateScore(
+                                    player.correctAnswers || 0, 
+                                    player.timeSpent || 0
+                                );
+                                
+                                playerArray.push({
+                                    id: playerId,
+                                    nickname: player.nickname,
+                                    score: scoreData.score,
+                                    accuracy: scoreData.accuracy,
+                                    timeSpent: scoreData.timeSpent
+                                });
+                            }
                         }
                         
-                        // Add cells
-                        const rankCell = document.createElement('td');
-                        rankCell.textContent = index + 1;
-                        row.appendChild(rankCell);
+                        // Sort players by score (descending)
+                        playerArray.sort((a, b) => b.score - a.score);
                         
-                        const nameCell = document.createElement('td');
-                        nameCell.textContent = player.nickname;
-                        row.appendChild(nameCell);
+                        // Clear current leaderboard
+                        leaderboardBody.innerHTML = '';
                         
-                        const scoreCell = document.createElement('td');
-                        scoreCell.textContent = player.score;
-                        row.appendChild(scoreCell);
-                        
-                        const accuracyCell = document.createElement('td');
-                        accuracyCell.textContent = `${player.accuracy}%`;
-                        row.appendChild(accuracyCell);
-                        
-                        const timeCell = document.createElement('td');
-                        timeCell.textContent = `${player.time} min`;
-                        row.appendChild(timeCell);
-                        
-                        rankingBody.appendChild(row);
-                    });
-                }
-            });
+                        // Add top 10 players to leaderboard
+                        const topPlayers = playerArray.slice(0, 10);
+                        topPlayers.forEach((player, index) => {
+                            const row = document.createElement('tr');
+                            
+                            // Highlight current player's row
+                            if (playerId && player.id === playerId) {
+                                row.classList.add('highlight-player');
+                            }
+                            
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td>${player.nickname}</td>
+                                <td>${player.score}</td>
+                                <td>${player.accuracy}%</td>
+                                <td>${player.timeSpent}</td>
+                            `;
+                            
+                            leaderboardBody.appendChild(row);
+                        });
+                    }
+                }).catch((error) => {
+                    console.error('Error updating leaderboard:', error);
+                });
+            }
         }
 
         // Initialize the game when DOM is loaded
