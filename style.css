@@ -1,95 +1,96 @@
-/* 全局样式 */
+/* General Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
 }
 
 body {
     background-color: #000;
     color: #fff;
     height: 100vh;
+    width: 100vw;
     overflow: hidden;
-    touch-action: manipulation;
+    position: fixed; /* Prevent scrolling on mobile */
+    -webkit-text-size-adjust: none; /* Prevent font scaling in landscape */
+    touch-action: manipulation; /* Improve touch responsiveness */
 }
 
+/* Screen Container */
 #game-container {
+    position: relative;
     width: 100%;
     height: 100%;
-    position: relative;
 }
 
-/* 屏幕样式 */
+/* Game Screens */
 .screen {
+    position: absolute;
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
     display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 10px;
     background-color: #000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
 .screen.active {
     display: flex;
+    opacity: 1;
 }
 
-/* 图片样式 */
-.game-image {
+/* Images */
+.full-width-image {
     width: 100%;
     height: auto;
-    max-height: 60vh;
+    max-height: 60vh; /* Limit image height to leave space for text and buttons */
     object-fit: contain;
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in forwards;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* 文本框样式 */
+/* Text Box */
 .text-box {
-    width: 100%;
+    width: 90%;
     background-color: #000;
     color: #fff;
     padding: 15px;
-    border-top: 1px solid #333;
-    margin-top: -5px; /* 与图片底部对齐 */
-    font-size: 16px;
-    line-height: 1.5;
+    margin: 10px 0;
+    border: 1px solid #333;
+    border-radius: 5px;
     text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.4;
 }
 
-/* 按钮容器样式 */
+/* Button Container */
 .button-container {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 15px 10px;
+    padding: 10px;
+    position: absolute;
+    bottom: 20px; /* Safe distance from bottom */
     gap: 10px;
-    margin-bottom: 20px; /* 防止被浏览器底部栏遮挡 */
 }
 
-/* 按钮样式 */
+/* Game Buttons */
 .game-btn {
-    background-color: #1a73e8;
+    background-color: #0066cc;
     color: #fff;
     border: none;
     border-radius: 5px;
     padding: 12px 20px;
-    font-size: 16px;
+    font-size: 1rem;
     cursor: pointer;
     min-width: 120px;
-    text-align: center;
-    transition: background-color 0.3s;
-    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.3s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+}
+
+.game-btn:active {
+    transform: scale(0.98);
 }
 
 .game-btn:disabled {
@@ -97,82 +98,17 @@ body {
     cursor: not-allowed;
 }
 
-.game-btn:hover {
-    background-color: #1765cc;
-}
-
-/* 单个按钮居中 */
-.button-container:has(> button:only-child) {
+/* Single Button Centering */
+.button-container:has(> .game-btn:only-child) {
     justify-content: center;
 }
 
-/* 两个按钮左右分布 */
-.button-container:has(> button:nth-child(2):last-child) {
-    justify-content: space-between;
+/* Dual Button Layout */
+.button-container:has(> .game-btn:nth-child(2):last-child) {
+    justify-content: space-around;
 }
 
-/* 排行榜样式 */
-#screen-2501 {
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-}
-
-.room-info {
-    width: 100%;
-    background-color: #1a1a1a;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.room-info h2 {
-    font-size: 18px;
-    margin-bottom: 5px;
-}
-
-.leaderboard-container {
-    width: 100%;
-    flex-grow: 1;
-    overflow-y: auto;
-}
-
-.leaderboard-container h3 {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 20px;
-}
-
-#leaderboard {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #1a1a1a;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-#leaderboard th, #leaderboard td {
-    padding: 10px;
-    text-align: center;
-    border-bottom: 1px solid #333;
-}
-
-#leaderboard th {
-    background-color: #1a73e8;
-    color: #fff;
-}
-
-#leaderboard tr:last-child td {
-    border-bottom: none;
-}
-
-.current-player {
-    background-color: #0d47a1;
-    font-weight: bold;
-}
-
-/* 弹窗样式 */
+/* Modal Styles */
 .modal {
     display: none;
     position: fixed;
@@ -180,35 +116,33 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 100;
     justify-content: center;
+    align-items: center;
 }
 
 .modal-content {
-    background-color: #1a1a1a;
+    background-color: #222;
     padding: 20px;
-    border-radius: 5px;
-    max-width: 80%;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
     text-align: center;
-    animation: fadeIn 0.3s ease-in;
 }
 
 .modal-content p {
     margin-bottom: 15px;
-    font-size: 16px;
+    font-size: 1.1rem;
 }
 
 .modal-content input {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #333;
     border-radius: 5px;
-    background-color: #000;
-    color: #fff;
-    font-size: 16px;
+    border: 1px solid #444;
+    font-size: 1rem;
 }
 
 .modal-buttons {
@@ -217,17 +151,157 @@ body {
     gap: 10px;
 }
 
-.modal-btn {
-    background-color: #1a73e8;
+/* Message Boxes (Hints and Errors) */
+.message-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.9);
     color: #fff;
-    border: none;
+    padding: 15px 20px;
     border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    min-width: 100px;
+    text-align: center;
+    z-index: 50;
+    display: none;
+    max-width: 90%;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
-.modal-btn:hover {
-    background-color: #1765cc;
+.message-box p {
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+/* Leaderboard Styles */
+#screen-2501 {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.room-info {
+    background-color: #222;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.room-info h2 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+
+.room-info p {
+    font-size: 1rem;
+}
+
+.leaderboard-container {
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.leaderboard-container h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+#leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #111;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#leaderboard-table th, 
+#leaderboard-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+}
+
+#leaderboard-table th {
+    background-color: #0066cc;
+    color: #fff;
+    font-weight: normal;
+}
+
+#leaderboard-table tr:last-child td {
+    border-bottom: none;
+}
+
+.highlight-player {
+    background-color: rgba(0, 102, 204, 0.3) !important;
+    font-weight: bold;
+}
+
+/* Responsive Adjustments */
+@media (max-height: 700px) {
+    .full-width-image {
+        max-height: 50vh;
+    }
+    
+    .text-box {
+        padding: 10px;
+        font-size: 1rem;
+    }
+    
+    .game-btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-height: 600px) {
+    .full-width-image {
+        max-height: 45vh;
+    }
+    
+    .button-container {
+        bottom: 10px;
+    }
+}
+
+/* Prevent landscape mode */
+@media (orientation: landscape) {
+    body::before {
+        content: "Please rotate your device to portrait mode";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        z-index: 1000;
+    }
+    
+    #game-container {
+        display: none;
+    }
+}
+
+/* Animation for image transitions */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.full-width-image {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Safe area for mobile devices with notches */
+@supports (padding: max(0px)) {
+    .button-container {
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
 }
