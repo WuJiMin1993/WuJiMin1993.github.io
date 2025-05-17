@@ -1,4 +1,4 @@
-/* 通用样式 */
+/* General Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -10,112 +10,117 @@ body {
     background-color: #000;
     color: #fff;
     height: 100vh;
-    overflow: hidden;
-    touch-action: manipulation;
-}
-
-/* 游戏容器 */
-#game-container {
+    width: 100vw;
+    overflow-x: hidden;
     position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
+    -webkit-text-size-adjust: none; /* Prevent font scaling in landscape */
 }
 
-/* 游戏页面 */
-.game-page {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* Game Container */
+#game-container {
     width: 100%;
     height: 100%;
-    display: none;
+    position: relative;
+    display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 20px;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+}
+
+/* Game Pages */
+.game-page {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    position: relative;
 }
 
 .game-page.active {
     display: flex;
-    opacity: 1;
 }
 
-/* 游戏图片 */
-.game-image {
+/* Images */
+.full-width-image {
     width: 100%;
     height: auto;
-    max-height: 60vh;
     object-fit: contain;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in forwards;
 }
 
-/* 文本框 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Text Box */
 .text-box {
-    width: 90%;
     background-color: #000;
     color: #fff;
     padding: 15px;
-    border-radius: 5px;
-    margin: 10px 0;
     font-size: 18px;
     line-height: 1.5;
     text-align: center;
+    border-top: 1px solid #333;
 }
 
-/* 按钮容器 */
+/* Button Container */
 .button-container {
-    width: 90%;
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    padding: 20px 15px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 10;
+    padding-bottom: 30px; /* Extra padding to avoid Safari toolbar */
 }
 
-/* 游戏按钮 */
-.game-button {
-    background-color: #0066cc;
-    color: #fff;
+/* Game Buttons */
+.game-btn {
+    background-color: #1a73e8;
+    color: white;
     border: none;
-    border-radius: 5px;
-    padding: 12px 20px;
+    border-radius: 25px;
+    padding: 12px 25px;
     font-size: 16px;
     cursor: pointer;
-    width: 48%;
-    min-height: 50px;
-    transition: background-color 0.3s;
-}
-
-.game-button:active {
-    background-color: #004d99;
-}
-
-/* 只有一个按钮时的样式 */
-.button-container:has(button:only-child) {
-    justify-content: center;
-}
-
-.button-container button:only-child {
-    width: 80%;
-}
-
-/* 提示框 */
-.hint-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #000;
-    padding: 15px 25px;
-    border-radius: 5px;
-    font-size: 16px;
-    z-index: 100;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin: 5px;
+    min-width: 120px;
     text-align: center;
+    transition: background-color 0.3s, transform 0.2s;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* 模态框 */
+.game-btn:active {
+    transform: scale(0.95);
+}
+
+.game-btn:hover {
+    background-color: #0d5bbc;
+}
+
+.game-btn.left {
+    margin-right: auto;
+}
+
+.game-btn.right {
+    margin-left: auto;
+}
+
+.game-btn.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.game-btn:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Modal Styles */
 .modal {
     display: none;
     position: fixed;
@@ -124,7 +129,7 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
+    z-index: 100;
     justify-content: center;
     align-items: center;
 }
@@ -132,135 +137,169 @@ body {
 .modal-content {
     background-color: #222;
     padding: 20px;
-    border-radius: 5px;
-    width: 80%;
+    border-radius: 10px;
+    width: 90%;
     max-width: 400px;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .modal-content p {
-    margin-bottom: 15px;
-    font-size: 18px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #fff;
 }
 
 .modal-content input {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 15px;
     border: 1px solid #444;
-    border-radius: 3px;
+    border-radius: 5px;
     background-color: #333;
     color: #fff;
     font-size: 16px;
 }
 
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
+.modal-content input:focus {
+    outline: none;
+    border-color: #1a73e8;
 }
 
-.modal-buttons button {
-    padding: 8px 15px;
+.modal-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-btn {
+    background-color: #1a73e8;
+    color: white;
     border: none;
-    border-radius: 3px;
-    background-color: #0066cc;
-    color: #fff;
+    border-radius: 5px;
+    padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    width: 48%;
+    transition: background-color 0.3s;
 }
 
-.modal-buttons button:active {
-    background-color: #004d99;
+.modal-btn:hover {
+    background-color: #0d5bbc;
 }
 
-/* 排行榜样式 */
-.ranking-header {
+/* Leaderboard Styles */
+.leaderboard-container {
     width: 100%;
-    padding: 15px;
-    text-align: center;
-    background-color: #111;
-}
-
-.ranking-header h2 {
-    margin-bottom: 10px;
-    font-size: 24px;
-}
-
-.room-info {
+    height: 100%;
+    padding: 20px;
     display: flex;
-    justify-content: space-around;
-    margin-top: 10px;
-    font-size: 16px;
+    flex-direction: column;
 }
 
-.ranking-table-container {
+.leaderboard-container h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #1a73e8;
+}
+
+#player-count {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #aaa;
+}
+
+.leaderboard-table-container {
     width: 100%;
-    height: calc(100vh - 120px);
-    overflow-y: auto;
-    padding: 0 10px;
+    overflow-x: auto;
+    flex-grow: 1;
 }
 
-.ranking-table {
+#leaderboard-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
 
-.ranking-table th, .ranking-table td {
-    padding: 10px;
-    text-align: center;
-    border-bottom: 1px solid #333;
-}
-
-.ranking-table th {
-    background-color: #222;
+#leaderboard-table th {
+    background-color: #1a73e8;
+    color: white;
+    padding: 12px;
+    text-align: left;
     position: sticky;
     top: 0;
 }
 
-.ranking-table tr:nth-child(even) {
-    background-color: #1a1a1a;
+#leaderboard-table td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+    text-align: left;
 }
 
-.ranking-table tr:hover {
-    background-color: #2a2a2a;
+#leaderboard-table tr:nth-child(even) {
+    background-color: #111;
 }
 
-.current-player {
-    background-color: #003366 !important;
+#leaderboard-table tr:hover {
+    background-color: #222;
+}
+
+.highlight-player {
+    background-color: #0d5bbc !important;
     font-weight: bold;
 }
 
-/* 响应式调整 */
+/* Alert Box */
+#alert-modal .modal-content {
+    background-color: #333;
+    max-width: 300px;
+    padding: 15px;
+}
+
+#alert-message {
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .text-box {
+        font-size: 16px;
+        padding: 12px;
+    }
+    
+    .game-btn {
+        padding: 10px 20px;
+        font-size: 15px;
+        min-width: 110px;
+    }
+    
+    #leaderboard-table th, 
+    #leaderboard-table td {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+}
+
 @media (max-height: 700px) {
-    .game-image {
-        max-height: 50vh;
+    .button-container {
+        padding-bottom: 25px;
     }
     
     .text-box {
         padding: 10px;
-        font-size: 16px;
-    }
-    
-    .game-button {
-        padding: 10px 15px;
         font-size: 15px;
     }
 }
 
-@media (max-height: 600px) {
-    .game-image {
-        max-height: 45vh;
-    }
-    
-    .text-box {
-        padding: 8px;
-        font-size: 15px;
-    }
-    
-    .game-button {
-        padding: 8px 12px;
-        font-size: 14px;
-    }
+/* Prevent horizontal scrolling */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
 }
