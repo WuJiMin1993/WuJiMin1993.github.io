@@ -1,100 +1,121 @@
-/* 全局样式 */
+/* ========== GENERAL STYLES ========== */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: "Microsoft YaHei", sans-serif;
-    background-color: black;
-    color: white;
-    height: 100vh;
-    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: none;
     touch-action: manipulation;
 }
 
-/* 游戏页面样式 */
-.game-page {
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    background-color: #000;
+    color: #fff;
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* ========== SCREEN LAYOUT ========== */
+.screen {
     display: none;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    height: 100vh;
-    width: 100vw;
-    padding: 10px;
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
-.game-page.active {
+.screen.active {
     display: flex;
 }
 
-/* 图片样式 */
-.game-image {
+/* ========== IMAGE STYLES ========== */
+.full-width-image {
     width: 100%;
     height: auto;
-    max-height: 60vh;
     object-fit: contain;
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    animation: fadeIn 0.5s forwards;
 }
 
-.game-page.active .game-image {
-    opacity: 1;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-/* 文字容器样式 */
+/* ========== TEXT CONTAINER ========== */
 .text-container {
-    background-color: black;
-    color: white;
+    background-color: #000;
+    color: #fff;
     padding: 15px;
-    width: 100%;
+    font-size: 1.125rem; /* 18px */
     text-align: center;
-    font-size: 18px;
-    margin: 10px 0;
+    border-top: 1px solid #333;
+    word-break: break-word;
+    overflow-y: auto;
+    max-height: 30vh;
 }
 
-/* 按钮容器样式 */
+/* ========== BUTTON CONTAINER ========== */
 .button-container {
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 50px; /* 防止被浏览器底部栏遮挡 */
+    padding: 15px;
+    margin-top: auto;
+    margin-bottom: 50px; /* Safe area for mobile browsers */
+    gap: 10px;
 }
 
-.button-container.single-button {
-    justify-content: center;
-}
-
-/* 按钮样式 */
-.game-button {
+/* ========== BUTTON STYLES ========== */
+.game-btn {
     background-color: #0066cc;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     padding: 12px 20px;
-    font-size: 16px;
-    font-family: "Microsoft YaHei", sans-serif;
+    font-size: 1rem; /* 16px */
     cursor: pointer;
-    margin: 0 5px;
+    transition: all 0.3s ease;
     min-width: 120px;
-    transition: background-color 0.3s;
+    text-align: center;
+    flex: 1;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.game-button:active {
+.game-btn:active {
     background-color: #004d99;
+    transform: translateY(1px);
 }
 
-.game-button:disabled {
+.game-btn:disabled {
     background-color: #666;
     cursor: not-allowed;
+    opacity: 0.7;
 }
 
-/* 模态框样式 */
+/* Button position classes */
+.left-btn {
+    margin-right: auto;
+}
+
+.right-btn {
+    margin-left: auto;
+}
+
+.center-btn {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80%;
+}
+
+/* ========== MODAL STYLES ========== */
 .modal {
     display: none;
     position: fixed;
@@ -104,80 +125,183 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1000;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    animation: modalBgFadeIn 0.3s forwards;
+}
+
+@keyframes modalBgFadeIn {
+    from { background-color: rgba(0,0,0,0); }
+    to { background-color: rgba(0,0,0,0.7); }
 }
 
 .modal-content {
     background-color: #222;
     padding: 20px;
     border-radius: 10px;
-    max-width: 80%;
+    width: 85%;
+    max-width: 400px;
     text-align: center;
+    animation: modalFadeIn 0.3s forwards;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+    font-size: 1rem;
 }
 
 .modal-content input {
     width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #444;
+    padding: 12px;
+    margin-bottom: 15px;
     border-radius: 5px;
+    border: 1px solid #444;
     background-color: #333;
     color: white;
+    font-size: 1rem;
+    outline: none;
 }
 
-/* 排名页面样式 */
-.room-info {
-    text-align: center;
+.modal-buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    flex: 1;
+}
+
+/* ========== HINT MODAL ========== */
+#hint-modal .modal-content {
+    background-color: #0066cc;
     padding: 15px;
+}
+
+#hint-message {
+    font-weight: bold;
+}
+
+/* ========== RANKING SCREEN ========== */
+#ranking-screen {
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.room-info {
     background-color: #111;
-    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.room-info h2 {
+    color: #0066cc;
     margin-bottom: 10px;
 }
 
-.leaderboard-container {
-    width: 100%;
-    overflow-y: auto;
-    max-height: 70vh;
-    padding: 0 10px;
+#player-count {
+    font-size: 1rem;
 }
 
-#leaderboard {
+#ranking-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 10px;
 }
 
-#leaderboard th, #leaderboard td {
-    padding: 10px;
+#ranking-table th, #ranking-table td {
+    padding: 12px 8px;
     text-align: center;
     border-bottom: 1px solid #333;
 }
 
-#leaderboard th {
+#ranking-table th {
     background-color: #0066cc;
     color: white;
+    position: sticky;
+    top: 0;
 }
 
-#leaderboard tr.highlight {
-    background-color: #004d99;
+#ranking-table tr:nth-child(even) {
+    background-color: #111;
+}
+
+.highlight-player {
+    background-color: rgba(0, 102, 204, 0.3) !important;
     font-weight: bold;
+    animation: highlightPulse 2s infinite;
 }
 
-/* 响应式调整 */
-@media (max-width: 480px) {
-    .text-container {
-        font-size: 16px;
-        padding: 10px;
-    }
-    
-    .game-button {
-        padding: 10px 15px;
-        font-size: 14px;
+@keyframes highlightPulse {
+    0% { background-color: rgba(0, 102, 204, 0.3); }
+    50% { background-color: rgba(0, 102, 204, 0.6); }
+    100% { background-color: rgba(0, 102, 204, 0.3); }
+}
+
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 400px) {
+    .game-btn {
         min-width: 100px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
     }
     
-    #leaderboard th, #leaderboard td {
-        padding: 8px 5px;
-        font-size: 14px;
+    .text-container {
+        font-size: 1rem;
+        padding: 12px;
     }
+    
+    #ranking-table th, #ranking-table td {
+        padding: 8px 5px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ========== UTILITY CLASSES ========== */
+.hidden {
+    display: none !important;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* ========== SAFE AREA FOR NOTCHED DEVICES ========== */
+@supports (padding-top: env(safe-area-inset-top)) {
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+    
+    .button-container {
+        margin-bottom: calc(50px + env(safe-area-inset-bottom));
+    }
+}
+
+/* ========== PRELOADER (HIDDEN) ========== */
+#preloader {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
 }
