@@ -3,623 +3,576 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tense Magic Wand Game</title>
+    <title>英语时态魔法游戏 - 游戏进行中</title>
     <link rel="stylesheet" href="style.css">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-    <!-- Chapter Screens -->
-    <div id="screen-2101" class="screen hidden" data-page-id="2101">
-        <img src="images/画面01.jpg" alt="Scene 1" class="full-width-image">
-        <div class="text-box">
-            <p>Tom lives in a magical world and ____ the school library every day.</p>
+    <!-- 所有游戏画面容器 -->
+    <div id="game-container">
+        <!-- 章节1 -->
+        <!-- 画面01 (页面ID:2101) -->
+        <div id="page-2101" class="game-page">
+            <img src="images/画面01.jpg" alt="画面01" class="game-image">
+            <div class="text-container">
+                <p>Tom lives in a magical world and ____ the school library every day.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2102" class="game-button">cleans</button>
+                <button data-correct="false" data-next="2102" data-hint="Daily behavior is expressed in the present tense" class="game-button">cleaning</button>
+            </div>
         </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2102">cleans</button>
-            <button class="blue-btn wrong-btn" data-hint="Daily behavior is expressed in the present tense" data-next="2102">cleaning</button>
+
+        <!-- 画面02 (页面ID:2102) -->
+        <div id="page-2102" class="game-page">
+            <img src="images/画面02.jpg" alt="画面02" class="game-image">
+            <div class="text-container">
+                <p>Tom found that a box he _____ yesterday has been opened today, and there is blue light coming from inside.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2103" class="game-button">locked</button>
+                <button data-correct="false" data-next="2103" data-hint="Describe the simple behavior that occurred yesterday in the past simple tense" class="game-button">locks</button>
+            </div>
+        </div>
+
+        <!-- 画面03 (页面ID:2103) -->
+        <div id="page-2103" class="game-page">
+            <img src="images/画面03.jpg" alt="画面03" class="game-image">
+            <div class="text-container">
+                <p>Tom walked over curiously and saw a magic wand with a flashing blue light, with a label next to it that read: Tense Magic wand.</p>
+            </div>
+            <div class="button-container single-button">
+                <button data-next="2104" class="game-button">continue</button>
+            </div>
+        </div>
+
+        <!-- 画面04 (页面ID:2104) -->
+        <div id="page-2104" class="game-page">
+            <img src="images/画面04.jpg" alt="画面04" class="game-image">
+            <div class="text-container">
+                <p>Tom became curious and hid his magic wand in his clothes before taking it away from the library He ____ outdoors tomorrow to test the power of the magic wand.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2201" class="game-button">will go</button>
+                <button data-correct="false" data-next="2201" data-hint="Describe simple behaviors that will occur in the future using general future tense" class="game-button">is going</button>
+            </div>
+        </div>
+
+        <!-- 章节2 -->
+        <!-- 画面05 (页面ID:2201) -->
+        <div id="page-2201" class="game-page">
+            <img src="images/画面05.jpg" alt="画面05" class="game-image">
+            <div class="text-container">
+                <p>The next morning, he ____ a magic broom towards a forest next to the school.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2202" class="game-button">is riding</button>
+                <button data-correct="false" data-next="2202" data-hint="Describe the ongoing behavior in present continuous tense" class="game-button">has ridden</button>
+            </div>
+        </div>
+
+        <!-- 画面06 (页面ID:2202) -->
+        <div id="page-2202" class="game-page">
+            <img src="images/画面06.jpg" alt="画面06" class="game-image">
+            <div class="text-container">
+                <p>At this time yesterday, Tom was cleaning the library. He was supposed to be organizing books in the library today, but he thought this magic wand would be fun. So I decided to slack off and not go to the library anymore.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2203" class="game-button">was cleaning</button>
+                <button data-correct="false" data-next="2203" data-hint="描述过去正在进行的行为用过去进行时" class="game-button">is cleaning</button>
+            </div>
+        </div>
+
+        <!-- 画面07 (页面ID:2203) -->
+        <div id="page-2203" class="game-page">
+            <img src="images/画面07.jpg" alt="画面07" class="game-image">
+            <div class="text-container">
+                <p>Tom will be tidying up the library early tomorrow to prevent library director Jimmy from discovering his laziness.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2301" class="game-button">will be tidying up</button>
+                <button data-correct="false" data-next="2301" data-hint="Describe the ongoing behavior in the future using future continuous tense" class="game-button">is tidying up</button>
+            </div>
+        </div>
+
+        <!-- 章节3 -->
+        <!-- 画面08 (页面ID:2301) -->
+        <div id="page-2301" class="game-page">
+            <img src="images/画面08.jpg" alt="画面08" class="game-image">
+            <div class="text-container">
+                <p>Tom stops by the stream in the forest and ____ the magic wand from his clothes. He thought that the magic wand is called a tense magic wand. Is the spell that activates it related to tense?</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2302" class="game-button">takes out</button>
+                <button data-correct="false" data-next="2302" data-hint="Describe daily behavior in the present tense" class="game-button">will take out</button>
+            </div>
+        </div>
+
+        <!-- 画面09 (页面ID:2302) -->
+        <div id="page-2302" class="game-page">
+            <img src="images/画面09.jpg" alt="画面09" class="game-image">
+            <div class="text-container">
+                <p>So he decided to try combining the spells he learned at the magic school. Tom pointed his magic wand at the stream and said, 'A delicious fish ____.'</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2304" class="game-button">has been grilled</button>
+                <button data-correct="false" data-next="2304" data-hint="The spell didn't take effect, Tom recited a delicious fish that had already been grilled" class="game-button">will be grilled</button>
+            </div>
+        </div>
+
+        <!-- 画面10 (页面ID:2303) -->
+        <div id="page-2303" class="game-page">
+            <img src="images/画面10.jpg" alt="画面10" class="game-image">
+            <div class="text-container">
+                <p>After reciting the spell, a sudden blue flash appeared. Then a grill made of tree branches appeared in front of Tom, with a fragrant grilled fish on top.</p>
+            </div>
+            <div class="button-container single-button">
+                <button data-next="2304" class="game-button">Continue</button>
+            </div>
+        </div>
+
+        <!-- 画面11 (页面ID:2304) -->
+        <div id="page-2304" class="game-page">
+            <img src="images/画面11.jpg" alt="画面11" class="game-image">
+            <div class="text-container">
+                <p>Tom hadn't had breakfast before coming here, and his stomach was growling. Tom ____ the grilled fish and begins eating.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2305" class="game-button">has taken</button>
+                <button data-correct="false" data-next="2305" data-hint="Describe completed actions in present perfect tense" class="game-button">will take</button>
+            </div>
+        </div>
+
+        <!-- 画面12 (页面ID:2305) -->
+        <div id="page-2305" class="game-page">
+            <img src="images/画面12.jpg" alt="画面12" class="game-image">
+            <div class="text-container">
+                <p>Tom thinks that now he has the powerful wand.And the wizard who always bullies me ____ by him.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2401" class="game-button">will have been defeated</button>
+                <button data-correct="false" data-next="2401" data-hint="Describe the behavior to be completed in the future using the future perfect tense" class="game-button">has been defeated</button>
+            </div>
+        </div>
+
+        <!-- 章节4 -->
+        <!-- 画面13 (页面ID:2401) -->
+        <div id="page-2401" class="game-page">
+            <img src="images/画面13.jpg" alt="画面13" class="game-image">
+            <div class="text-container">
+                <p>Although Tom ____ magic at the school for a year, his knowledge of magic is still inferior to that of wizard Mike.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2402" class="game-button">has been studying</button>
+                <button data-correct="false" data-next="2402" data-hint="The action has been ongoing from the past to the present, and may have just ended or is still ongoing, using the present to complete the ongoing tense" class="game-button">will studying</button>
+            </div>
+        </div>
+
+        <!-- 画面14 (页面ID:2402) -->
+        <div id="page-2402" class="game-page">
+            <img src="images/画面14.jpg" alt="画面14" class="game-image">
+            <div class="text-container">
+                <p>So Tom came to the house of the wizard Mike who used to tease him. Tom shouted at Mike, 'I ____ magic to defeat you. Come out and accept my challenge.'</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2403" class="game-button">will use</button>
+                <button data-correct="false" data-next="2403" data-hint="Describe future actions using future continuous tense" class="game-button">am using</button>
+            </div>
+        </div>
+
+        <!-- 画面15 (页面ID:2403) -->
+        <div id="page-2403" class="game-page">
+            <img src="images/画面15.jpg" alt="画面15" class="game-image">
+            <div class="text-container">
+                <p>Mike walked out of the room and said, 'Tom, you ____ to me over the past year. Are you still not willing to give up?'</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2404" class="game-button">had been repeatedly losing</button>
+                <button data-correct="false" data-next="2404" data-hint="A certain past action started earlier in the past and continued until a certain point in time, possibly still continuing or just stopped" class="game-button">was losing</button>
+            </div>
+        </div>
+
+        <!-- 画面16 (页面ID:2404) -->
+        <div id="page-2404" class="game-page">
+            <img src="images/画面16.jpg" alt="画面16" class="game-image">
+            <div class="text-container">
+                <p>Tom pointed his magic wand at the sky and cursed 'It's going to rain soon,' and the wand emitted blue light.</p>
+            </div>
+            <div class="button-container single-button">
+                <button data-next="2405" class="game-button">Continue</button>
+            </div>
+        </div>
+
+        <!-- 画面17 (页面ID:2405) -->
+        <div id="page-2405" class="game-page">
+            <img src="images/画面17.jpg" alt="画面17" class="game-image">
+            <div class="text-container">
+                <p>Before long, dark clouds appeared in the sky, thunder started to strike, and raindrops began to fall.</p>
+            </div>
+            <div class="button-container single-button">
+                <button data-next="2406" class="game-button">Continue</button>
+            </div>
+        </div>
+
+        <!-- 画面18 (页面ID:2406) -->
+        <div id="page-2406" class="game-page">
+            <img src="images/画面18.jpg" alt="画面18" class="game-image">
+            <div class="text-container">
+                <p>By tomorrow, Mike ____ magic for 2 years now. But Mike was still stunned when he saw Tom's magic. Mike had never seen such a powerful magic before and said to Tom, 'I admit you're already better than me.'</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2407" class="game-button">will have been studying</button>
+                <button data-correct="false" data-next="2407" data-hint="Emphasize how long a certain action has been ongoing until a certain point in the future, using the future completion continuous time" class="game-button">will be studying</button>
+            </div>
+        </div>
+
+        <!-- 画面19 (页面ID:2407) -->
+        <div id="page-2407" class="game-page">
+            <img src="images/画面19.jpg" alt="画面19" class="game-image">
+            <div class="text-container">
+                <p>Tom wants to show off the power of his magic wand again and is ready to recite the next spell. But suddenly a beam of light flashed and the library director Jimmy appeared in front of him.</p>
+            </div>
+            <div class="button-container single-button">
+                <button data-next="2408" class="game-button">Continue</button>
+            </div>
+        </div>
+
+        <!-- 画面20 (页面ID:2408) -->
+        <div id="page-2408" class="game-page">
+            <img src="images/画面20.jpg" alt="画面20" class="game-image">
+            <div class="text-container">
+                <p>Library director Jimmy said to Tom, 'I ____ for it all day, but you took it away.'.</p>
+            </div>
+            <div class="button-container">
+                <button data-correct="true" data-next="2409" class="game-button">have been looking</button>
+                <button data-correct="false" data-next="2409" data-hint="Describe actions that have been completed in the past and use them to complete them" class="game-button">am looking</button>
+            </div>
+        </div>
+
+        <!-- 画面21 (页面ID:2409) -->
+        <div id="page-2409" class="game-page">
+            <img src="images/画面21.jpg" alt="画面21" class="game-image">
+            <div class="text-container">
+                <p>Jimmy raised his hand, and the magic wand automatically flew into Jimmy's hand. Then Jimmy shouted at Tom, 'Hurry back and clean the library for me.'</p>
+            </div>
+            <div class="button-container single-button">
+                <button id="game-over-btn" class="game-button">Game over</button>
+            </div>
         </div>
     </div>
 
-    <div id="screen-2102" class="screen hidden" data-page-id="2102">
-        <img src="images/画面02.jpg" alt="Scene 2" class="full-width-image">
-        <div class="text-box">
-            <p>Tom found that a box he _____ yesterday has been opened today, and there is blue light coming from inside.</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2103">locked</button>
-            <button class="blue-btn wrong-btn" data-hint="Describe the simple behavior that occurred yesterday in the past simple tense" data-next="2103">locks</button>
-        </div>
-    </div>
-
-    <div id="screen-2103" class="screen hidden" data-page-id="2103">
-        <img src="images/画面03.jpg" alt="Scene 3" class="full-width-image">
-        <div class="text-box">
-            <p>Tom walked over curiously and saw a magic wand with a flashing blue light, with a label next to it that read: Tense Magic wand.</p>
-        </div>
-        <div class="button-container single-btn">
-            <button class="blue-btn" data-next="2104">continue</button>
-        </div>
-    </div>
-
-    <div id="screen-2104" class="screen hidden" data-page-id="2104">
-        <img src="images/画面04.jpg" alt="Scene 4" class="full-width-image">
-        <div class="text-box">
-            <p>Tom became curious and hid his magic wand in his clothes before taking it away from the library He ____ outdoors tomorrow to test the power of the magic wand.</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2201">will go</button>
-            <button class="blue-btn wrong-btn" data-hint="Describe simple behaviors that will occur in the future using general future tense" data-next="2201">is going</button>
-        </div>
-    </div>
-
-    <div id="screen-2201" class="screen hidden" data-page-id="2201">
-        <img src="images/画面05.jpg" alt="Scene 5" class="full-width-image">
-        <div class="text-box">
-            <p>The next morning, he ____ a magic broom towards a forest next to the school.</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2202">is riding</button>
-            <button class="blue-btn wrong-btn" data-hint="Describe the ongoing behavior in present continuous tense" data-next="2202">has ridden</button>
-        </div>
-    </div>
-
-    <div id="screen-2202" class="screen hidden" data-page-id="2202">
-        <img src="images/画面06.jpg" alt="Scene 6" class="full-width-image">
-        <div class="text-box">
-            <p>At this time yesterday, Tom was cleaning the library. He was supposed to be organizing books in the library today, but he thought this magic wand would be fun. So I decided to slack off and not go to the library anymore.</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2203">was cleaning</button>
-            <button class="blue-btn wrong-btn" data-hint="描述过去正在进行的行为用过去进行时" data-next="2203">is cleaning</button>
-        </div>
-    </div>
-
-    <div id="screen-2203" class="screen hidden" data-page-id="2203">
-        <img src="images/画面07.jpg" alt="Scene 7" class="full-width-image">
-        <div class="text-box">
-            <p>Tom will be tidying up the library early tomorrow to prevent library director Jimmy from discovering his laziness.</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2301">will be tidying up</button>
-            <button class="blue-btn wrong-btn" data-hint="Describe the ongoing behavior in the future using future continuous tense" data-next="2301">is tidying up</button>
-        </div>
-    </div>
-
-    <div id="screen-2301" class="screen hidden" data-page-id="2301">
-        <img src="images/画面08.jpg" alt="Scene 8" class="full-width-image">
-        <div class="text-box">
-            <p>Tom stops by the stream in the forest and ____ the magic wand from his clothes. He thought that the magic wand is called a tense magic wand. Is the spell that activates it related to tense?</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2302">takes out</button>
-            <button class="blue-btn wrong-btn" data-hint="Describe daily behavior in the present tense" data-next="2302">will take out</button>
-        </div>
-    </div>
-
-    <div id="screen-2302" class="screen hidden" data-page-id="2302">
-        <img src="images/画面09.jpg" alt="Scene 9" class="full-width-image">
-        <div class="text-box">
-            <p>So he decided to try combining the spells he learned at the magic school. Tom pointed his magic wand at the stream and said, 'A delicious fish ____.'</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2304">has been grilled</button>
-            <button class="blue-btn wrong-btn" data-hint="The spell didn't take effect, Tom recited a delicious fish that had already been grilled" data-next="2304">will be grilled</button>
-        </div>
-    </div>
-
-    <div id="screen-2303" class="screen hidden" data-page-id="2303">
-        <img src="images/画面10.jpg" alt="Scene 10" class="full-width-image">
-        <div class="text-box">
-            <p>After reciting the spell, a sudden blue flash appeared. Then a grill made of tree branches appeared in front of Tom, with a fragrant grilled fish on top.</p>
-        </div>
-        <div class="button-container single-btn">
-            <button class="blue-btn" data-next="2304">Continue</button>
-        </div>
-    </div>
-
-    <div id="screen-2304" class="screen hidden" data-page-id="2304">
-        <img src="images/画面11.jpg" alt="Scene 11" class="full-width-image">
-        <div class="text-box">
-            <p>Tom hadn't had breakfast before coming here, and his stomach was growling. Tom ____ the grilled fish and begins eating.</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2305">has taken</button>
-            <button class="blue-btn wrong-btn" data-hint="Describe completed actions in present perfect tense" data-next="2305">will take</button>
-        </div>
-    </div>
-
-    <div id="screen-2305" class="screen hidden" data-page-id="2305">
-        <img src="images/画面12.jpg" alt="Scene 12" class="full-width-image">
-        <div class="text-box">
-            <p>Tom thinks that now he has the powerful wand. And the wizard who always bullies me ____ by him.</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2401">will have been defeated</button>
-            <button class="blue-btn wrong-btn" data-hint="Describe the behavior to be completed in the future using the future perfect tense" data-next="2401">has been defeated</button>
-        </div>
-    </div>
-
-    <div id="screen-2401" class="screen hidden" data-page-id="2401">
-        <img src="images/画面13.jpg" alt="Scene 13" class="full-width-image">
-        <div class="text-box">
-            <p>Although Tom ____ magic at the school for a year, his knowledge of magic is still inferior to that of wizard Mike.</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2402">has been studying</button>
-            <button class="blue-btn wrong-btn" data-hint="The action has been ongoing from the past to the present, and may have just ended or is still ongoing, using the present to complete the ongoing tense" data-next="2402">will studying</button>
-        </div>
-    </div>
-
-    <div id="screen-2402" class="screen hidden" data-page-id="2402">
-        <img src="images/画面14.jpg" alt="Scene 14" class="full-width-image">
-        <div class="text-box">
-            <p>So Tom came to the house of the wizard Mike who used to tease him. Tom shouted at Mike, 'I ____ magic to defeat you. Come out and accept my challenge.'</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2403">will use</button>
-            <button class="blue-btn wrong-btn" data-hint="Describe future actions using future continuous tense" data-next="2403">am using</button>
-        </div>
-    </div>
-
-    <div id="screen-2403" class="screen hidden" data-page-id="2403">
-        <img src="images/画面15.jpg" alt="Scene 15" class="full-width-image">
-        <div class="text-box">
-            <p>Mike walked out of the room and said, 'Tom, you ____ to me over the past year. Are you still not willing to give up?'</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2404">had been repeatedly losing</button>
-            <button class="blue-btn wrong-btn" data-hint="A certain past action started earlier in the past and continued until a certain point in time, possibly still continuing or just stopped" data-next="2404">was losing</button>
-        </div>
-    </div>
-
-    <div id="screen-2404" class="screen hidden" data-page-id="2404">
-        <img src="images/画面16.jpg" alt="Scene 16" class="full-width-image">
-        <div class="text-box">
-            <p>Tom pointed his magic wand at the sky and cursed 'It's going to rain soon,' and the wand emitted blue light.</p>
-        </div>
-        <div class="button-container single-btn">
-            <button class="blue-btn" data-next="2405">Continue</button>
-        </div>
-    </div>
-
-    <div id="screen-2405" class="screen hidden" data-page-id="2405">
-        <img src="images/画面17.jpg" alt="Scene 17" class="full-width-image">
-        <div class="text-box">
-            <p>Before long, dark clouds appeared in the sky, thunder started to strike, and raindrops began to fall.</p>
-        </div>
-        <div class="button-container single-btn">
-            <button class="blue-btn" data-next="2406">Continue</button>
-        </div>
-    </div>
-
-    <div id="screen-2406" class="screen hidden" data-page-id="2406">
-        <img src="images/画面18.jpg" alt="Scene 18" class="full-width-image">
-        <div class="text-box">
-            <p>By tomorrow, Mike ____ magic for 2 years now. But Mike was still stunned when he saw Tom's magic. Mike had never seen such a powerful magic before and said to Tom, 'I admit you're already better than me.'</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2407">will have been studying</button>
-            <button class="blue-btn wrong-btn" data-hint="Emphasize how long a certain action has been ongoing until a certain point in the future, using the future completion continuous time" data-next="2407">will be studying</button>
-        </div>
-    </div>
-
-    <div id="screen-2407" class="screen hidden" data-page-id="2407">
-        <img src="images/画面19.jpg" alt="Scene 19" class="full-width-image">
-        <div class="text-box">
-            <p>Tom wants to show off the power of his magic wand again and is ready to recite the next spell. But suddenly a beam of light flashed and the library director Jimmy appeared in front of him.</p>
-        </div>
-        <div class="button-container single-btn">
-            <button class="blue-btn" data-next="2408">Continue</button>
-        </div>
-    </div>
-
-    <div id="screen-2408" class="screen hidden" data-page-id="2408">
-        <img src="images/画面20.jpg" alt="Scene 20" class="full-width-image">
-        <div class="text-box">
-            <p>Library director Jimmy said to Tom, 'I ____ for it all day, but you took it away.'.</p>
-        </div>
-        <div class="button-container">
-            <button class="blue-btn correct-btn" data-next="2409">have been looking</button>
-            <button class="blue-btn wrong-btn" data-hint="Describe actions that have been completed in the past and use them to complete them" data-next="2409">am looking</button>
-        </div>
-    </div>
-
-    <div id="screen-2409" class="screen hidden" data-page-id="2409">
-        <img src="images/画面21.jpg" alt="Scene 21" class="full-width-image">
-        <div class="text-box">
-            <p>Jimmy raised his hand, and the magic wand automatically flew into Jimmy's hand. Then Jimmy shouted at Tom, 'Hurry back and clean the library for me.'</p>
-        </div>
-        <div class="button-container single-btn">
-            <button class="blue-btn" id="game-over-btn">Game over</button>
-        </div>
-    </div>
-
-    <!-- Leaderboard Screen -->
-    <div id="screen-2501" class="screen hidden" data-page-id="2501">
+    <!-- 排名画面22 (页面ID:2501) -->
+    <div id="page-2501" class="game-page">
         <div class="room-info">
-            <h2>Room: <span id="room-id-display"></span></h2>
-            <p>Players: <span id="player-count">0</span></p>
+            <h2>房间号: <span id="room-number-display"></span></h2>
+            <p>当前玩家人数: <span id="player-count">0</span></p>
         </div>
-        <div class="leaderboard">
-            <h2>Leaderboard</h2>
-            <table id="leaderboard-table">
+        <div class="leaderboard-container">
+            <table id="leaderboard">
                 <thead>
                     <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
-                        <th>Score</th>
-                        <th>Accuracy</th>
-                        <th>Time</th>
+                        <th>排名</th>
+                        <th>名称</th>
+                        <th>总分数</th>
+                        <th>正确率</th>
+                        <th>用时</th>
                     </tr>
                 </thead>
-                <tbody id="leaderboard-body">
-                    <!-- Leaderboard data will be inserted here -->
+                <tbody>
+                    <!-- 排行榜内容将通过JavaScript动态生成 -->
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Hint Box -->
-    <div id="hint-box" class="hint-box hidden">
-        <p id="hint-text"></p>
+    <!-- 提示框 -->
+    <div id="hint-modal" class="modal">
+        <div class="modal-content">
+            <p id="hint-message"></p>
+        </div>
     </div>
 
     <script>
-        // Firebase configuration
+        // 初始化Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDHRYTBU74r31MPYVAAnRMwKM76c_-BduQ",
             authDomain: "tetrisonline-ca400.firebaseapp.com",
             projectId: "tetrisonline-ca400",
-            storageBucket: "tetrisonline-ca400.firebasestorage.app",
+            storageBucket: "tetrisonline-ca400.appspot.com",
             messagingSenderId: "58207939196",
             appId: "1:58207939196:web:b34f403204096084ee37f9",
             measurementId: "G-GG7GNEQ718"
         };
 
-        // Initialize Firebase
+        // 初始化Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Game state variables
-        let currentRoomId = null;
-        let isTeacher = false;
-        let playerId = null;
-        let playerNickname = null;
-        let gameStartTime = null;
-        let timerInterval = null;
-        let currentScreenId = null;
+        // 从URL获取参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomNumber = urlParams.get('room');
+        const playerId = urlParams.get('player');
+        const nickname = decodeURIComponent(urlParams.get('nickname') || '');
+
+        // 游戏状态变量
+        let isTeacher = playerId === 'teacher';
+        let currentPage = isTeacher ? '2501' : '2101'; // 老师直接看排名，玩家从第一页开始
         let correctAnswers = 0;
-        let totalQuestions = 15; // Total questions in the game
-        let score = 0;
-        let timeSpent = 0; // in seconds
-        let hasClicked = {}; // Track clicked buttons per screen
+        let startTime = null;
+        let gameCompleted = false;
+        let clickedButtons = new Set(); // 记录已点击的按钮，防止重复点击
 
-        // DOM elements
-        const screens = document.querySelectorAll('.screen');
-        const correctButtons = document.querySelectorAll('.correct-btn');
-        const wrongButtons = document.querySelectorAll('.wrong-btn');
-        const continueButtons = document.querySelectorAll('.blue-btn:not(.correct-btn):not(.wrong-btn)');
-        const hintBox = document.getElementById('hint-box');
-        const hintText = document.getElementById('hint-text');
+        // DOM元素
+        const gameContainer = document.getElementById('game-container');
+        const hintModal = document.getElementById('hint-modal');
+        const hintMessage = document.getElementById('hint-message');
         const gameOverBtn = document.getElementById('game-over-btn');
-        const roomIdDisplay = document.getElementById('room-id-display');
+        const roomNumberDisplay = document.getElementById('room-number-display');
         const playerCountDisplay = document.getElementById('player-count');
-        const leaderboardBody = document.getElementById('leaderboard-body');
+        const leaderboardTable = document.getElementById('leaderboard').querySelector('tbody');
 
-        // Initialize game
-        function initGame() {
-            // Parse URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            currentRoomId = urlParams.get('room');
-            isTeacher = urlParams.get('teacher') === 'true';
-            playerId = urlParams.get('player');
+        // 显示提示框
+        function showHint(message, duration = 3000) {
+            hintMessage.textContent = message;
+            hintModal.style.display = 'block';
             
-            if (!currentRoomId) {
-                console.error('No room ID provided');
-                return;
-            }
-            
-            if (!isTeacher && !playerId) {
-                console.error('No player ID provided for non-teacher');
-                return;
-            }
-            
-            // Initialize hasClicked object
-            screens.forEach(screen => {
-                const pageId = screen.dataset.pageId;
-                if (pageId) {
-                    hasClicked[pageId] = false;
-                }
-            });
-            
-            // Set up event listeners
-            setupButtonListeners();
-            
-            // Start game
-            if (isTeacher) {
-                // Teacher goes directly to leaderboard
-                showScreen('2501');
-                startLeaderboardUpdates();
-            } else {
-                // Player starts the game
-                gameStartTime = new Date().getTime();
-                startTimer();
-                showScreen('2101'); // Start with first question
-                
-                // Get player nickname from database
-                database.ref('rooms/' + currentRoomId + '/players/' + playerId + '/nickname').once('value').then((snapshot) => {
-                    playerNickname = snapshot.val();
-                }).catch((error) => {
-                    console.error('Error getting player nickname:', error);
-                });
+            if (duration > 0) {
+                setTimeout(() => {
+                    hintModal.style.display = 'none';
+                }, duration);
             }
         }
 
-        // Set up button event listeners
-        function setupButtonListeners() {
-            // Correct answer buttons
-            correctButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const screenId = this.closest('.screen').dataset.pageId;
-                    
-                    // Prevent multiple clicks on the same screen
-                    if (hasClicked[screenId]) return;
-                    hasClicked[screenId] = true;
-                    
-                    // Update score
-                    correctAnswers++;
-                    score = Math.min(Math.floor(correctAnswers * 6.7), 100);
-                    
-                    // Update database
-                    updatePlayerProgress();
-                    
-                    // Get next screen and show it
-                    const nextScreen = this.dataset.next;
-                    showScreen(nextScreen);
-                });
+        // 切换页面
+        function switchPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.game-page').forEach(page => {
+                page.classList.remove('active');
             });
             
-            // Wrong answer buttons
-            wrongButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const screenId = this.closest('.screen').dataset.pageId;
-                    
-                    // Prevent multiple clicks on the same screen
-                    if (hasClicked[screenId]) return;
-                    hasClicked[screenId] = true;
-                    
-                    // Show hint
-                    const hint = this.dataset.hint;
-                    showHint(hint);
-                    
-                    // Get next screen and show it after delay
-                    const nextScreen = this.dataset.next;
-                    setTimeout(() => {
-                        showScreen(nextScreen);
-                    }, 3000);
-                });
+            // 显示目标页面
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                
+                // 如果是排名页面，更新排行榜
+                if (pageId === '2501') {
+                    updateLeaderboard();
+                }
+                
+                // 更新当前页面
+                currentPage = pageId;
+                
+                // 更新进度
+                updateProgress();
+                
+                // 预加载下一张可能的图片
+                preloadNextImage(pageId);
+            }
+        }
+
+        // 更新玩家进度
+        function updateProgress() {
+            if (isTeacher || gameCompleted) return;
+            
+            // 计算进度 (当前页数/21)
+            const pageNum = parseInt(currentPage.substring(1));
+            const progress = Math.round((pageNum / 21) * 100);
+            
+            // 更新数据库中的进度
+            database.ref(`rooms/${roomNumber}/players/${playerId}/progress`).set(progress);
+        }
+
+        // 计算并更新分数
+        function updateScore(isCorrect) {
+            if (isTeacher || gameCompleted) return;
+            
+            // 每答对一题得6.7分
+            if (isCorrect) {
+                correctAnswers++;
+                const score = Math.min(correctAnswers * 6.7, 100);
+                database.ref(`rooms/${roomNumber}/players/${playerId}/score`).set(Math.round(score));
+                database.ref(`rooms/${roomNumber}/players/${playerId}/correctAnswers`).set(correctAnswers);
+            }
+        }
+
+        // 计算用时分数
+        function calculateTimeScore() {
+            if (!startTime) return 1;
+            
+            const timeSpent = (Date.now() - startTime) / 1000 / 60; // 分钟
+            return Math.max(1, Math.floor(timeSpent)) * 2; // 每分钟2分
+        }
+
+        // 游戏结束
+        function endGame() {
+            if (isTeacher || gameCompleted) return;
+            
+            gameCompleted = true;
+            
+            // 计算总分数
+            const timeScore = calculateTimeScore();
+            const totalScore = Math.min(Math.round(correctAnswers * 6.7 - timeScore), 100);
+            
+            // 计算正确率
+            const accuracy = ((correctAnswers / 15) * 100).toFixed(1);
+            
+            // 计算用时（分钟）
+            const timeSpent = Math.round((Date.now() - startTime) / 1000 / 60);
+            
+            // 更新数据库
+            database.ref(`rooms/${roomNumber}/players/${playerId}`).update({
+                gameCompleted: true,
+                score: totalScore,
+                accuracy: accuracy,
+                timeSpent: timeSpent
             });
             
-            // Continue buttons (no score impact)
-            continueButtons.forEach(button => {
-                if (button.id !== 'game-over-btn') {
-                    button.addEventListener('click', function() {
-                        const screenId = this.closest('.screen').dataset.pageId;
-                        
-                        // Prevent multiple clicks on the same screen
-                        if (hasClicked[screenId]) return;
-                        hasClicked[screenId] = true;
-                        
-                        // Get next screen and show it
-                        const nextScreen = this.dataset.next;
-                        showScreen(nextScreen);
+            // 跳转到排名页面
+            switchPage('2501');
+        }
+
+        // 更新排行榜
+        function updateLeaderboard() {
+            if (!roomNumber) return;
+            
+            // 显示房间号
+            roomNumberDisplay.textContent = roomNumber;
+            
+            // 监听房间玩家数据变化
+            database.ref(`rooms/${roomNumber}/players`).on('value', (snapshot) => {
+                const players = snapshot.val() || {};
+                const playerList = [];
+                
+                // 转换玩家数据为数组
+                for (const [id, data] of Object.entries(players)) {
+                    if (id === 'teacher') continue; // 跳过老师
+                    
+                    playerList.push({
+                        id: id,
+                        nickname: data.nickname || 'Anonymous',
+                        score: data.score || 0,
+                        accuracy: data.accuracy || '0.0',
+                        timeSpent: data.timeSpent || 0,
+                        gameCompleted: data.gameCompleted || false
                     });
                 }
-            });
-            
-            // Game over button
-            if (gameOverBtn) {
-                gameOverBtn.addEventListener('click', endGame);
-            }
-        }
-
-        // Show a specific screen
-        function showScreen(screenId) {
-            // Hide all screens
-            screens.forEach(screen => {
-                screen.classList.add('hidden');
-            });
-            
-            // Show the requested screen
-            const screenToShow = document.getElementById('screen-' + screenId);
-            if (screenToShow) {
-                screenToShow.classList.remove('hidden');
-                currentScreenId = screenId;
                 
-                // Update progress in database
-                if (!isTeacher) {
-                    updatePlayerProgress();
-                    
-                    // Preload next image if available
-                    preloadNextImage(screenId);
-                }
-            } else {
-                console.error('Screen not found:', screenId);
-            }
-        }
-
-        // Preload next image for smoother transitions
-        function preloadNextImage(currentScreenId) {
-            const screenNumber = parseInt(currentScreenId.substring(1));
-            const nextScreenNumber = screenNumber + 1;
-            const nextScreenId = '2' + nextScreenNumber.toString().padStart(3, '0');
-            
-            // Check if next screen exists
-            const nextScreen = document.getElementById('screen-' + nextScreenId);
-            if (nextScreen) {
-                const img = nextScreen.querySelector('img');
-                if (img) {
-                    const imgSrc = img.getAttribute('src');
-                    if (imgSrc) {
-                        // Create new image to preload
-                        const preloadImg = new Image();
-                        preloadImg.src = imgSrc;
-                    }
-                }
-            }
-        }
-
-        // Show hint message
-        function showHint(message) {
-            hintText.textContent = message;
-            hintBox.classList.remove('hidden');
-            setTimeout(() => {
-                hintBox.classList.add('hidden');
-            }, 3000);
-        }
-
-        // Start timer for player
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                const now = new Date().getTime();
-                timeSpent = Math.floor((now - gameStartTime) / 1000);
-                
-                // Cap at 60 minutes (3600 seconds)
-                if (timeSpent >= 3600) {
-                    timeSpent = 3600;
-                    clearInterval(timerInterval);
-                }
-                
-                // Update database every 3 seconds
-                if (timeSpent % 3 === 0) {
-                    updatePlayerProgress();
-                }
-            }, 1000);
-        }
-
-        // Update player progress in database
-        function updatePlayerProgress() {
-            if (isTeacher || !playerId) return;
-            
-            // Calculate progress (current page number / total pages * 100)
-            const pageNumber = parseInt(currentScreenId.substring(1));
-            const progress = Math.floor((pageNumber / 21) * 100);
-            
-            // Calculate time score (2 points per full minute, 1 point otherwise)
-            const timeScore = Math.floor(timeSpent / 60) * 2 + (timeSpent % 60 > 0 ? 1 : 0);
-            
-            // Calculate total score (question score - time score, min 0, max 100)
-            const totalScore = Math.max(0, Math.min(score - timeScore, 100));
-            
-            // Calculate accuracy (correct answers / total questions * 100)
-            const accuracy = parseFloat(((correctAnswers / totalQuestions) * 100).toFixed(1));
-            
-            // Format time spent as MM:SS
-            const minutes = Math.floor(timeSpent / 60);
-            const seconds = timeSpent % 60;
-            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            // Update database
-            database.ref('rooms/' + currentRoomId + '/players/' + playerId).update({
-                score: totalScore,
-                correctAnswers: correctAnswers,
-                progress: progress,
-                timeSpent: timeSpent,
-                formattedTime: formattedTime,
-                accuracy: accuracy,
-                lastUpdated: firebase.database.ServerValue.TIMESTAMP
-            }).catch(error => {
-                console.error('Error updating player progress:', error);
-            });
-        }
-
-        // End game and show leaderboard
-        function endGame() {
-            // Stop timer
-            if (timerInterval) {
-                clearInterval(timerInterval);
-            }
-            
-            // Final progress update
-            updatePlayerProgress();
-            
-            // Show leaderboard
-            showScreen('2501');
-            startLeaderboardUpdates();
-        }
-
-        // Start listening for leaderboard updates
-        function startLeaderboardUpdates() {
-            if (!currentRoomId) return;
-            
-            // Display room ID
-            roomIdDisplay.textContent = currentRoomId;
-            
-            // Set up real-time listener for players
-            database.ref('rooms/' + currentRoomId + '/players').on('value', (snapshot) => {
-                const players = snapshot.val() || {};
-                const playerList = Object.values(players);
-                
-                // Update player count (excluding teacher)
+                // 更新玩家人数
                 playerCountDisplay.textContent = playerList.length;
                 
-                // Sort players by score (descending)
+                // 按分数排序
                 playerList.sort((a, b) => b.score - a.score);
                 
-                // Clear existing leaderboard
-                leaderboardBody.innerHTML = '';
+                // 只显示前10名
+                const topPlayers = playerList.slice(0, 10);
                 
-                // Add top 10 players to leaderboard
-                playerList.slice(0, 10).forEach((player, index) => {
+                // 清空排行榜
+                leaderboardTable.innerHTML = '';
+                
+                // 填充排行榜
+                topPlayers.forEach((player, index) => {
                     const row = document.createElement('tr');
                     
-                    // Highlight current player
-                    if (playerId && player.nickname === playerNickname) {
-                        row.classList.add('highlight-player');
+                    // 高亮显示当前玩家
+                    if (player.id === playerId) {
+                        row.classList.add('highlight');
                     }
                     
                     row.innerHTML = `
                         <td>${index + 1}</td>
-                        <td>${player.nickname || 'Unknown'}</td>
-                        <td>${player.score || 0}</td>
-                        <td>${player.accuracy || 0}%</td>
-                        <td>${player.formattedTime || '00:00'}</td>
+                        <td>${player.nickname}</td>
+                        <td>${player.score}</td>
+                        <td>${player.accuracy}%</td>
+                        <td>${player.timeSpent}分钟</td>
                     `;
                     
-                    leaderboardBody.appendChild(row);
+                    leaderboardTable.appendChild(row);
                 });
-            });
-            
-            // Set up room cleanup after 24 hours
-            database.ref('rooms/' + currentRoomId + '/createdAt').once('value').then((snapshot) => {
-                const createdAt = snapshot.val();
-                const now = Date.now();
-                const timeElapsed = now - createdAt;
-                const twentyFourHours = 24 * 60 * 60 * 1000;
-                
-                // If room is older than 24 hours, delete it
-                if (timeElapsed > twentyFourHours) {
-                    database.ref('rooms/' + currentRoomId).remove().catch(error => {
-                        console.error('Error deleting old room:', error);
-                    });
-                } else {
-                    // Schedule deletion when room reaches 24 hours
-                    const timeRemaining = twentyFourHours - timeElapsed;
-                    setTimeout(() => {
-                        database.ref('rooms/' + currentRoomId).remove().catch(error => {
-                            console.error('Error deleting room after 24 hours:', error);
-                        });
-                    }, timeRemaining);
-                }
-            }).catch(error => {
-                console.error('Error checking room creation time:', error);
             });
         }
 
-        // Initialize the game when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initGame);
+        // 预加载下一张可能的图片
+        function preloadNextImage(currentPageId) {
+            const pageNum = parseInt(currentPageId.substring(1));
+            const nextPageNum = pageNum + 1;
+            
+            if (nextPageNum <= 21) {
+                const nextPageId = nextPageNum.toString().padStart(4, '2'); // 确保是4位数
+                const img = new Image();
+                img.src = `images/画面${nextPageNum.toString().padStart(2, '0')}.jpg`;
+            }
+        }
+
+        // 初始化游戏
+        function initGame() {
+            // 如果是老师，直接显示排名页面
+            if (isTeacher) {
+                switchPage('2501');
+                return;
+            }
+            
+            // 玩家从第一页开始
+            switchPage(currentPage);
+            
+            // 记录开始时间
+            startTime = Date.now();
+            database.ref(`rooms/${roomNumber}/players/${playerId}/gameStarted`).set(true);
+            
+            // 设置最大游戏时间为60分钟
+            setTimeout(() => {
+                if (!gameCompleted) {
+                    endGame();
+                }
+            }, 60 * 60 * 1000);
+            
+            // 每3秒更新一次用时
+            setInterval(() => {
+                if (!gameCompleted) {
+                    const timeSpent = Math.round((Date.now() - startTime) / 1000);
+                    database.ref(`rooms/${roomNumber}/players/${playerId}/timeSpent`).set(timeSpent);
+                }
+            }, 3000);
+            
+            // 按钮点击事件
+            document.querySelectorAll('.game-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // 防止重复点击
+                    if (clickedButtons.has(this)) return;
+                    clickedButtons.add(this);
+                    
+                    // 短暂禁用按钮
+                    this.disabled = true;
+                    
+                    // 如果是正确答案，更新分数
+                    if (this.dataset.correct === 'true') {
+                        updateScore(true);
+                    }
+                    
+                    // 如果有提示，显示提示
+                    if (this.dataset.hint) {
+                        showHint(this.dataset.hint);
+                    }
+                    
+                    // 延迟跳转，让玩家看到提示
+                    setTimeout(() => {
+                        // 如果是游戏结束按钮
+                        if (this.id === 'game-over-btn') {
+                            endGame();
+                        } 
+                        // 否则跳转到下一页
+                        else if (this.dataset.next) {
+                            switchPage(this.dataset.next);
+                        }
+                    }, this.dataset.hint ? 3000 : 100); // 如果有提示，延迟3秒，否则延迟100毫秒
+                });
+            });
+        }
+
+        // 页面加载完成后初始化游戏
+        window.addEventListener('load', initGame);
     </script>
 </body>
 </html>
